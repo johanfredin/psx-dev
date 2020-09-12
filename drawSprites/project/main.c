@@ -1,13 +1,30 @@
 #include "constants.h"
 
+typedef struct {
+	int x;
+	int y;
+	int width;
+	int height;
+	Image img;
+} Sprite;
 
-Image crash;
+typedef struct {
+	int x;
+	int y;
+	int width;
+	int height;
+	Box box;
+} GameObject;
 
+Sprite raichu; //{ 100, 100, 16, 16, NULL };
+GameObject grass; //;
+short collide = 0;
 
-int x = 0;
-int y = 0;
 int speed = 4;
-char positions[100] = "Positions";
+int gravity = 4;
+
+char positions[50] = "Positions Raichu";
+char positions_g[50] = "Positions grass";
 
 int main() {
 	initialize();
@@ -17,8 +34,13 @@ int main() {
 
 
 	while(1) {
- 		sprintf(positions, "x=%d, y=%d, w=%d, h%d", x, y, img_raichu_width,img_raichu_height);
-        FntPrint(positions);
+ 		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
+		FntPrint(positions);
+		sprintf(positions_g, "x=%d, y=%d, w=%d, h%d\n", grass.x, grass.y, grass.width,grass.height);
+		FntPrint(positions_g);
+		if(collide) {
+			FntPrint("Collide");
+		}
 
 		update();
 		clearDisplay();
@@ -32,46 +54,84 @@ void initialize() {
 	initializePad();
 	setBackgroundColor(createColor(0, 0, 0));
 	
-	crash = createImage(img_raichu);
+	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
+	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 50, SCREEN_WIDTH - 70, SCREEN_HEIGHT, createColor(0, 255, 0));
+
 }
+
+void initializeSprite(Sprite* sprite, int x, int y, int width, int height, Image img) {
+	sprite->x = x;
+	sprite->y = y;
+	sprite->width = width;
+	sprite->height = height;
+	sprite->img = img;
+}
+
+void initializeGameObject(GameObject* gobj, int x, int y, int width, int height, Color color) {
+	gobj->x = x;
+	gobj->y = y;
+	gobj->width = width;
+	gobj->height = height;
+	gobj->box = createBox(color, x, y, width, height);
+};
+
+short isJumping = 0;
+short maxJump = 16;
+short isFalling = 1;
 
 void update() {
 	padUpdate();
-	if(padCheck(Pad1Up)) {
-		y -= speed;
-	}
+	raichu.y += gravity;
 
 	if(padCheck(Pad1Down)) {
-		y += speed;
+		raichu.y += speed;
 	}
 
 	if(padCheck(Pad1Left)) {
-		x -= speed;
+		raichu.x -= speed;
 	}
 
 	if(padCheck(Pad1Right)) {
-		x += speed;
+		raichu.x += speed;
 	}
+	if(padCheck(Pad1Cross)) {
+		if(isFalling) {
 
-	if((x + img_raichu_width) >= SCREEN_WIDTH) {
-		x = (SCREEN_WIDTH - img_raichu_width);
-	} 
-	if(x <= 0) {
-		x = 0;
-	}
-	if((y + img_raichu_height) >= SCREEN_HEIGHT) {
-		y = (SCREEN_HEIGHT - img_raichu_height);
-	}
-	if(y <= 0) {
-		y = 0;
-	}
-	
-
-	crash = moveImage(crash, x, y);
+		} else {
+			raichu.y += 50;
+		}
+	}	
+	handleCollision();
+	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
 }
 
 void draw() {
 	FntFlush(-1);
-	drawImage(crash);
-	
+	drawImage(raichu.img);
+	drawBox(grass.box);
 }
+
+void handleCollision() {
+	if((raichu.x + img_raichu_width) >= SCREEN_WIDTH) {
+		raichu.x = (SCREEN_WIDTH - img_raichu_width);
+	} 
+	if(raichu.x <= 0) {
+		raichu.x = 0;
+	}
+	
+	if(raichu.y <= 0) {
+		raichu.y = 0;
+	}
+
+
+	if((raichu.y + raichu.height) >= grass.y &&
+	raichu.x > (grass.x + grass.width)) {
+		collide = 1;
+		isFalling = 0;
+		raichu.y = (grass.y - raichu.height);
+	} else {
+		collide = 0;
+	}
+
+}
+
