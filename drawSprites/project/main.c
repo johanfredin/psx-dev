@@ -55,7 +55,7 @@ void initialize() {
 	setBackgroundColor(createColor(0, 0, 0));
 	
 	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
-	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 50, SCREEN_WIDTH - 70, SCREEN_HEIGHT, createColor(0, 255, 0));
+	initializeGameObject(&grass, 30, SCREEN_HEIGHT - 50, SCREEN_WIDTH - 70, SCREEN_HEIGHT, createColor(0, 255, 0));
 
 }
 
@@ -112,20 +112,20 @@ void draw() {
 }
 
 void handleCollision() {
-	if((raichu.x + img_raichu_width) >= SCREEN_WIDTH) {
-		raichu.x = (SCREEN_WIDTH - img_raichu_width);
+	if((raichu.x + raichu.width) >= SCREEN_WIDTH) {
+		raichu.x = (SCREEN_WIDTH - raichu.width);
 	} 
 	if(raichu.x <= 0) {
 		raichu.x = 0;
 	}
-	
 	if(raichu.y <= 0) {
 		raichu.y = 0;
 	}
 
-
-	if((raichu.y + raichu.height) >= grass.y &&
-	raichu.x > (grass.x + grass.width)) {
+	if(
+		((raichu.y + raichu.height) >= grass.y) &&
+		((raichu.x + raichu.width) < (grass.width + raichu.width) && 
+		((raichu.x + raichu.width) > grass.x))) {
 		collide = 1;
 		isFalling = 0;
 		raichu.y = (grass.y - raichu.height);
