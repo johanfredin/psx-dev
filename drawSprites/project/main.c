@@ -32,7 +32,6 @@ short leftCol, rightCol, topCol, bottomCol;
 
 short speed = 4;
 short gravity = 3;
-short jumpVel = 0;
 short collision = 0;
 short isOnGround = 0;
 
@@ -63,7 +62,7 @@ void initialize() {
 	initializePad();
 	setBackgroundColor(createColor(0, 0, 0));
 	
-	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
+	initializeSprite(&raichu, 100, SCREEN_HEIGHT - 16, 16, 16, createImage(img_raichu));
 	initializeGameObject(&grass, 50, 150, 70, 50, createColor(0, 255, 0));
 
 }
@@ -87,10 +86,13 @@ void initializeGameObject(GameObject* gobj, int x, int y, int width, int height,
 	gobj->box = createBox(color, x, y, coordWitdth, coordHeight);
 };
 
+short rising = 0;
+	short falling = 0;
+
 void update() {
 	if(!isOnGround)
 		raichu.y += gravity;
-		
+
 	checkControllerState();
 	handleLevelBoundsCollision();
 	handleBoxCollision();
@@ -98,6 +100,8 @@ void update() {
 	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
 
 	FntPrint("Current dir: %d\n", lastKnowDir);
+	FntPrint("OnGround: %d\n", isOnGround);
+	FntPrint("Rising: %d, Falling: %d\n", rising, falling);
 }
 
 void checkControllerState() {
@@ -132,12 +136,22 @@ void checkControllerState() {
 }
 
 
+short maxJump = 100;
+short jumpHeight = 0;
+short jumpVel = 2;
 void jump() {
 	if(isOnGround) {
-		jumpVel = 20;
-		raichu.y -= jumpVel;
-		jumpVel -= gravity;
-	} 
+		
+		if(jumpHeight < maxJump) {
+			rising = 1;
+			jumpHeight -= jumpVel;
+		} else {
+			falling = 1;
+			jumpHeight += jumpVel;
+		}
+
+		raichu.y = jumpHeight;
+	}  
 
 }
 
@@ -158,6 +172,8 @@ void handleLevelBoundsCollision() {
 	} else {
 		jumpVel = 0;
 		isOnGround = 0;
+		jumpVel = 0;
+		jumpHeight = 0;
 	}
 }
 
