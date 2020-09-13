@@ -20,6 +20,8 @@ Sprite raichu; //{ 100, 100, 16, 16, NULL };
 GameObject grass; //;
 short collide = 0;
 
+short leftCol, rightCol, topCol, bottomCol;
+
 int speed = 4;
 int gravity = 4;
 
@@ -38,10 +40,7 @@ int main() {
 		FntPrint(positions);
 		sprintf(positions_g, "x=%d, y=%d, w=%d, h%d\n", grass.x, grass.y, grass.width,grass.height);
 		FntPrint(positions_g);
-		if(collide) {
-			FntPrint("Collide");
-		}
-
+		
 		update();
 		clearDisplay();
 		draw();
@@ -55,7 +54,7 @@ void initialize() {
 	setBackgroundColor(createColor(0, 0, 0));
 	
 	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
-	initializeGameObject(&grass, 30, SCREEN_HEIGHT - 50, SCREEN_WIDTH - 70, SCREEN_HEIGHT, createColor(0, 255, 0));
+	initializeGameObject(&grass, 30, 150, 70, 50, createColor(0, 255, 0));
 
 }
 
@@ -68,12 +67,21 @@ void initializeSprite(Sprite* sprite, int x, int y, int width, int height, Image
 }
 
 void initializeGameObject(GameObject* gobj, int x, int y, int width, int height, Color color) {
+	int coordWitdth = x + width;
+	int coordHeight = y + height;
+	
 	gobj->x = x;
 	gobj->y = y;
-	gobj->width = width;
-	gobj->height = height;
-	gobj->box = createBox(color, x, y, width, height);
+	gobj->width = coordWitdth;
+	gobj->height = coordHeight;
+	gobj->box = createBox(color, x, y, coordWitdth, coordHeight);
+	logBox("box", gobj);
 };
+
+void logBox(char* name, GameObject* gobj) {
+	printf("objc coords: { x:%d, y:%d, w:%d, h%d: }\n", gobj->x, gobj->y, gobj->width, gobj->height);
+}
+
 
 short isJumping = 0;
 short maxJump = 16;
@@ -81,16 +89,17 @@ short isFalling = 1;
 
 void update() {
 	padUpdate();
-	raichu.y += gravity;
+	//raichu.y += gravity;
 
 	if(padCheck(Pad1Down)) {
 		raichu.y += speed;
+	} 
+	if(padCheck(Pad1Up)) {
+		raichu.y -= speed;
 	}
-
 	if(padCheck(Pad1Left)) {
 		raichu.x -= speed;
 	}
-
 	if(padCheck(Pad1Right)) {
 		raichu.x += speed;
 	}
@@ -122,16 +131,29 @@ void handleCollision() {
 		raichu.y = 0;
 	}
 
-	if(
-		((raichu.y + raichu.height) >= grass.y) &&
-		((raichu.x + raichu.width) < (grass.width + raichu.width) && 
-		((raichu.x + raichu.width) > grass.x))) {
-		collide = 1;
-		isFalling = 0;
-		raichu.y = (grass.y - raichu.height);
-	} else {
-		collide = 0;
+	handleBoxCollision();
+}
+
+void handleBoxCollision() {
+	rightCol = (raichu.x + raichu.width >= grass.x) && 	(raichu.x + raichu.width < grass.width);
+	leftCol = (raichu.x <= grass.width) && raichu.x > grass.x;
+	topCol = (raichu.y + raichu.height) >= grass.y && raichu.y < grass.height;
+	bottomCol = (raichu.y <= grass.height) && raichu.y + raichu.height > grass.y;
+
+	if(rightCol && !leftCol && (topCol || bottomCol)) {
+		raichu.x = grass.x - raichu.width;
+	}
+	if(leftCol && !rightCol && (topCol || bottomCol)) {	
+		raichu.x = grass.width;
+	}
+	if(topCol && !bottomCol) {
+		raichu.y = grass.y - grass.height;
+	}
+	if(bottomCol && !topCol) {
+		raichu.y = grass.height;
 	}
 
+
+	FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
 }
 
