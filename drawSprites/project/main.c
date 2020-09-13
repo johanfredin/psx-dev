@@ -25,14 +25,16 @@ typedef struct {
 Sprite raichu; 
 GameObject grass;
 
-short collide = 0;
-short currDir = DIR_NONE;
-short lastKnowDir = DIR_NONE;
+short currDir = DIR_DOWN;
+short lastKnowDir = DIR_DOWN;
 
 short leftCol, rightCol, topCol, bottomCol;
 
-int speed = 4;
-int gravity = 4;
+short speed = 4;
+short gravity = 3;
+short jumpVel = 0;
+short collision = 0;
+short isOnGround = 0;
 
 char positions[50] = "Positions Raichu";
 char positions_g[50] = "Positions grass";
@@ -42,7 +44,6 @@ int main() {
 
 	FntLoad(960, 256); // load the font from the BIOS into the framebuffer
 	SetDumpFnt(FntOpen(5, 20, 320, 240, 0, 512)); // screen X,Y | max text length X,Y | autmatic background clear 0,1 | max characters
-
 
 	while(1) {
  		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
@@ -63,7 +64,7 @@ void initialize() {
 	setBackgroundColor(createColor(0, 0, 0));
 	
 	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
-	initializeGameObject(&grass, 30, 150, 70, 50, createColor(0, 255, 0));
+	initializeGameObject(&grass, 50, 150, 70, 50, createColor(0, 255, 0));
 
 }
 
@@ -84,24 +85,23 @@ void initializeGameObject(GameObject* gobj, int x, int y, int width, int height,
 	gobj->width = coordWitdth;
 	gobj->height = coordHeight;
 	gobj->box = createBox(color, x, y, coordWitdth, coordHeight);
-	logBox("box", gobj);
 };
 
-void logBox(char* name, GameObject* gobj) {
-	printf("objc coords: { x:%d, y:%d, w:%d, h%d: }\n", gobj->x, gobj->y, gobj->width, gobj->height);
+void update() {
+	if(!isOnGround)
+		raichu.y += gravity;
+		
+	checkControllerState();
+	handleLevelBoundsCollision();
+	handleBoxCollision();
+
+	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
+
+	FntPrint("Current dir: %d\n", lastKnowDir);
 }
 
-
-short isJumping = 0;
-short maxJump = 16;
-short isFalling = 1;
-
-
-
-void update() {
+void checkControllerState() {
 	padUpdate();
-	//raichu.y += gravity;
-
 	
 	if(padCheck(Pad1Down)) {
 		raichu.y += speed;
@@ -122,24 +122,26 @@ void update() {
 	lastKnowDir = currDir;
 
 	if(padCheck(Pad1Cross)) {
-		if(isFalling) {
-
-		} else {
-			raichu.y += 50;
-		}
+		jump();
 	}
-	FntPrint("Current dir: %d", lastKnowDir);
-	handleCollision();
-	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
+
+	// Dirty reset check
+	if(padCheck(Pad1Start)) {
+		raichu.y = 0;
+	}
 }
 
-void draw() {
-	FntFlush(-1);
-	drawImage(raichu.img);
-	drawBox(grass.box);
+
+void jump() {
+	if(isOnGround) {
+		jumpVel = 20;
+		raichu.y -= jumpVel;
+		jumpVel -= gravity;
+	} 
+
 }
 
-void handleCollision() {
+void handleLevelBoundsCollision() {
 	if((raichu.x + raichu.width) >= SCREEN_WIDTH) {
 		raichu.x = (SCREEN_WIDTH - raichu.width);
 	} 
@@ -150,39 +152,25 @@ void handleCollision() {
 		raichu.y = 0;
 	}
 
-	handleBoxCollision();
+	if(raichu.y + raichu.height >= SCREEN_HEIGHT) {
+		raichu.y = SCREEN_HEIGHT - raichu.height;
+		isOnGround = 1;
+	} else {
+		jumpVel = 0;
+		isOnGround = 0;
+	}
 }
 
-short collision = 0;
 void handleBoxCollision() {
-	if (raichu.x < grass.width &&
-		raichu.x + raichu.width > grass.x &&
-		raichu.y < grass.height &&
-		raichu.y + raichu.height > grass.y) {
-			collision = 1;
-			switch (lastKnowDir) {
-			case DIR_RIGHT:
-				raichu.x = grass.x - raichu.width;
-				break;
-			case DIR_LEFT:
-				raichu.x = grass.width;
-				break;
-			case DIR_DOWN:
-				raichu.y = grass.y - raichu.height;
-				break;
-			case DIR_UP:
-				raichu.y = grass.height;
-				break;
-			default:
-				break;
-			}
-		} else {
-			collision = 0;
-		}
-    // collision detected!
-	FntPrint("Collision: %d", collision);
+	collision = 0;
 
 
-	//FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
 }
 
+
+
+void draw() {
+	FntFlush(-1);
+	drawImage(raichu.img);
+	drawBox(grass.box);
+}
