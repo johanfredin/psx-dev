@@ -1,5 +1,11 @@
 #include "constants.h"
 
+#define DIR_NONE 	0
+#define DIR_LEFT 	1
+#define DIR_RIGHT 	2
+#define DIR_UP 		3
+#define DIR_DOWN 	4
+
 typedef struct {
 	int x;
 	int y;
@@ -16,9 +22,12 @@ typedef struct {
 	Box box;
 } GameObject;
 
-Sprite raichu; //{ 100, 100, 16, 16, NULL };
-GameObject grass; //;
+Sprite raichu; 
+GameObject grass;
+
 short collide = 0;
+short currDir = DIR_NONE;
+short lastKnowDir = DIR_NONE;
 
 short leftCol, rightCol, topCol, bottomCol;
 
@@ -87,29 +96,39 @@ short isJumping = 0;
 short maxJump = 16;
 short isFalling = 1;
 
+
+
 void update() {
 	padUpdate();
 	//raichu.y += gravity;
 
+	
 	if(padCheck(Pad1Down)) {
 		raichu.y += speed;
+		currDir = DIR_DOWN;
 	} 
 	if(padCheck(Pad1Up)) {
 		raichu.y -= speed;
+		currDir = DIR_UP;
 	}
 	if(padCheck(Pad1Left)) {
 		raichu.x -= speed;
+		currDir = DIR_LEFT;
 	}
 	if(padCheck(Pad1Right)) {
 		raichu.x += speed;
+		currDir = DIR_RIGHT;
 	}
+	lastKnowDir = currDir;
+
 	if(padCheck(Pad1Cross)) {
 		if(isFalling) {
 
 		} else {
 			raichu.y += 50;
 		}
-	}	
+	}
+	FntPrint("Current dir: %d", lastKnowDir);
 	handleCollision();
 	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
 }
@@ -134,26 +153,36 @@ void handleCollision() {
 	handleBoxCollision();
 }
 
+short collision = 0;
 void handleBoxCollision() {
-	rightCol = (raichu.x + raichu.width >= grass.x) && 	(raichu.x + raichu.width < grass.width);
-	leftCol = (raichu.x <= grass.width) && raichu.x > grass.x;
-	topCol = (raichu.y + raichu.height) >= grass.y && raichu.y < grass.height;
-	bottomCol = (raichu.y <= grass.height) && raichu.y + raichu.height > grass.y;
+	if (raichu.x < grass.width &&
+		raichu.x + raichu.width > grass.x &&
+		raichu.y < grass.height &&
+		raichu.y + raichu.height > grass.y) {
+			collision = 1;
+			switch (lastKnowDir) {
+			case DIR_RIGHT:
+				raichu.x = grass.x - raichu.width;
+				break;
+			case DIR_LEFT:
+				raichu.x = grass.width;
+				break;
+			case DIR_DOWN:
+				raichu.y = grass.y - raichu.height;
+				break;
+			case DIR_UP:
+				raichu.y = grass.height;
+				break;
+			default:
+				break;
+			}
+		} else {
+			collision = 0;
+		}
+    // collision detected!
+	FntPrint("Collision: %d", collision);
 
-	if(rightCol && !leftCol && (topCol || bottomCol)) {
-		raichu.x = grass.x - raichu.width;
-	}
-	if(leftCol && !rightCol && (topCol || bottomCol)) {	
-		raichu.x = grass.width;
-	}
-	if(topCol && !bottomCol) {
-		raichu.y = grass.y - grass.height;
-	}
-	if(bottomCol && !topCol) {
-		raichu.y = grass.height;
-	}
 
-
-	FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
+	//FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
 }
 

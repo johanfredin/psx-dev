@@ -127,9 +127,6 @@ Image moveImage(Image image, int x, int y) {
 	return image;
 }
 
-
-
-
 //Creates a color from RGB
 Color createColor(int r, int g, int b) {
 	Color color = {.r = r, .g = g, .b = b};
