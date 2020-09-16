@@ -26,6 +26,8 @@ int gravity = 4;
 char positions[50] = "Positions Raichu";
 char positions_g[50] = "Positions grass";
 
+POLY_FT3 poly;
+
 int main() {
 	initialize();
 
@@ -34,6 +36,7 @@ int main() {
 
 
 	while(1) {
+		/*
  		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
 		FntPrint(positions);
 		sprintf(positions_g, "x=%d, y=%d, w=%d, h%d\n", grass.x, grass.y, grass.width,grass.height);
@@ -45,11 +48,39 @@ int main() {
 		update();
 		clearDisplay();
 		draw();
+		*/
+		DrawPrim(&poly);
 		display();
 	}
 }
 
 void initialize() {
+	/*
+	typedef struct {
+	u_long	tag;
+	u_char	r0, g0, b0, code;
+	short	x0, 	y0;
+	u_char	u0, v0;	u_short	clut;
+	short	x1,	y1;
+	u_char	u1, v1;	u_short	tpage;
+	short	x2,	y2;
+	u_char	u2, v2;	u_short	pad1;
+} POLY_FT3
+	*/
+	
+	poly.tag = 0;
+	poly.r0 = 255;
+	poly.g0 = 100;
+	poly.b0 = 155;
+	poly.tpage = 1;
+	poly.x0 = 10;
+	poly.x1 = 50;
+	poly.y0 = 10;
+	poly.y1 = 25;
+	poly.x2 = 100;
+	poly.y2 = 50;
+	SetPolyF4(&poly);
+
 	initializeScreen();
 	initializePad();
 	setBackgroundColor(createColor(0, 0, 0));
