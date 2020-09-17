@@ -28,8 +28,6 @@ int gravity = 4;
 char positions[50] = "Positions Raichu";
 char positions_g[50] = "Positions grass";
 
-POLY_FT3 poly;
-
 int main() {
 	initialize();
 
@@ -38,54 +36,26 @@ int main() {
 
 
 	while(1) {
-		/*
+		
  		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
 		FntPrint(positions);
 		sprintf(positions_g, "x=%d, y=%d, w=%d, h%d\n", grass.x, grass.y, grass.width,grass.height);
 		FntPrint(positions_g);
 		
 		update();
-		clearDisplay();
 		draw();
-		*/
-		DrawPrim(&poly);
 		display();
+		clearDisplay();
 	}
 }
 
 void initialize() {
-	/*
-	typedef struct {
-	u_long	tag;
-	u_char	r0, g0, b0, code;
-	short	x0, 	y0;
-	u_char	u0, v0;	u_short	clut;
-	short	x1,	y1;
-	u_char	u1, v1;	u_short	tpage;
-	short	x2,	y2;
-	u_char	u2, v2;	u_short	pad1;
-} POLY_FT3
-	*/
-	
-	poly.tag = 0;
-	poly.r0 = 255;
-	poly.g0 = 100;
-	poly.b0 = 155;
-	poly.tpage = 1;
-	poly.x0 = 10;
-	poly.x1 = 50;
-	poly.y0 = 10;
-	poly.y1 = 25;
-	poly.x2 = 100;
-	poly.y2 = 50;
-	SetPolyF4(&poly);
-
 	initializeScreen();
 	initializePad();
 	setBackgroundColor(createColor(0, 0, 0));
 	
 	initializeSprite(&raichu, 100, 100, 16, 16, createImage(img_raichu));
-	initializeGameObject(&grass, 30, 150, 70, 50, createColor(0, 255, 0));
+	initializeGameObject(&grass, 110, 120, 70, 50, createColor(0, 255, 0));
 
 }
 
@@ -166,25 +136,46 @@ void handleCollision() {
 }
 
 void handleBoxCollision() {
-	rightCol = (raichu.x + raichu.width >= grass.x) && 	(raichu.x + raichu.width < grass.width);
-	leftCol = (raichu.x <= grass.width) && raichu.x > grass.x;
-	topCol = (raichu.y + raichu.height) >= grass.y && raichu.y < grass.height;
-	bottomCol = (raichu.y <= grass.height) && raichu.y + raichu.height > grass.y;
+	// rightCol = (raichu.x + raichu.width >= grass.x) &&
+	// 		   (raichu.x <= grass.x) &&
+	// 		   (raichu.y + raichu.height > grass.y) &&
+	// 		   (raichu.y < grass.height);
+	// leftCol = raichu.x <= grass.width && raichu.x + raichu.width >= grass.width;
+	// topCol = (raichu.y + raichu.height >= grass.y) && (raichu.y <= grass.y);
+	// bottomCol = raichu.y <= grass.height && raichu.y + raichu.height >= grass.height;
 
-	if(rightCol && !leftCol && (topCol || bottomCol)) {
+	if((raichu.x + raichu.width >= grass.x) &&
+		(raichu.x <= grass.x) &&
+		(raichu.y + raichu.height > grass.y) &&
+		(raichu.y < grass.height)) { 
+		rightCol = 1;
 		raichu.x = grass.x - raichu.width;
 	}
-	if(leftCol && !rightCol && (topCol || bottomCol)) {	
+	if((raichu.x <= grass.width) &&
+	   (raichu.x + raichu.width > grass.width) &&
+	   (raichu.y + raichu.height > grass.y) &&
+	   (raichu.y < grass.height)) { 
+		leftCol = 1;
 		raichu.x = grass.width;
 	}
-	if(topCol && !bottomCol) {
-		raichu.y = grass.y - grass.height;
+	if((raichu.y + raichu.height >= grass.y) &&
+		(raichu.y < grass.y) &&
+		(raichu.x > grass.x) &&
+		(raichu.x + raichu.width < grass.width)) { 
+		topCol = 1;
+		raichu.y = grass.y - raichu.height;
 	}
-	if(bottomCol && !topCol) {
+	if((raichu.y <= grass.height) &&
+	   (raichu.y + raichu.height > grass.height) &&
+	   (raichu.x > grass.x) &&
+	   (raichu.x + raichu.width < grass.width)) { 
 		raichu.y = grass.height;
 	}
 
-
+	rightCol=0;
+	leftCol=0;
+	topCol=0;
+	bottomCol=0;
 	FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
 }
 
