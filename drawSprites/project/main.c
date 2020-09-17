@@ -90,7 +90,7 @@ short isFalling = 1;
 
 void update() {
 	padUpdate();
-	//raichu.y += gravity;
+	raichu.y += gravity;
 
 	if(padCheck(Pad1Down)) {
 		raichu.y += speed;
@@ -136,14 +136,6 @@ void handleCollision() {
 }
 
 void handleBoxCollision() {
-	// rightCol = (raichu.x + raichu.width >= grass.x) &&
-	// 		   (raichu.x <= grass.x) &&
-	// 		   (raichu.y + raichu.height > grass.y) &&
-	// 		   (raichu.y < grass.height);
-	// leftCol = raichu.x <= grass.width && raichu.x + raichu.width >= grass.width;
-	// topCol = (raichu.y + raichu.height >= grass.y) && (raichu.y <= grass.y);
-	// bottomCol = raichu.y <= grass.height && raichu.y + raichu.height >= grass.height;
-
 	if((raichu.x + raichu.width >= grass.x) &&
 		(raichu.x <= grass.x) &&
 		(raichu.y + raichu.height > grass.y) &&
