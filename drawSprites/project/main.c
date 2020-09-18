@@ -1,46 +1,42 @@
 #include "constants.h"
 
+#define JUMP 20
+#define MAX_GRAV 10
+
 typedef struct {
-	int x;
-	int y;
-	int width;
-	int height;
+	u_short x;
+	u_short y;
+	u_short width;
+	u_short height;
 	Image img;
 } Sprite;
 
 typedef struct {
-	int x;
-	int y;
-	int width;
-	int height;
+	u_short x;
+	u_short y;
+	u_short width;
+	u_short height;
 	Box box;
 } GameObject;
 
-Sprite raichu; //{ 100, 100, 16, 16, NULL };
-GameObject grass; //;
-short collide = 0;
+Sprite raichu; 
+GameObject grass;
 
-short leftCol, rightCol, topCol, bottomCol;
 
-int speed = 4;
-int gravity = 4;
+u_char leftCol, rightCol, topCol, bottomCol;
 
 char positions[50] = "Positions Raichu";
-char positions_g[50] = "Positions grass";
 
 int main() {
 	initialize();
 
 	FntLoad(960, 256); // load the font from the BIOS into the framebuffer
-	SetDumpFnt(FntOpen(5, 20, 320, 240, 0, 512)); // screen X,Y | max text length X,Y | autmatic background clear 0,1 | max characters
-
+	SetDumpFnt(FntOpen(5, 10, 320, 240, 0, 512)); // screen X,Y | max text length X,Y | autmatic background clear 0,1 | max characters
 
 	while(1) {
 		
  		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
 		FntPrint(positions);
-		sprintf(positions_g, "x=%d, y=%d, w=%d, h%d\n", grass.x, grass.y, grass.width,grass.height);
-		FntPrint(positions_g);
 		
 		update();
 		draw();
@@ -52,10 +48,10 @@ int main() {
 void initialize() {
 	initializeScreen();
 	initializePad();
-	setBackgroundColor(createColor(0, 0, 0));
+	setBackgroundColor(createColor(100, 0, 255));
 	
 	initializeSprite(&raichu, 150, 100, 16, 16, createImage(img_raichu));
-	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 10, SCREEN_WIDTH, 10, createColor(0, 255, 0));
+	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 1, 10, createColor(0, 255, 0));
 
 }
 
@@ -76,17 +72,14 @@ void initializeGameObject(GameObject* gobj, int x, int y, int width, int height,
 	gobj->width = coordWitdth;
 	gobj->height = coordHeight;
 	gobj->box = createBox(color, x, y, coordWitdth, coordHeight);
-	logBox("box", gobj);
 };
 
-void logBox(char* name, GameObject* gobj) {
-	printf("objc coords: { x:%d, y:%d, w:%d, h%d: }\n", gobj->x, gobj->y, gobj->width, gobj->height);
-}
-
-
-short isJumping = 0;
-short maxJump = 16;
-short isFalling = 1;
+u_char isJumping = 0;
+u_char isFalling = 1;
+short maxJump = 32;
+short jumpStrength = JUMP;
+short speed = 4;
+short gravity = 4;
 
 void update() {
 	padUpdate();
@@ -105,10 +98,8 @@ void update() {
 		raichu.x += speed;
 	}
 	if(padCheck(Pad1Cross)) {
-		if(isFalling) {
-
-		} else {
-			raichu.y += 50;
+		if(!isJumping) {
+			jump();
 		}
 	}
 	if(padCheck(Pad1Start))	{
@@ -116,7 +107,18 @@ void update() {
 	}
 	handleCollision();
 	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
+	logState();
 }
+
+void jump() {
+	raichu.y -= jumpStrength;
+	if(jumpStrength <= 0) {
+		jumpStrength = 0;
+	} else {
+		jumpStrength -= 2;
+	}
+}
+
 
 void draw() {
 	FntFlush(-1);
@@ -139,6 +141,11 @@ void handleCollision() {
 }
 
 void handleBoxCollision() {
+	topCol = (raichu.y + raichu.height >= grass.y) &&
+		(raichu.y < grass.y) &&
+		(raichu.x > grass.x) &&
+		(raichu.x + raichu.width < grass.width);
+	   
 	if((raichu.x + raichu.width >= grass.x) &&
 		(raichu.x <= grass.x) &&
 		(raichu.y + raichu.height > grass.y) &&
@@ -153,23 +160,25 @@ void handleBoxCollision() {
 		leftCol = 1;
 		raichu.x = grass.width;
 	}
-	if((raichu.y + raichu.height >= grass.y) &&
-		(raichu.y < grass.y) &&
-		(raichu.x > grass.x) &&
-		(raichu.x + raichu.width < grass.width)) { 
-		topCol = 1;
+	if(topCol) { 
+		jumpStrength = JUMP;
+		isJumping = 0; 
 		raichu.y = grass.y - raichu.height;
 	}
 	if((raichu.y <= grass.height) &&
 	   (raichu.y + raichu.height > grass.height) &&
 	   (raichu.x > grass.x) &&
 	   (raichu.x + raichu.width < grass.width)) { 
+		bottomCol = 1;
 		raichu.y = grass.height;
 	}
 
+	// FntPrint("top=%d", topCol);
 	rightCol=0;
 	leftCol=0;
-	topCol=0;
 	bottomCol=0;
-	FntPrint("rightCol=%d\nleftCol=%d\ntopCol=%d\nbottomCol=%d\n", rightCol, leftCol, topCol, bottomCol);
+}
+
+void logState() {
+	FntPrint("topCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", topCol, isJumping, gravity, jumpStrength);
 }
