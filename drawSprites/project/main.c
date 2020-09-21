@@ -1,6 +1,6 @@
 #include "constants.h"
 
-#define JUMP 20
+#define JUMP 15
 #define MAX_GRAV 10
 
 typedef struct {
@@ -50,7 +50,7 @@ void initialize() {
 	initializePad();
 	setBackgroundColor(createColor(100, 0, 255));
 	
-	initializeSprite(&raichu, 150, 100, 16, 16, createImage(img_raichu));
+	initializeSprite(&raichu, 150, 150, 16, 16, createImage(img_raichu));
 	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 1, 10, createColor(0, 255, 0));
 
 }
@@ -74,17 +74,25 @@ void initializeGameObject(GameObject* gobj, int x, int y, int width, int height,
 	gobj->box = createBox(color, x, y, coordWitdth, coordHeight);
 };
 
-u_char isJumping = 0;
-u_char isFalling = 1;
-short maxJump = 32;
 short jumpStrength = JUMP;
+short acceleration = 1;
 short speed = 4;
 short gravity = 4;
+u_char jumpPressed = 0;
 
 void update() {
-	padUpdate();
+	updateGamePadState();
 	raichu.y += gravity;
+	if(jumpPressed) {
+		jump();
+	}
+	handleCollision();
+	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
+	logState();
+}
 
+void updateGamePadState() {
+	padUpdate();
 	if(padCheck(Pad1Down)) {
 		raichu.y += speed;
 	} 
@@ -98,25 +106,16 @@ void update() {
 		raichu.x += speed;
 	}
 	if(padCheck(Pad1Cross)) {
-		if(!isJumping) {
-			jump();
-		}
+		jumpPressed = 1;
 	}
 	if(padCheck(Pad1Start))	{
 		raichu.y = 0;
 	}
-	handleCollision();
-	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
-	logState();
 }
 
 void jump() {
 	raichu.y -= jumpStrength;
-	if(jumpStrength <= 0) {
-		jumpStrength = 0;
-	} else {
-		jumpStrength -= 2;
-	}
+	jumpStrength -= acceleration;
 }
 
 
@@ -162,7 +161,7 @@ void handleBoxCollision() {
 	}
 	if(topCol) { 
 		jumpStrength = JUMP;
-		isJumping = 0; 
+		jumpPressed = 0;
 		raichu.y = grass.y - raichu.height;
 	}
 	if((raichu.y <= grass.height) &&
@@ -180,5 +179,5 @@ void handleBoxCollision() {
 }
 
 void logState() {
-	FntPrint("topCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", topCol, isJumping, gravity, jumpStrength);
+	FntPrint("topCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", topCol, jumpPressed, gravity, jumpStrength);
 }
