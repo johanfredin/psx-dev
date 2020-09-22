@@ -270,7 +270,7 @@ void clearDisplay() {
 void display() {
 	currentBuffer = GsGetActiveBuff();
 	DrawSync(0);
-	VSync(0);
+	VSync(2);
 	GsSwapDispBuff();
 	GsSortClear(systemBackgroundColor.r, systemBackgroundColor.g, systemBackgroundColor.b, &orderingTable[currentBuffer]);
 	GsDrawOt(&orderingTable[currentBuffer]);

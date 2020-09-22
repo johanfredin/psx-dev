@@ -26,11 +26,16 @@ typedef struct Color {
     u_short b;
 } Color;
 
+typedef struct {
+	short x;
+	short y;
+} Vec2;
+
 Color* bgcolor;
 
 void initGraphics(Color* color) {
     bgcolor = color;
-	SetVideoMode(1); // 1=PAL, 0=NTSC 
+	SetVideoMode(0); // 1=PAL, 0=NTSC 
 	
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); // set the graphics mode resolutions (GsNONINTER for NTSC, and GsINTER for PAL)
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT); // tell the GPU to draw from the top left coordinates of the framebuffer
@@ -52,10 +57,28 @@ void display() {
 	GsSetWorkBase((PACKET*)GPUPacketArea[CurrentBuffer]);	            // setup the packet workbase   
 	GsClearOt(0,0, &myOT[CurrentBuffer]); 					            // clear the ordering table
 	DrawSync(0);											            // wait for all drawing to finish
-	VSync(0); 												            // wait for v_blank interrupt
+	VSync(2); 												            // wait for v_blank interrupt
 	GsSwapDispBuff(); 										            // flip the double buffers
 	GsSortClear(bgcolor->r,bgcolor->b,bgcolor->b, &myOT[CurrentBuffer]);// clear the ordering table with a background color (R,G,B)
 	GsDrawOt(&myOT[CurrentBuffer]); 						            // draw the ordering table
+}
+
+POLY_F3* createPolyF3(Vec2 xy0, Vec2 xy1, Vec2 xy2, Color rgb0) {
+	POLY_F3 polyf3;
+	SetPolyF3(&polyf3);
+	setRGB0(&polyf3, rgb0.r, rgb0.g, rgb0.b);
+	setXY3(&polyf3, xy0.x, xy0.y, xy1.x, xy1.y, xy2.x, xy2.y);
+	return &polyf3;
+}
+
+Color rgb(u_short r, u_short g, u_short b) {
+	Color color = {r,g,b};
+	return color;
+}
+
+Vec2 vec2(short x, short y) {
+	Vec2 vec2 = {x, y};
+	return vec2;
 }
 
 #endif
