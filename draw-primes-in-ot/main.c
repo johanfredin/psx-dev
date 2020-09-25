@@ -45,7 +45,7 @@ int main() {
 		FntFlush(-1); 											            // refresh the font
 	}
 
-	return 0; // this will never be reached because we're in a while loop above
+	return 0; 
 }
 
 void addPrimes() {
