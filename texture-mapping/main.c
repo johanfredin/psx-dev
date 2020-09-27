@@ -1,12 +1,9 @@
 #include "gpubase.h"
+#include "images.h"
 
 // Declare shapes
-POLY_FT4 polyFT4;			// Gouraud shaded rectangle
-
-u_short polycnt = 0;
-
-u_long ot[255];
-
+GsSPRITE sprite;
+GsIMAGE timData;
 
 int main() {
 	Color bgcolor = {25, 50, 50};
@@ -18,45 +15,65 @@ int main() {
 	
 
 	while (1) {
-		FntPrint("Tiles, Triangles and Rectangles\n");
-		
-		CurrentBuffer = GsGetActiveBuff(); 						            // get the current buffer
-		GsSetWorkBase((PACKET*)GPUPacketArea[CurrentBuffer]);	            // setup the packet workbase   
-		GsClearOt(0,0, &myOT[CurrentBuffer]); 					            // clear the ordering table
-		ClearOTag(ot, 255);
-		addPrimes();	
-		DrawOTag(ot);
-		drawPolys();
-		DrawSync(0);											            // wait for all drawing to finish
-		VSync(3); 												            // wait for v_blank interrupt
-		GsSwapDispBuff(); 										            // flip the double buffers
-		GsSortClear(bgcolor.r,bgcolor.g, bgcolor.b, &myOT[CurrentBuffer]);							// clear the ordering table with a background color (R,G,B)
-		GsDrawOt(&myOT[CurrentBuffer]); 						            // draw the ordering table
-		FntFlush(-1); 											            // refresh the font
+		FntPrint("tim.px=%d\ntim.cy=%d", sprite.x, sprite.y);
+		display();
+		drawSprite(&sprite);
+								
 	}
 
 	return 0; 
 }
 
-void addPrimes() {
-	AddPrim(&ot[7], &polyFT4);
-}
-
+/*
+typedef struct {
+	unsigned long pmode;
+	short   px, py;
+	unsigned short pw, ph;
+	unsigned long *pixel;
+	short   cx, cy;
+	unsigned short cw, ch;
+	unsigned long *clut;
+}       GsIMAGE;
+*/
 
 void initPolys() {
-	// Init gouraud rect
-	SetPolyG4(&polyFT4);
-	polyFT4.tpage = GetTPage(0, 0, 330, 50);
-	polyFT4.clut = GetClut(960, 256);
-	setRGB0(&polyFT4, 100, 100, 100);
-	// setRGB1(&polyFT4, 0, 255, 30);
-	// setRGB2(&polyFT4, 0, 0, 255);
-	// setRGB3(&polyFT4, 255, 0, 0);
-	setXY4(&polyFT4, 40, 200, 80, 200, 40, 240, 80, 240);
-	setUV4(&polyFT4, 40/2, 200/2, 80/2, 200/2, 40/2, 240/2, 80/2, 240/2);
+	// Declare data
+	RECT tex;
+	RECT clut;	
 	
+
+	// Get tim info from image array
+	GsGetTimInfo((u_long*)(img_trees), &timData);
+
+	// Load the image into the frame buffer
+	tex.x = timData.px;
+	tex.y = timData.py;
+	tex.w = timData.pw;
+	tex.h = timData.ph;
+	LoadImage(&tex, timData.pixel);	// Load the pixel data from the image into the rectangle (ish)
+
+	// load the CLUT into the frame buffer
+	clut.x = timData.cx;
+	clut.y = timData.cy;
+	clut.w = timData.cw;
+	clut.h = timData.ch;
+	LoadImage(&clut, timData.clut);
+
+	// Init sprite
+	sprite.attribute = 0x1000000;
+	sprite.x = 0;
+	sprite.y = 0;
+	sprite.w = timData.pw * 2;
+	sprite.h = timData.ph;
+	sprite.tpage = GetTPage(1, 1, timData.px, timData.py);
+
+	sprite.r = 128;
+	sprite.g = 128;
+	sprite.b = 128;
+	sprite.u = (timData.px - 320) * 2;
+	sprite.v = timData.py;
+	sprite.cx = timData.cx;
+	sprite.cy = timData.cy;
+
 }
 
-void drawPolys() {
-	DrawOTag(ot);
-}

@@ -190,9 +190,9 @@ void drawBox(Box box) {
 	}
 }
 
-void drawImage(Image image) {
+void drawImage(Image image, int order) {
 	currentBuffer = GsGetActiveBuff();
-	GsSortSprite(&image.sprite, &orderingTable[currentBuffer], 0);
+	GsSortSprite(&image.sprite, &orderingTable[currentBuffer], order);
 }
 
 //Set the screen mode to either SCREEN_MODE_PAL or SCREEN_MODE_NTSC

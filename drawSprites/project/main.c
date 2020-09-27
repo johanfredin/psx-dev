@@ -19,13 +19,14 @@ typedef struct {
 	Box box;
 } GameObject;
 
+u_short numBounds = 0;
 Sprite raichu; 
+Sprite tree;
+GameObject objects[2];
 GameObject grass;
-
+GameObject bounds;
 
 u_char leftCol, rightCol, topCol, bottomCol;
-
-char positions[50] = "Positions Raichu";
 
 int main() {
 	initialize();
@@ -34,10 +35,6 @@ int main() {
 	SetDumpFnt(FntOpen(5, 10, 320, 240, 0, 512)); // screen X,Y | max text length X,Y | autmatic background clear 0,1 | max characters
 
 	while(1) {
-		
- 		sprintf(positions, "x=%d, y=%d, w=%d, h%d\n", raichu.x, raichu.y, raichu.width,raichu.height);
-		FntPrint(positions);
-		
 		update();
 		draw();
 		display();
@@ -50,9 +47,13 @@ void initialize() {
 	initializePad();
 	setBackgroundColor(createColor(100, 0, 255));
 	
+	initializeSprite(&tree, 150, SCREEN_HEIGHT - 74, 64, 64, createImage(img_trees));
 	initializeSprite(&raichu, 150, 150, 16, 16, createImage(img_raichu));
 	initializeGameObject(&grass, 0, SCREEN_HEIGHT - 10, SCREEN_WIDTH - 1, 10, createColor(0, 255, 0));
-
+	initializeGameObject(&bounds, tree.x, tree.y, tree.width, tree.height, createColor(15, 15, 15));
+	objects[0] = grass;
+	objects[1] = bounds;
+	numBounds = 2;
 }
 
 void initializeSprite(Sprite* sprite, int x, int y, int width, int height, Image img) {
@@ -88,6 +89,7 @@ void update() {
 	}
 	handleCollision();
 	raichu.img = moveImage(raichu.img, raichu.x, raichu.y);
+	tree.img = moveImage(tree.img, tree.x, tree.y);
 	logState();
 }
 
@@ -121,10 +123,13 @@ void jump() {
 
 void draw() {
 	FntFlush(-1);
-	drawImage(raichu.img);
+	drawImage(tree.img, 1);
+	drawImage(raichu.img, 0);
 	drawBox(grass.box);
+	drawBox(bounds.box);
 }
 
+int i = 0;
 void handleCollision() {
 	if((raichu.x + raichu.width) >= SCREEN_WIDTH) {
 		raichu.x = (SCREEN_WIDTH - raichu.width);
@@ -136,48 +141,50 @@ void handleCollision() {
 		raichu.y = 0;
 	}
 
-	handleBoxCollision();
+	for(i = 0; i < numBounds; i++) {
+		handleBoxCollision(objects[i]);
+	}
+	i = 0;
 }
 
-void handleBoxCollision() {
-	topCol = (raichu.y + raichu.height >= grass.y) &&
-		(raichu.y < grass.y) &&
-		(raichu.x > grass.x) &&
-		(raichu.x + raichu.width < grass.width);
-	   
-	if((raichu.x + raichu.width >= grass.x) &&
-		(raichu.x <= grass.x) &&
-		(raichu.y + raichu.height > grass.y) &&
-		(raichu.y < grass.height)) { 
+void handleBoxCollision(GameObject object) {
+	if((raichu.x + raichu.width >= object.x) &&
+		(raichu.x <= object.x) &&
+		(raichu.y + raichu.height > object.y) &&
+		(raichu.y < object.height)) { 
 		rightCol = 1;
-		raichu.x = grass.x - raichu.width;
+		raichu.x = object.x - raichu.width;
 	}
-	if((raichu.x <= grass.width) &&
-	   (raichu.x + raichu.width > grass.width) &&
-	   (raichu.y + raichu.height > grass.y) &&
-	   (raichu.y < grass.height)) { 
+	if((raichu.x <= object.width) &&
+	   (raichu.x + raichu.width > object.width) &&
+	   (raichu.y + raichu.height > object.y) &&
+	   (raichu.y < object.height)) { 
 		leftCol = 1;
-		raichu.x = grass.width;
+		raichu.x = object.width;
 	}
+
+	topCol = (raichu.y + raichu.height >= object.y) &&
+		(raichu.y < object.y) &&
+		(raichu.x > object.x) &&
+		(raichu.x + raichu.width < object.width);
 	if(topCol) { 
 		jumpStrength = JUMP;
 		jumpPressed = 0;
-		raichu.y = grass.y - raichu.height;
+		raichu.y = object.y - raichu.height;
 	}
-	if((raichu.y <= grass.height) &&
-	   (raichu.y + raichu.height > grass.height) &&
-	   (raichu.x > grass.x) &&
-	   (raichu.x + raichu.width < grass.width)) { 
+	if((raichu.y <= object.height) &&
+	   (raichu.y + raichu.height > object.height) &&
+	   (raichu.x > object.x) &&
+	   (raichu.x + raichu.width < object.width)) { 
 		bottomCol = 1;
-		raichu.y = grass.height;
+		raichu.y = object.height;
 	}
 
-	// FntPrint("top=%d", topCol);
 	rightCol=0;
 	leftCol=0;
 	bottomCol=0;
 }
 
 void logState() {
-	FntPrint("topCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", topCol, jumpPressed, gravity, jumpStrength);
+	FntPrint("x=%d, y=%d\nbounds.x=%d, bounds.y=%d\ntopCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", raichu.x, raichu.y, bounds.x, bounds.y, topCol, jumpPressed, gravity, jumpStrength);
 }
