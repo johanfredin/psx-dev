@@ -63,6 +63,9 @@ PACKET 		GPUOutputPacket[2][PACKETMAX];
 short 		currentBuffer;
 Color 		systemBackgroundColor;
 
+DISPENV dispenv;
+DRAWENV drawenv;
+
 Image createImage(unsigned char imageData[]) {
 
 	// Initialize image
@@ -231,6 +234,8 @@ void initializeScreen() {
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 0, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
 	systemBackgroundColor = createColor(0, 0, 0);
+	SetDefDispEnv(&dispenv, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	SetDefDrawEnv(&drawenv, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	initializeOrderingTable();
 }
 
@@ -267,8 +272,11 @@ void clearDisplay() {
 	GsClearOt(0, 0, &orderingTable[currentBuffer]);
 }
 
+
 void display() {
 	currentBuffer = GsGetActiveBuff();
+	PutDispEnv(&dispenv);
+	PutDrawEnv(&drawenv);
 	DrawSync(0);
 	VSync(2);
 	GsSwapDispBuff();

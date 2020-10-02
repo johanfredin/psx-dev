@@ -28,6 +28,7 @@ GameObject bounds;
 
 u_char leftCol, rightCol, topCol, bottomCol;
 
+
 int main() {
 	initialize();
 
@@ -113,7 +114,14 @@ void updateGamePadState() {
 	if(padCheck(Pad1Start))	{
 		raichu.y = 0;
 	}
+	// drawenv.clip.x = raichu.x;
+	// drawenv.ofs[1] = raichu.x + SCREEN_WIDTH;
+	// drawenv.ofs[0] = raichu.x;
+	dispenv.disp.x = (raichu.x + raichu.width) / 2 - (SCREEN_WIDTH / 2);
+	dispenv.screen.x = (raichu.x + raichu.width) / 2 - (SCREEN_WIDTH / 2);
+	// dispenv.disp.y = raichu.y
 }
+
 
 void jump() {
 	raichu.y -= jumpStrength;
@@ -186,5 +194,6 @@ void handleBoxCollision(GameObject object) {
 }
 
 void logState() {
-	FntPrint("x=%d, y=%d\nbounds.x=%d, bounds.y=%d\ntopCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d", raichu.x, raichu.y, bounds.x, bounds.y, topCol, jumpPressed, gravity, jumpStrength);
+	FntPrint("x=%d, y=%d\nbounds.x=%d, bounds.y=%d\ntopCol:%d\njumping:%d\ngravity:%d\njumpStrength:%d\ndispX:%d, dispY%d, dispw:%d, disph:%d", raichu.x, raichu.y, bounds.x, bounds.y, topCol, jumpPressed, gravity, jumpStrength, dispenv.disp.x, dispenv.disp.y, dispenv.disp.w, dispenv.disp.h);
+	
 }
