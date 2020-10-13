@@ -4,7 +4,7 @@
 #include <libgpu.h>
 #include <libgs.h>
 #include <libetc.h>
-#include "sys/types.h"
+#include <sys/types.h>
 
 // Constants
 #define SCREEN_WIDTH 320
@@ -15,6 +15,11 @@
 #define PACKETMAX 300
 #define FRAME_BUFFER_WIDTH 1024
 #define FRAME_BUFFER_HEIGHT 512
+#define SPEED 4
+#define left 32768
+#define right 8192
+#define up 4096
+#define down 16384
 
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
@@ -37,13 +42,25 @@ DISPENV dispenv[2];
 DRAWENV drawenv[2];
 POLY_F3 polyf3;
 
+// Our awesome hero
+typedef struct {
+    POLY_F3 poly;
+    u_short x, y, w, h;
+} Player;
+
+u_long currentKeyDown = 0;
+Player player;
+
 // Prototypes
 void initializeScreen();
 void clearVRAM();
+void update();
+void updatePlayer(short xSpeed, short ySpeed);
 void draw();
 void display();
 void clearDisplay();
 void initDisplayAndDrawEnvs();
+void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g, u_short b);
 void initGameObjects();
 
 int main() {
@@ -52,9 +69,11 @@ int main() {
     backgroundColor.b = 100;
     initializeScreen();
     initializeDebugFont();
+    initPlayer(100, 50, 28, 48, 50, 10, 200);
     initGameObjects();
 
     while(1) {
+        update();
         draw();
         display();
         clearDisplay();
@@ -92,6 +111,8 @@ void initializeScreen() {
     orderingTable[1].org = minorOrderingTable[1];
     GsClearOt(0, 0, &orderingTable[0]);
     GsClearOt(0, 0, &orderingTable[1]);
+
+    PadInit(MODE_NTSC);
 }
 
 void clearVRAM() {
@@ -106,15 +127,48 @@ void initializeDebugFont() {
 	SetDumpFnt(FntOpen(5, 20, 320, 240, 0, 512)); //Sets the dumped font for use with FntPrint();
 }
 
-void initGameObjects() {
+void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g, u_short b) {
     SetPolyF3(&polyf3);
-    setXY3(&polyf3, 50, 50, 100, 100, 50, 100);
-    setRGB0(&polyf3, 150, 100, 50);
+    setXY3(&polyf3, x, y, x + w, y + h, x - w, y + h);
+    setRGB0(&polyf3, r, g, b);
+    player.poly = polyf3;
+    player.x = x;
+    player.y = y;
+    player.w = w;
+    player.h = h;
+}
+
+void initGameObjects() {
+    // No objects yet...
+}
+
+void update() {
+    currentKeyDown = PadRead(0);
+    switch(currentKeyDown) {
+        case down:
+            FntPrint("DOWN");
+            updatePlayer(0, SPEED); 
+        case up:
+            FntPrint("UP");
+            updatePlayer(0, -SPEED);
+        case right:
+            updatePlayer(SPEED, 0);
+            FntPrint("RIGHT");
+        case left:
+            updatePlayer(-SPEED, 0);
+            FntPrint("LEFT");
+    }
+}
+
+void updatePlayer(short xSpeed, short ySpeed) {
+    player.x += xSpeed;
+    player.y += ySpeed;
+    setXY3(&player.poly, player.x, player.y, player.poly.x1, player.poly.y1, player.poly.x2, player.poly.y2);
 }
 
 void draw() {
-    DrawPrim(&polyf3);
-    FntPrint("Hello World");
+    DrawPrim(&player.poly);
+    FntPrint("Hello World, padDown=%d", currentKeyDown);
 }
 
 void display() {
