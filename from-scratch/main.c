@@ -158,12 +158,17 @@ void update() {
             updatePlayer(-SPEED, 0);
             FntPrint("LEFT");
     }
+    updatePlayer(0, 0);
 }
 
 void updatePlayer(short xSpeed, short ySpeed) {
     player.x += xSpeed;
     player.y += ySpeed;
-    setXY3(&player.poly, player.x, player.y, player.poly.x1, player.poly.y1, player.poly.x2, player.poly.y2);
+    updatePoly(player, &player.poly);
+}
+
+void updatePoly(Player player, POLY_F3* poly) {
+    setXY3(poly, player.x, player.y, player.x + player.w, player.y + player.h, player.x - player.w, player.y + player.h);
 }
 
 void draw() {
