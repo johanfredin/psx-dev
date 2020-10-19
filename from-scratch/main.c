@@ -16,10 +16,6 @@
 #define FRAME_BUFFER_WIDTH 1024
 #define FRAME_BUFFER_HEIGHT 512
 #define SPEED 4
-#define left 32768
-#define right 8192
-#define up 4096
-#define down 16384
 
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
@@ -42,20 +38,13 @@ DISPENV dispenv[2];
 DRAWENV drawenv[2];
 POLY_F3 polyf3;
 
-// Our awesome hero
-typedef struct {
-    POLY_F3 poly;
-    u_short x, y, w, h;
-} Player;
-
 u_long currentKeyDown = 0;
-Player player;
 
 // Prototypes
 void initializeScreen();
 void clearVRAM();
 void update();
-void updatePlayer(short xSpeed, short ySpeed);
+void initializeDebugFont();
 void draw();
 void display();
 void clearDisplay();
@@ -131,11 +120,6 @@ void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g
     SetPolyF3(&polyf3);
     setXY3(&polyf3, x, y, x + w, y + h, x - w, y + h);
     setRGB0(&polyf3, r, g, b);
-    player.poly = polyf3;
-    player.x = x;
-    player.y = y;
-    player.w = w;
-    player.h = h;
 }
 
 void initGameObjects() {
@@ -143,45 +127,41 @@ void initGameObjects() {
 }
 
 void update() {
+    short xSpeed = 0;
+    short ySpeed = 0;
     currentKeyDown = PadRead(0);
-    switch(currentKeyDown) {
-        case down:
-            FntPrint("DOWN");
-            updatePlayer(0, SPEED); 
-        case up:
-            FntPrint("UP");
-            updatePlayer(0, -SPEED);
-        case right:
-            updatePlayer(SPEED, 0);
-            FntPrint("RIGHT");
-        case left:
-            updatePlayer(-SPEED, 0);
-            FntPrint("LEFT");
+    if(currentKeyDown & PADLdown) {
+        ySpeed = SPEED;
+    } if(currentKeyDown & PADLup) {
+        ySpeed = -SPEED;
+    } if(currentKeyDown & PADLright) {
+        xSpeed = SPEED;
+    } if(currentKeyDown & PADLleft) {
+        xSpeed = -SPEED;
     }
-    updatePlayer(0, 0);
-}
-
-void updatePlayer(short xSpeed, short ySpeed) {
-    player.x += xSpeed;
-    player.y += ySpeed;
-    updatePoly(player, &player.poly);
-}
-
-void updatePoly(Player player, POLY_F3* poly) {
-    setXY3(poly, player.x, player.y, player.x + player.w, player.y + player.h, player.x - player.w, player.y + player.h);
+    polyf3.x0 += xSpeed;
+    polyf3.x1 += xSpeed;
+    polyf3.x2 += xSpeed;
+    polyf3.y0 += ySpeed;
+    polyf3.y1 += ySpeed;
+    polyf3.y2 += ySpeed;
+    dispenv[currentBuffer].disp.x = polyf3.x0 - SCREEN_WIDTH / 2;
+    drawenv[currentBuffer].tw.x = polyf3.x0 - SCREEN_WIDTH / 2;
+    drawenv[currentBuffer].clip.x = polyf3.x0 - SCREEN_WIDTH / 2;
 }
 
 void draw() {
-    DrawPrim(&player.poly);
+    PutDrawEnv(&drawenv[currentBuffer]);
+    PutDispEnv(&dispenv[currentBuffer]);
+    DrawPrim(&polyf3);
     FntPrint("Hello World, padDown=%d", currentKeyDown);
 }
 
 void display() {
     currentBuffer = GsGetActiveBuff();
-    PutDispEnv(&dispenv[currentBuffer]);
-    PutDrawEnv(&drawenv[currentBuffer]);
+    
     DrawSync(0);        // Wait for drawing to end
-    VSync(2);           // Wait for vsync (2 = 30FPS moreless)
+    VSync(0);           // Wait for vsync (2 = 30FPS moreless)
     GsSwapDispBuff();   // Swap buffers
     
     // Sets a screen clear command at the start of the OT. Should be called after GsSwapDispBuff.
