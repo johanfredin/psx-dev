@@ -1,5 +1,5 @@
 <tim_project>
-    <properties buffer_res="2" buffer_order="0"/>
+    <properties buffer_res="12" buffer_order="0"/>
     <tim_group name="global">
         <tim file="PSYDUCK.TIM" source="..\..\..\psyduck.png">
             <import_parameters>

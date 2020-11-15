@@ -1,22 +1,26 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <libgte.h>
-#include <libgpu.h>
-#include <libgs.h>
+#include <STDLIB.H>
+#include <STDIO.H>
+#include <LIBGTE.H>
+#include <LIBGPU.H>
+#include <LIBGS.H>
+#include <LIBETC.H>
+#include <LIBSPU.H>
 #include <LIBCD.H>
 #include <LIBDS.H>
-#include <libetc.h>
-#include <sys/types.h>
+#include <STRINGS.H>
+#include <SYS/TYPES.H>
 
 // Constants
 #define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_HEIGHT 256
 #define NUM_BUFFERS 2
 #define BUFFERS_LENGHT 1
 #define MODE_NTSC 0
+#define MODE_PAL 1
 #define PACKETMAX 300
 #define FRAME_BUFFER_WIDTH 1024
 #define FRAME_BUFFER_HEIGHT 512
+#define SECTOR 2048
 #define SPEED 4
 
 #define __ramsize   0x00200000 // Force 2MB vram
@@ -39,7 +43,8 @@ DISPENV dispenv[2];
 DRAWENV drawenv[2];
 POLY_FT4 polyFt4;
 
-u_long currentKeyDown = 0;
+u_char didInitDs = 0;
+u_short currentKeyDown = 0;
 
 // Prototypes
 void initializeScreen();
@@ -52,6 +57,9 @@ void clearDisplay();
 void initDisplayAndDrawEnvs();
 void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g, u_short b);
 void initGameObjects();
+void cd_open();
+void cd_close();
+void cd_read_file(u_char* file_path, u_long** file);
 
 int main() {
     backgroundColor.r = 66;
@@ -75,7 +83,7 @@ int main() {
 // Definitions -----------------------------------------
 
 void initializeScreen() {
-    SetVideoMode(MODE_NTSC);
+    SetVideoMode(1);
     SetDispMask(1); // 1=MASK on
 	ResetGraph(0);  // Initialise drawing engine, 0=Complete reset
     clearVRAM();    
@@ -187,4 +195,64 @@ void clearDisplay() {
     // like GsSortObject(), GsSortSprite() and GsSortBg()
     GsSetWorkBase((PACKET*)GPUOutputPacket[currentBuffer]);
     GsClearOt(0, 0, &orderingTable[currentBuffer]);
+}
+
+void cd_open() {
+	if(!didInitDs) {
+		didInitDs = 1;
+		DsInit();
+	}
+}
+
+void cd_close() {
+	if(didInitDs) {
+		didInitDs = 0;
+		DsClose();
+    }
+}
+
+void cd_read_file(unsigned char* file_path, u_long** file) {
+
+	u_char* file_path_raw;
+	int* sectors_size;
+	DslFILE* temp_file_info;
+	sectors_size = malloc3(sizeof(int));
+	temp_file_info = malloc3(sizeof(DslFILE));
+
+	// Exit if libDs isn't initialized
+	if(!didInitDs) {
+		printf("LIBDS not initialized, run cdOpen() first\n");	
+		return;
+	}
+
+	// Get raw file path
+	file_path_raw = malloc3(4 + strlen(file_path));
+	strcpy(file_path_raw, "\\");
+	strcat(file_path_raw, file_path);
+	strcat(file_path_raw, ";1");
+	printf("Loading file from CD: %s\n", file_path_raw);
+
+	// Search for file on disc
+	DsSearchFile(temp_file_info, file_path_raw);
+
+	// Read the file if it was found
+	if(temp_file_info->size > 0) {
+		printf("...file found\n");
+		printf("...file size: %lu\n", temp_file_info->size);
+		*sectors_size = temp_file_info->size + (SECTOR % temp_file_info->size);
+		printf("...file buffer size needed: %d\n", *sectors_size);
+		printf("...sectors needed: %d\n", (*sectors_size + SECTOR - 1) / SECTOR);
+		*file = malloc3(*sectors_size + SECTOR);
+		
+		DsRead(&temp_file_info->pos, (*sectors_size + SECTOR - 1) / SECTOR, *file, DslModeSpeed);
+		while(DsReadSync(NULL));
+		printf("...file loaded!\n");
+	} else {
+		printf("...file not found");
+	}
+
+	// Clean up
+	free3(file_path_raw);
+	free3(sectors_size);
+	free3(temp_file_info);
 }
