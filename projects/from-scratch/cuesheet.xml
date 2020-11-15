@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<iso_project image_name="image.bin" cue_sheet="image.cue" no_xa="1">
+<iso_project image_name="image.bin" cue_sheet="../../TOOLS/image.cue" no_xa="1">
 	<track type="data">
 		<license file="../../TOOLS/LICENSEE.DAT"/>
 		<directory_tree>

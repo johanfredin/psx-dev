@@ -44,7 +44,7 @@ DRAWENV drawenv[2];
 POLY_FT4 polyFt4;
 
 u_char didInitDs = 0;
-u_short currentKeyDown = 0;
+u_int currentKeyDown = 0;
 
 // Prototypes
 void initializeScreen();
@@ -60,11 +60,13 @@ void initGameObjects();
 void cd_open();
 void cd_close();
 void cd_read_file(u_char* file_path, u_long** file);
+void initializeHeap();
 
 int main() {
     backgroundColor.r = 66;
     backgroundColor.g = 200;
     backgroundColor.b = 100;
+    initializeHeap();
     initializeScreen();
     initializeDebugFont();
     initPlayer(100, 50, 28, 48, 50, 10, 200);
@@ -212,7 +214,6 @@ void cd_close() {
 }
 
 void cd_read_file(unsigned char* file_path, u_long** file) {
-
 	u_char* file_path_raw;
 	int* sectors_size;
 	DslFILE* temp_file_info;
@@ -255,4 +256,10 @@ void cd_read_file(unsigned char* file_path, u_long** file) {
 	free3(file_path_raw);
 	free3(sectors_size);
 	free3(temp_file_info);
+}
+
+void initializeHeap() {
+	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
+    InitHeap3((void*)0x800F8000, 0x00100000);
+    printf("Success!\n");
 }
