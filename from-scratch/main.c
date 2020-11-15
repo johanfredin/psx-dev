@@ -3,6 +3,8 @@
 #include <libgte.h>
 #include <libgpu.h>
 #include <libgs.h>
+#include <LIBCD.H>
+#include <LIBDS.H>
 #include <libetc.h>
 #include <sys/types.h>
 
@@ -26,7 +28,6 @@ typedef struct {
     u_short g;
     u_short b;
 } Color;
-
 
 GsOT orderingTable[NUM_BUFFERS];
 GsOT_TAG minorOrderingTable[NUM_BUFFERS][1<<BUFFERS_LENGHT];
