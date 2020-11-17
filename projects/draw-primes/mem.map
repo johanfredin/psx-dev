@@ -1,0 +1,10 @@
+
+    Start     Stop   Length      Obj Group            Section name
+ 80010000 8001038F 00000390 80010000 text             .rdata
+ 80010390 8001689B 0000650C 80010390 text             .text
+ 8001689C 8001892F 00002094 8001689C text             .data
+ 80018930 80018943 00000014 80018930 text             .sdata
+ 80018948 8001894F 00000008 80018948 bss              .sbss
+ 80018950 8001E88F 00005F40 80018950 bss              .bss
+
+Program entry point : 00000000
