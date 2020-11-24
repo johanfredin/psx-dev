@@ -195,6 +195,7 @@ void audio_free(unsigned long spu_address) {
 	SpuFree(spu_address);
 }
 
+//     sprite_create((u_char *)data[1], 32, 32, &sprites[0], BIT_4);
 void sprite_create(unsigned char imageData[], int x, int y, GsSPRITE **sprite, u_short colorBits) {
 
 	// Initialize image

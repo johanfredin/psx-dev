@@ -15,26 +15,26 @@
 
 u_char didInitDs = 0;
 
-void cd_open();
-void cd_close();
-void cd_read_file(u_char* file_path, u_long** file);
+void CdOpen();
+void CdClose();
+void CdReadFile(u_char* file_path, u_long** file);
 
 
-void cd_open() {
+void CdOpen() {
 	if(!didInitDs) {
 		didInitDs = 1;
 		DsInit();
 	}
 }
 
-void cd_close() {
+void CdClose() {
 	if(didInitDs) {
 		didInitDs = 0;
 		DsClose();
     }
 }
 
-void cd_read_file(unsigned char* file_path, u_long** file) {
+void CdReadFile(unsigned char* file_path, u_long** file) {
 	u_char* file_path_raw;
 	int* sectors_size;
 	DslFILE* temp_file_info;
@@ -70,13 +70,15 @@ void cd_read_file(unsigned char* file_path, u_long** file) {
 		while(DsReadSync(NULL));
 		printf("...file loaded!\n");
 	} else {
-		printf("...file not found");
+		printf("...file not found\n");
 	}
 
 	// Clean up
 	free3(file_path_raw);
 	free3(sectors_size);
 	free3(temp_file_info);
+
+	printf("File %s loaded into memory addr=%p\n", file_path, *file);
 }
 
 #endif

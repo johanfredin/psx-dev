@@ -11,6 +11,7 @@
 // Custom imports
 #include "cdrom.h"
 #include "gpubase.h"
+#include "assetmanager.h"
 
 // Constants
 #define SCREEN_WIDTH 320
@@ -20,24 +21,29 @@
 #define __stacksize 0x00004000
 
 Color backgroundColor;
-POLY_FT4 polyFt4;
+GsSPRITE* sprites[3];
 u_int currentKeyDown = 0;
+u_long* assets[4];
 
 // Prototypes
 void update();
 void draw();
-void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g, u_short b);
-void initGameObjects();
+void initPlayer(u_short x, u_short y, u_short r, u_short g, u_short b, u_short numColorBits);
+void loadCDRomAssets();
+void logCoords(RECT* rect, char* source);
 
 int main() {
-    backgroundColor.r = 66;
-    backgroundColor.g = 200;
-    backgroundColor.b = 100;
+    backgroundColor.r =0;
+    backgroundColor.g = 0;
+    backgroundColor.b = 0;
     initializeHeap();
     initializeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, &backgroundColor);
     initializeDebugFont();
-    initPlayer(100, 50, 28, 48, 50, 10, 200);
-    initGameObjects();
+    loadCDRomAssets();
+    sprites[0] = assetmanager_loadSprite("AMONGO", assets[0], 200, 50, 128, 128, 128, COLOR_BITS_4);
+    sprites[1] = assetmanager_loadSprite("MAP_8", assets[1], 0, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[2] = assetmanager_loadSprite("PSY_8", assets[2], 170, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[3] = assetmanager_loadSprite("EVE_16", assets[3], 250, 50, 128, 128, 128, COLOR_BITS_16);
 
     while(1) {
         update();
@@ -50,22 +56,19 @@ int main() {
 }
 
 // Definitions -----------------------------------------
-void initPlayer(u_short x, u_short y, u_short w, u_short h, u_short r, u_short g, u_short b) {
-    SetPolyFT4(&polyFt4);
-    polyFt4.x0 = x;
-    polyFt4.y0 = y;
-    polyFt4.x1 = x + w;
-    polyFt4.y1 = y;
-    polyFt4.x2 = x;
-    polyFt4.y2 = y + h;
-    polyFt4.x3 = x + w;
-    polyFt4.y3 = y + h;
-    setRGB0(&polyFt4, r, g, b);
+void loadCDRomAssets() {
+    CdOpen();
+    CdReadFile("JULIA_4.TIM", &assets[0]);
+    CdReadFile("MAP_8.TIM", &assets[1]);
+    CdReadFile("PSY_8.TIM", &assets[2]);
+    CdReadFile("EVE_16.TIM", &assets[3]);
+    CdClose();
 }
 
-void initGameObjects() {
-    // No objects yet...
-}
+u_char EVE = 3;
+u_char PSY = 2;
+u_char MAP = 1;
+u_char AMONGO = 0;
 
 void update() {
     short xSpeed = 0;
@@ -80,20 +83,18 @@ void update() {
     } if(currentKeyDown & PADLleft) {
         xSpeed = -SPEED;
     }
-    polyFt4.x0 += xSpeed;
-    polyFt4.x1 += xSpeed;
-    polyFt4.x2 += xSpeed;
-    polyFt4.x3 += xSpeed;
-    polyFt4.y0 += ySpeed;
-    polyFt4.y1 += ySpeed;
-    polyFt4.y2 += ySpeed;
-    polyFt4.y3 += ySpeed;
+    sprites[PSY]->x += xSpeed;
+    sprites[PSY]->y += ySpeed;
 }
 
 void draw() {
-    FntPrint("Hello World, padDown=%d", currentKeyDown);
-    PutDrawEnv(&drawenv[currentBuffer]);
-    PutDispEnv(&dispenv[currentBuffer]);
-    DrawPrim(&polyFt4);
+    FntPrint("Hello World, x=%d, y=%d", sprites[0]->x, sprites[0]->y);
+    currentBuffer = GsGetActiveBuff();
+    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 0);
+    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer], 0);
+    GsSortSprite(sprites[MAP], &orderingTable[currentBuffer], 0);
+    GsSortSprite(sprites[EVE], &orderingTable[currentBuffer], 0);
+    // PutDrawEnv(&drawenv[currentBuffer]);
+    // PutDispEnv(&dispenv[currentBuffer]);
 }
 
