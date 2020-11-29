@@ -21,7 +21,7 @@
 #define __stacksize 0x00004000
 
 Color backgroundColor;
-GsSPRITE* sprites[3];
+GsSPRITE* sprites[4];
 u_int currentKeyDown = 0;
 u_long* assets[4];
 
@@ -33,17 +33,18 @@ void loadCDRomAssets();
 void logCoords(RECT* rect, char* source);
 
 int main() {
-    backgroundColor.r =0;
+    backgroundColor.r = 0;
     backgroundColor.g = 0;
     backgroundColor.b = 0;
     initializeHeap();
     initializeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, &backgroundColor);
     initializeDebugFont();
     loadCDRomAssets();
-    sprites[0] = assetmanager_loadSprite("AMONGO", assets[0], 200, 50, 128, 128, 128, COLOR_BITS_4);
-    sprites[1] = assetmanager_loadSprite("MAP_8", assets[1], 0, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[2] = assetmanager_loadSprite("PSY_8", assets[2], 170, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[3] = assetmanager_loadSprite("EVE_16", assets[3], 250, 50, 128, 128, 128, COLOR_BITS_16);
+    sprites[0] = assetmanager_loadSprite("JULIA_4", assets[0], 200, 50, 128, 128, 128, COLOR_BITS_4);
+    // sprites[1] = assetmanager_loadSprite("MAP_8", assets[1], 0, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[1] = assetmanager_loadSprite("PSY_8", assets[1], 170, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[2] = assetmanager_loadSprite("BG_8", assets[2], 0, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[3] = assetmanager_loadSprite("FG_8", assets[3], 0, 0, 128, 128, 128, COLOR_BITS_8);
 
     while(1) {
         update();
@@ -59,16 +60,18 @@ int main() {
 void loadCDRomAssets() {
     CdOpen();
     CdReadFile("JULIA_4.TIM", &assets[0]);
-    CdReadFile("MAP_8.TIM", &assets[1]);
-    CdReadFile("PSY_8.TIM", &assets[2]);
-    CdReadFile("EVE_16.TIM", &assets[3]);
+    // CdReadFile("MAP_8.TIM", &assets[1]);
+    CdReadFile("PSY_8.TIM", &assets[1]);
+    CdReadFile("BG_8.TIM", &assets[2]);
+    CdReadFile("FG_8.TIM", &assets[3]);
     CdClose();
 }
 
-u_char EVE = 3;
-u_char PSY = 2;
-u_char MAP = 1;
 u_char AMONGO = 0;
+// u_char MAP = 1;
+u_char PSY = 1;
+u_char BG = 2;
+u_char FG = 3;
 
 void update() {
     short xSpeed = 0;
@@ -88,13 +91,11 @@ void update() {
 }
 
 void draw() {
-    FntPrint("Hello World, x=%d, y=%d", sprites[0]->x, sprites[0]->y);
+    FntPrint("x=%d, y=%d", sprites[PSY]->x, sprites[PSY]->y);
     currentBuffer = GsGetActiveBuff();
-    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 0);
-    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer], 0);
-    GsSortSprite(sprites[MAP], &orderingTable[currentBuffer], 0);
-    GsSortSprite(sprites[EVE], &orderingTable[currentBuffer], 0);
-    // PutDrawEnv(&drawenv[currentBuffer]);
-    // PutDispEnv(&dispenv[currentBuffer]);
+    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer],1);
+    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 1);
+    GsSortSprite(sprites[BG], &orderingTable[currentBuffer], 2);
+    GsSortSprite(sprites[FG], &orderingTable[currentBuffer],0);
 }
 

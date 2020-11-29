@@ -10,6 +10,7 @@
 
 // Constants
 #define NUM_BUFFERS 2
+#define OT_LENGTH 5
 #define BUFFERS_LENGHT 1
 #define MODE_NTSC 0
 #define MODE_PAL 1
@@ -25,13 +26,10 @@ typedef struct {
     u_short b;
 } Color;
 
-GsOT orderingTable[NUM_BUFFERS];
+GsOT orderingTable[OT_LENGTH];
 GsOT_TAG minorOrderingTable[NUM_BUFFERS][20];
-PACKET GPUOutputPacket[NUM_BUFFERS][20*sizeof(GsSPRITE)];
+PACKET GPUOutputPacket[NUM_BUFFERS][5*sizeof(GsSPRITE)];
 u_char currentBuffer = 0;
-
-DISPENV dispenv[2];
-DRAWENV drawenv[2];
 
 // Prototypes
 void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor);
@@ -43,6 +41,7 @@ void initDisplayAndDrawEnvs();
 void initializeHeap();
 
 void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor) {
+    int i;
     SetVideoMode(1);
     SetDispMask(1); // 1=MASK on
 	ResetGraph(0);  // Initialise drawing engine, 0=Complete reset
@@ -55,23 +54,13 @@ void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor)
     // Define double buffers
     GsDefDispBuff(0, 0, 0, screenHeight);
 
-    // Initialize display and drawing environments
-    // SetDefDispEnv(&dispenv[0], 0, 0, screenWidth, screenHeight);
-    // SetDefDrawEnv(&drawenv[0], 0, 0, screenWidth, screenHeight);
-    // SetDefDispEnv(&dispenv[1], 0, 0, screenWidth, screenHeight);
-    // SetDefDrawEnv(&drawenv[1], 0, 0, screenWidth, screenHeight);
-
-    // drawenv[0].isbg = 0;
-    // drawenv[1].isbg = 0;
-
     // Initialize ordering tables
     GsClearOt(0, 0, &orderingTable[GsGetActiveBuff()]);
-    orderingTable[0].length = BUFFERS_LENGHT;
-    orderingTable[0].org = minorOrderingTable[0];
-    orderingTable[1].length = BUFFERS_LENGHT;
-    orderingTable[1].org = minorOrderingTable[1];
-    GsClearOt(0, 0, &orderingTable[0]);
-    GsClearOt(0, 0, &orderingTable[1]);
+    for(i = 0; i < NUM_BUFFERS; i++) {
+        orderingTable[i].length = OT_LENGTH;
+        orderingTable[i].org = minorOrderingTable[i];
+        GsClearOt(0, 0, &orderingTable[i]);
+    }
 
     PadInit(MODE_NTSC);
 }
@@ -85,7 +74,7 @@ void clearVRAM(Color* bgColor) {
 
 void initializeDebugFont() {
 	FntLoad(960, 256);
-	SetDumpFnt(FntOpen(5, 20, 320, 240, 0, 512)); //Sets the dumped font for use with FntPrint();
+	SetDumpFnt(FntOpen(5, 5, 320, 240, 0, 512)); //Sets the dumped font for use with FntPrint();
 }
 
 void display(Color* backgroundColor) {
@@ -113,7 +102,6 @@ void clearDisplay() {
 void initializeHeap() {
 	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
     InitHeap3((void*)0x800F8000, 0x00100000);
-    printf("Success!\n");
 }
 
 #endif

@@ -1,17 +1,7 @@
 <tim_project>
     <properties buffer_res="12" buffer_order="0"/>
     <tim_group name="global">
-        <tim file="evelyn_16.tim" source="evelyn.png">
-            <import_parameters>
-                <target_bpp>16</target_bpp>
-                <dithering>0</dithering>
-                <quantize_mode>0</quantize_mode>
-                <set_color_stp>0</set_color_stp>
-                <set_black_stp>0</set_black_stp>
-                <transparency_mode>0</transparency_mode>
-            </import_parameters>
-        </tim>
-        <tim file="evelyn_4.tim" source="evelyn.png">
+        <tim file="..\evelyn_4.tim" source="evelyn.png">
             <import_parameters>
                 <target_bpp>4</target_bpp>
                 <dithering>0</dithering>
@@ -21,7 +11,7 @@
                 <transparency_mode>0</transparency_mode>
             </import_parameters>
         </tim>
-        <tim file="johan_4.tim" source="johan.png">
+        <tim file="..\johan_4.tim" source="johan.png">
             <import_parameters>
                 <target_bpp>4</target_bpp>
                 <dithering>0</dithering>
@@ -31,7 +21,7 @@
                 <transparency_mode>0</transparency_mode>
             </import_parameters>
         </tim>
-        <tim file="julia_4.tim" source="julia.png">
+        <tim file="..\julia_4.tim" source="julia.png">
             <import_parameters>
                 <target_bpp>4</target_bpp>
                 <dithering>0</dithering>
@@ -41,18 +31,25 @@
                 <transparency_mode>0</transparency_mode>
             </import_parameters>
         </tim>
-        <tim file="TREES.TIM"/>
-        <tim file="PSY_8.tim"/>
-        <tim file="map_8.tim" source="..\..\..\testmap2.png">
+        <tim file="..\PSY_8.tim"/>
+        <tim file="bg_8.tim" source="..\img\bg.png">
             <import_parameters>
                 <target_bpp>8</target_bpp>
                 <dithering>0</dithering>
                 <quantize_mode>0</quantize_mode>
                 <set_color_stp>0</set_color_stp>
                 <set_black_stp>0</set_black_stp>
-                <transparency_mode>1</transparency_mode>
-                <alpha_threshold>127</alpha_threshold>
-                <alpha_stp_threshold>255</alpha_stp_threshold>
+                <transparency_mode>0</transparency_mode>
+            </import_parameters>
+        </tim>
+        <tim file="fg_8.tim" source="..\img\fg.png">
+            <import_parameters>
+                <target_bpp>8</target_bpp>
+                <dithering>0</dithering>
+                <quantize_mode>0</quantize_mode>
+                <set_color_stp>0</set_color_stp>
+                <set_black_stp>0</set_black_stp>
+                <transparency_mode>0</transparency_mode>
             </import_parameters>
         </tim>
     </tim_group>

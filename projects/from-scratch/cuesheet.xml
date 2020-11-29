@@ -5,11 +5,11 @@
 		<license file="../../TOOLS/LICENSEE.DAT"/>
 		<directory_tree>
 			<file name="SYSTEM.CNF"	type="data"	source="../../TOOLS/SYSTEM.CNF"/>
-			<file name="PSY_8.TIM"	type="data"	source="assets/PSY_8.TIM"/>
-			<file name="TREES.TIM"	type="data"	source="assets/TREES.TIM"/>
-			<file name="MAP_8.TIM"	type="data"	source="assets/map_8.tim"/>
-			<file name="EVE_16.TIM"	type="data"	source="assets/eve_16.tim"/>
-			<file name="JULIA_4.TIM"	type="data"	source="assets/julia_4.tim"/>
+			<file name="PSY_8.TIM"	type="data"	source="assets/TIM/PSY_8.TIM"/>
+			<file name="BG_8.TIM"	type="data"	source="assets/TIM/bg_8.TIM"/>
+			<file name="MAP_8.TIM"	type="data"	source="assets/TIM/map_8.TIM"/>
+			<file name="FG_8.TIM"	type="data"	source="assets/TIM/fg_8.TIM"/>
+			<file name="JULIA_4.TIM"	type="data"	source="assets/TIM/julia_4.tim"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

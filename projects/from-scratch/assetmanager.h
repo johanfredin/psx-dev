@@ -77,7 +77,7 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
 
 
     sprite->tpage = GetTPage(colorMode, 1, frameBuffer->x, frameBuffer->y);
-    sprite->u = (frameBuffer->x * twidthMultiplier) % 256;
+    sprite->u = 0;//(frameBuffer->x * twidthMultiplier) % 256;
     sprite->v = (frameBuffer->y) % 256;
     if(isCLUTMode) {
         sprite->cx = clut->x;
@@ -132,7 +132,7 @@ u_long getAttributeByColorBitsMode(u_short numColorBits) {
     case COLOR_BITS_8:
         return 0x1000000;
     case COLOR_BITS_16:
-        return 0x3000000;
+        return 0x2000000;
     }
     return -1;
 }
