@@ -7,6 +7,7 @@
 			<file name="SYSTEM.CNF"	type="data"	source="../../TOOLS/SYSTEM.CNF"/>
 			<file name="PSY_8.TIM"	type="data"	source="assets/TIM/PSY_8.TIM"/>
 			<file name="BG_8.TIM"	type="data"	source="assets/TIM/bg_8.TIM"/>
+			<file name="BG2_8.TIM"	type="data"	source="assets/TIM/bg2_4.TIM"/>
 			<file name="MAP_8.TIM"	type="data"	source="assets/TIM/map_8.TIM"/>
 			<file name="FG_8.TIM"	type="data"	source="assets/TIM/fg_8.TIM"/>
 			<file name="JULIA_4.TIM"	type="data"	source="assets/TIM/julia_4.tim"/>

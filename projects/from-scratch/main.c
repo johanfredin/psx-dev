@@ -22,6 +22,9 @@
 
 Color backgroundColor;
 GsSPRITE* sprites[4];
+GsBG* bg;
+GsCELL cell;
+GsMAP map;
 u_int currentKeyDown = 0;
 u_long* assets[4];
 
@@ -31,6 +34,7 @@ void draw();
 void initPlayer(u_short x, u_short y, u_short r, u_short g, u_short b, u_short numColorBits);
 void loadCDRomAssets();
 void logCoords(RECT* rect, char* source);
+void loadBG();
 
 int main() {
     backgroundColor.r = 0;
@@ -40,11 +44,14 @@ int main() {
     initializeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, &backgroundColor);
     initializeDebugFont();
     loadCDRomAssets();
-    sprites[0] = assetmanager_loadSprite("JULIA_4", assets[0], 200, 50, 128, 128, 128, COLOR_BITS_4);
+
+    sprites[0] = assetmanager_loadSprite("JULIA_4", assets[0], 200, 50, 128, COLOR_BITS_4);
     // sprites[1] = assetmanager_loadSprite("MAP_8", assets[1], 0, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[1] = assetmanager_loadSprite("PSY_8", assets[1], 170, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[2] = assetmanager_loadSprite("BG_8", assets[2], 0, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[3] = assetmanager_loadSprite("FG_8", assets[3], 0, 0, 128, 128, 128, COLOR_BITS_8);
+    sprites[1] = assetmanager_loadSprite("PSY_8", assets[1], 170, 0, 128, COLOR_BITS_8);
+    sprites[2] = assetmanager_loadSprite("BG2_8", assets[2], 0, 0, 128, COLOR_BITS_8);
+    // sprites[3] = assetmanager_loadSprite("FG_8", assets[3], 0, 0, 128, 128, 128, COLOR_BITS_8);
+
+    loadBG();
 
     while(1) {
         update();
@@ -62,8 +69,8 @@ void loadCDRomAssets() {
     CdReadFile("JULIA_4.TIM", &assets[0]);
     // CdReadFile("MAP_8.TIM", &assets[1]);
     CdReadFile("PSY_8.TIM", &assets[1]);
-    CdReadFile("BG_8.TIM", &assets[2]);
-    CdReadFile("FG_8.TIM", &assets[3]);
+    CdReadFile("BG2_8.TIM", &assets[2]);
+    // CdReadFile("FG_8.TIM", &assets[3]);
     CdClose();
 }
 
@@ -90,12 +97,41 @@ void update() {
     sprites[PSY]->y += ySpeed;
 }
 
+
+void loadBG() {
+    GsSPRITE* bgSprite = sprites[BG];
+    bg = (GsBG*) malloc3(sizeof(GsBG));
+    bg->attribute = bgSprite->attribute;
+    bg->x = bgSprite->x + 50;
+    bg->y = bgSprite->y + 50;
+    bg->w = bgSprite->w;
+    bg->h = bgSprite->h;
+    bg->mx = bgSprite->mx;
+    bg->my = bgSprite->my;
+    bg->scalex = bgSprite->scalex;
+    bg->scaley = bgSprite->scaley;
+    bg->rotate = bgSprite->rotate;
+    bg->r = bg->g = bg->b = 128;
+    bg->scrollx = 0;
+    bg->scrolly = 0;
+
+    map.cellw = map.cellh = 16;
+    map.ncellw = map.ncellh = 16;
+
+    cell.u = 0;
+    cell.v = 0;
+    cell.tpage = bgSprite->tpage;
+    // cell.cba = bgSprite.
+    map.base = &cell;
+    bg->map = &map;
+}
+
 void draw() {
     FntPrint("x=%d, y=%d", sprites[PSY]->x, sprites[PSY]->y);
     currentBuffer = GsGetActiveBuff();
-    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer],1);
-    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 1);
-    GsSortSprite(sprites[BG], &orderingTable[currentBuffer], 2);
-    GsSortSprite(sprites[FG], &orderingTable[currentBuffer],0);
+    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer],0);
+    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 0);
+    GsSortSprite(sprites[BG], &orderingTable[currentBuffer], 1);
+    // GsSortBg(bg, &orderingTable[currentBuffer], 2);
+    // GsSortSprite(sprites[FG], &orderingTable[currentBuffer],0);
 }
-
