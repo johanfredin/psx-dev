@@ -21,16 +21,20 @@
 typedef struct {
     RECT* frameBuffer;
     RECT* clut;
+    u_short twidthMultiplier;
+    u_short colorMode;
+    u_char isCLUTMode;
+    u_long spriteAttr;
 } Asset;
 
 
-void loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits);
+void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits);
 GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_short y, u_short blend, u_short numColorBits);
 u_char getTPageColorBitMode(u_short numColorBits);
 u_char getWidthByColorBitsMode(u_short numColorBits);
 u_long getAttributeByColorBitsMode(u_short numColorBits);
 
-void loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits) {
+void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits) {
     // Declarations
     GsIMAGE* tim_data;
     RECT* frameBuffer;
@@ -38,7 +42,10 @@ void loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBit
     u_char* data;
     
     // Definitions
+    u_short twidthMultiplier = getWidthByColorBitsMode(numColorBits);
+    u_short colorMode = getTPageColorBitMode(numColorBits);
     u_char isCLUTMode = numColorBits < COLOR_BITS_16;
+    u_long spriteAttr = getAttributeByColorBitsMode(numColorBits);
 
     printf("======================================================\n");
     printf("Started fetching asset %s:\n-----------------------------\n", name);
@@ -77,30 +84,30 @@ void loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBit
     free3(tim_data);
     asset->clut=clut;
     asset->frameBuffer=frameBuffer;
+    asset->isCLUTMode=isCLUTMode;
+    asset->colorMode=colorMode;
+    asset->spriteAttr=spriteAttr;
+    asset->twidthMultiplier=twidthMultiplier;
 }
 
 GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_short y, u_short blend, u_short numColorBits) {
     Asset* asset;
     GsSPRITE* sprite;
-    u_short twidthMultiplier = getWidthByColorBitsMode(numColorBits);
-    u_short colorMode = getTPageColorBitMode(numColorBits);
-    u_char isCLUTMode = numColorBits < COLOR_BITS_16;
-    u_long spriteAttr = getAttributeByColorBitsMode(numColorBits);
 
     asset = (Asset*) malloc3(sizeof(Asset));
-    loadAsset(asset, name, spriteData, numColorBits);
+    assetmanager_loadAsset(asset, name, spriteData, numColorBits);
     sprite = (GsSPRITE*) malloc3(sizeof(GsSPRITE));
-    sprite->attribute = spriteAttr;
+    sprite->attribute = asset->spriteAttr;
     sprite->x = x;
     sprite->y = y;
-    sprite->w = asset->frameBuffer->w * twidthMultiplier;
+    sprite->w = asset->frameBuffer->w *  asset->twidthMultiplier;
     sprite->h = asset->frameBuffer->h;
 
 
-    sprite->tpage = GetTPage(colorMode, 1, asset->frameBuffer->x, asset->frameBuffer->y);
+    sprite->tpage = GetTPage(asset->colorMode, 1, asset->frameBuffer->x, asset->frameBuffer->y);
     sprite->u = 0;//(frameBuffer->x * twidthMultiplier) % 256;
     sprite->v = (asset->frameBuffer->y) % 256;
-    if(isCLUTMode) {
+    if(asset->isCLUTMode) {
         sprite->cx = asset->clut->x;
         sprite->cy = asset->clut->y;
     }
@@ -118,6 +125,7 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     free3(asset->frameBuffer);
     free3(asset->clut);
     free3(asset);
+    // DrawSync(0);
     return sprite;
 }
 

@@ -6,11 +6,14 @@
 		<directory_tree>
 			<file name="SYSTEM.CNF"	type="data"	source="../../TOOLS/SYSTEM.CNF"/>
 			<file name="PSY_8.TIM"	type="data"	source="assets/TIM/PSY_8.TIM"/>
-			<file name="BG_8.TIM"	type="data"	source="assets/TIM/bg_8.TIM"/>
-			<file name="BG2_8.TIM"	type="data"	source="assets/TIM/bg2_4.TIM"/>
-			<file name="MAP_8.TIM"	type="data"	source="assets/TIM/map_8.TIM"/>
-			<file name="FG_8.TIM"	type="data"	source="assets/TIM/fg_8.TIM"/>
-			<file name="JULIA_4.TIM"	type="data"	source="assets/TIM/julia_4.tim"/>
+			<file name="00BG.TIM"	type="data"	source="assets/TIM/L1/00bg.TIM"/>
+			<file name="01BG.TIM"	type="data"	source="assets/TIM/L1/01bg.TIM"/>
+			<file name="10BG.TIM"	type="data"	source="assets/TIM/L1/10bg.TIM"/>
+			<file name="11BG.TIM"	type="data"	source="assets/TIM/L1/11bg.TIM"/>
+			<file name="00FG.TIM"	type="data"	source="assets/TIM/L1/00fg.TIM"/>
+			<file name="01FG.TIM"	type="data"	source="assets/TIM/L1/01fg.TIM"/>
+			<file name="10FG.TIM"	type="data"	source="assets/TIM/L1/10fg.TIM"/>
+			<file name="11FG.TIM"	type="data"	source="assets/TIM/L1/11fg.TIM"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

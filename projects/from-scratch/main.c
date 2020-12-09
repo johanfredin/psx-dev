@@ -12,29 +12,28 @@
 #include "cdrom.h"
 #include "gpubase.h"
 #include "assetmanager.h"
+#include "GridMapHandler.h"
 
 // Constants
-#define SCREEN_WIDTH 320
+#define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 256
 #define SPEED 4
+#define NUM_FRAMES 4
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
 
 Color backgroundColor;
-GsSPRITE* sprites[4];
-GsBG* bg;
-GsCELL cell;
-GsMAP map;
+GsSPRITE* hero;
+Frame* map[NUM_FRAMES/2][NUM_FRAMES/2];
+
 u_int currentKeyDown = 0;
-u_long* assets[4];
+u_long* assets[9];
 
 // Prototypes
 void update();
 void draw();
-void initPlayer(u_short x, u_short y, u_short r, u_short g, u_short b, u_short numColorBits);
 void loadCDRomAssets();
-void logCoords(RECT* rect, char* source);
-void loadBG();
+void initMap();
 
 int main() {
     backgroundColor.r = 0;
@@ -45,13 +44,8 @@ int main() {
     initializeDebugFont();
     loadCDRomAssets();
 
-    sprites[0] = assetmanager_loadSprite("JULIA_4", assets[0], 200, 50, 128, COLOR_BITS_4);
-    // sprites[1] = assetmanager_loadSprite("MAP_8", assets[1], 0, 0, 128, 128, 128, COLOR_BITS_8);
-    sprites[1] = assetmanager_loadSprite("PSY_8", assets[1], 170, 0, 128, COLOR_BITS_8);
-    sprites[2] = assetmanager_loadSprite("BG2_8", assets[2], 0, 0, 128, COLOR_BITS_8);
-    // sprites[3] = assetmanager_loadSprite("FG_8", assets[3], 0, 0, 128, 128, 128, COLOR_BITS_8);
-
-    loadBG();
+    initMap();
+    hero = assetmanager_loadSprite("PSY_8", assets[8], 200, 50, 128, COLOR_BITS_4);
 
     while(1) {
         update();
@@ -59,26 +53,32 @@ int main() {
         display(&backgroundColor);
         clearDisplay();
     }
-
+    
     return 0;
 }
 
 // Definitions -----------------------------------------
 void loadCDRomAssets() {
+    // int count = 0;
     CdOpen();
-    CdReadFile("JULIA_4.TIM", &assets[0]);
-    // CdReadFile("MAP_8.TIM", &assets[1]);
-    CdReadFile("PSY_8.TIM", &assets[1]);
-    CdReadFile("BG2_8.TIM", &assets[2]);
-    // CdReadFile("FG_8.TIM", &assets[3]);
+    CdReadFile((u_char*)"00BG.TIM", &assets[0]);
+    CdReadFile((u_char*)"01BG.TIM", &assets[1]);
+    CdReadFile((u_char*)"10BG.TIM", &assets[2]);
+    CdReadFile((u_char*)"11BG.TIM", &assets[3]);
+    CdReadFile((u_char*)"00FG.TIM", &assets[4]);
+    CdReadFile((u_char*)"01FG.TIM", &assets[5]);
+    CdReadFile((u_char*)"10FG.TIM", &assets[6]);
+    CdReadFile((u_char*)"11FG.TIM", &assets[7]);
+    CdReadFile((u_char*)"PSY_8.TIM", &assets[8]);
     CdClose();
 }
 
-u_char AMONGO = 0;
-// u_char MAP = 1;
-u_char PSY = 1;
-u_char BG = 2;
-u_char FG = 3;
+void initMap() {
+    map[0][0] = initFrame(assets[0], assets[4], 0, 0);
+    map[0][1] = initFrame(assets[1], assets[5], 0, 1);
+    map[1][0] = initFrame(assets[2], assets[6], 1, 0);
+    map[1][1] = initFrame(assets[3], assets[7], 1, 1);
+}
 
 void update() {
     short xSpeed = 0;
@@ -93,45 +93,29 @@ void update() {
     } if(currentKeyDown & PADLleft) {
         xSpeed = -SPEED;
     }
-    sprites[PSY]->x += xSpeed;
-    sprites[PSY]->y += ySpeed;
+    hero->x += xSpeed;
+    hero->y += ySpeed;
+
+    if(hero->x < 0) {
+        hero->x = SCREEN_WIDTH - hero->w;
+        currXFrame--;
+    } if(hero->x + hero->w > SCREEN_WIDTH) {
+        hero->x = 0;
+        currXFrame++;
+    } if(hero->y < 0) {
+        hero->y = SCREEN_HEIGHT - hero->h;
+        currYFrame--;
+    } if(hero->y + hero->h > SCREEN_HEIGHT) {
+        hero->y = 0;
+        currYFrame++;
+    }
 }
 
-
-void loadBG() {
-    GsSPRITE* bgSprite = sprites[BG];
-    bg = (GsBG*) malloc3(sizeof(GsBG));
-    bg->attribute = bgSprite->attribute;
-    bg->x = bgSprite->x + 50;
-    bg->y = bgSprite->y + 50;
-    bg->w = bgSprite->w;
-    bg->h = bgSprite->h;
-    bg->mx = bgSprite->mx;
-    bg->my = bgSprite->my;
-    bg->scalex = bgSprite->scalex;
-    bg->scaley = bgSprite->scaley;
-    bg->rotate = bgSprite->rotate;
-    bg->r = bg->g = bg->b = 128;
-    bg->scrollx = 0;
-    bg->scrolly = 0;
-
-    map.cellw = map.cellh = 16;
-    map.ncellw = map.ncellh = 16;
-
-    cell.u = 0;
-    cell.v = 0;
-    cell.tpage = bgSprite->tpage;
-    // cell.cba = bgSprite.
-    map.base = &cell;
-    bg->map = &map;
-}
 
 void draw() {
-    FntPrint("x=%d, y=%d", sprites[PSY]->x, sprites[PSY]->y);
     currentBuffer = GsGetActiveBuff();
-    GsSortSprite(sprites[AMONGO], &orderingTable[currentBuffer],0);
-    GsSortSprite(sprites[PSY], &orderingTable[currentBuffer], 0);
-    GsSortSprite(sprites[BG], &orderingTable[currentBuffer], 1);
-    // GsSortBg(bg, &orderingTable[currentBuffer], 2);
-    // GsSortSprite(sprites[FG], &orderingTable[currentBuffer],0);
+    FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d", hero->x, hero->y, currXFrame, currYFrame);
+    GsSortFastSprite(map[currXFrame][currYFrame]->fg, &orderingTable[currentBuffer], 0);
+    GsSortFastSprite(map[currXFrame][currYFrame]->bg, &orderingTable[currentBuffer], 2);
+    GsSortFastSprite(hero, &orderingTable[currentBuffer], 1);
 }
