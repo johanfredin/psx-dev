@@ -45,10 +45,12 @@ int main() {
     loadCDRomAssets();
 
     initMap();
+    setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     hero = assetmanager_loadSprite("PSY_8", assets[8], 200, 50, 128, COLOR_BITS_4);
 
     while(1) {
         update();
+        tickMap(hero);
         draw();
         display(&backgroundColor);
         clearDisplay();
@@ -95,27 +97,11 @@ void update() {
     }
     hero->x += xSpeed;
     hero->y += ySpeed;
-
-    if(hero->x < 0) {
-        hero->x = SCREEN_WIDTH - hero->w;
-        currXFrame--;
-    } if(hero->x + hero->w > SCREEN_WIDTH) {
-        hero->x = 0;
-        currXFrame++;
-    } if(hero->y < 0) {
-        hero->y = SCREEN_HEIGHT - hero->h;
-        currYFrame--;
-    } if(hero->y + hero->h > SCREEN_HEIGHT) {
-        hero->y = 0;
-        currYFrame++;
-    }
 }
-
 
 void draw() {
     currentBuffer = GsGetActiveBuff();
     FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d", hero->x, hero->y, currXFrame, currYFrame);
-    GsSortFastSprite(map[currXFrame][currYFrame]->fg, &orderingTable[currentBuffer], 0);
-    GsSortFastSprite(map[currXFrame][currYFrame]->bg, &orderingTable[currentBuffer], 2);
-    GsSortFastSprite(hero, &orderingTable[currentBuffer], 1);
+    drawMap(map);
+    GsSortFastSprite(hero, currentOT(), 1);
 }

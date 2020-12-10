@@ -39,6 +39,7 @@ void display();
 void clearDisplay();
 void initDisplayAndDrawEnvs();
 void initializeHeap();
+GsOT* currentOT();
 
 void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor) {
     int i;
@@ -102,6 +103,12 @@ void clearDisplay() {
 void initializeHeap() {
 	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
     InitHeap3((void*)0x800F8000, 0x00100000);
+}
+
+// GsGetActiveBuff() should have been called prior to calling this function
+// @return pointer to ordering table at current buffer
+GsOT* currentOT() {
+    return &orderingTable[currentBuffer];
 }
 
 #endif
