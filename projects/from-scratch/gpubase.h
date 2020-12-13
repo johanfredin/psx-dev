@@ -26,13 +26,17 @@ typedef struct {
     u_short b;
 } Color;
 
+u_char DebugMode = 0;
+u_short screenWidth; 
+u_short screenHeight;
 GsOT orderingTable[OT_LENGTH];
 GsOT_TAG minorOrderingTable[NUM_BUFFERS][20];
-PACKET GPUOutputPacket[NUM_BUFFERS][5*sizeof(GsSPRITE)];
+PACKET GPUOutputPacket[NUM_BUFFERS][10*sizeof(GsSPRITE)];
 u_char currentBuffer = 0;
 
 // Prototypes
-void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor);
+void setBounds(u_short w, u_short h);
+void initializeScreen(Color* bgColor);
 void clearVRAM();
 void initializeDebugFont();
 void display();
@@ -41,9 +45,14 @@ void initDisplayAndDrawEnvs();
 void initializeHeap();
 GsOT* currentOT();
 
-void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor) {
+void setBounds(u_short w, u_short h) {
+    screenWidth = w;
+    screenHeight = h;
+}
+
+void initializeScreen(Color* bgColor) {
     int i;
-    SetVideoMode(1);
+    SetVideoMode(MODE_PAL);
     SetDispMask(1); // 1=MASK on
 	ResetGraph(0);  // Initialise drawing engine, 0=Complete reset
     clearVRAM(bgColor);    
@@ -63,7 +72,7 @@ void initializeScreen(u_short screenWidth, u_short screenHeight, Color* bgColor)
         GsClearOt(0, 0, &orderingTable[i]);
     }
 
-    PadInit(MODE_NTSC);
+    PadInit(0);
 }
 
 void clearVRAM(Color* bgColor) {

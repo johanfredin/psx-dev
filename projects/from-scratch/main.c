@@ -18,14 +18,11 @@
 #define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 256
 #define SPEED 4
-#define NUM_FRAMES 4
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
 
 Color backgroundColor;
 GsSPRITE* hero;
-Frame* map[NUM_FRAMES/2][NUM_FRAMES/2];
-
 u_int currentKeyDown = 0;
 u_long* assets[9];
 
@@ -33,20 +30,29 @@ u_long* assets[9];
 void update();
 void draw();
 void loadCDRomAssets();
-void initMap();
+
+LINE_F4 f4;
 
 int main() {
+    DebugMode = 1;
+    setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
     backgroundColor.b = 0;
     initializeHeap();
-    initializeScreen(SCREEN_WIDTH, SCREEN_HEIGHT, &backgroundColor);
+    initializeScreen(&backgroundColor);
     initializeDebugFont();
     loadCDRomAssets();
 
-    initMap();
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     hero = assetmanager_loadSprite("PSY_8", assets[8], 200, 50, 128, COLOR_BITS_4);
+    initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
+    printf("All initialized, debugMode=%d\n", DebugMode);
+    
+    SetLineF4(&f4);
+    setXY4(&f4, 10, 10, 60, 10, 10, 60, 60, 60),
+    setRGB0(&f4, 255, 255, 0);
+
 
     while(1) {
         update();
@@ -75,13 +81,6 @@ void loadCDRomAssets() {
     CdClose();
 }
 
-void initMap() {
-    map[0][0] = initFrame(assets[0], assets[4], 0, 0);
-    map[0][1] = initFrame(assets[1], assets[5], 0, 1);
-    map[1][0] = initFrame(assets[2], assets[6], 1, 0);
-    map[1][1] = initFrame(assets[3], assets[7], 1, 1);
-}
-
 void update() {
     short xSpeed = 0;
     short ySpeed = 0;
@@ -102,6 +101,7 @@ void update() {
 void draw() {
     currentBuffer = GsGetActiveBuff();
     FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d", hero->x, hero->y, currXFrame, currYFrame);
-    drawMap(map);
     GsSortFastSprite(hero, currentOT(), 1);
+    drawMap();
+    // DrawPrim(&f4);
 }
