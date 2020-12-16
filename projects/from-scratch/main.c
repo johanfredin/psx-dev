@@ -31,8 +31,6 @@ void update();
 void draw();
 void loadCDRomAssets();
 
-LINE_F4 f4;
-
 int main() {
     DebugMode = 1;
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -49,11 +47,6 @@ int main() {
     initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     printf("All initialized, debugMode=%d\n", DebugMode);
     
-    SetLineF4(&f4);
-    setXY4(&f4, 10, 10, 60, 10, 10, 60, 60, 60),
-    setRGB0(&f4, 255, 255, 0);
-
-
     while(1) {
         update();
         tickMap(hero);
@@ -61,7 +54,6 @@ int main() {
         display(&backgroundColor);
         clearDisplay();
     }
-    
     return 0;
 }
 
@@ -100,8 +92,7 @@ void update() {
 
 void draw() {
     currentBuffer = GsGetActiveBuff();
-    FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d", hero->x, hero->y, currXFrame, currYFrame);
-    GsSortFastSprite(hero, currentOT(), 1);
+    FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", hero->x, hero->y, currXFrame, currYFrame);
     drawMap();
-    // DrawPrim(&f4);
+    GsSortFastSprite(hero, currentOT(), 1);
 }

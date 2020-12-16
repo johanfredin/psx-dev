@@ -3,14 +3,18 @@
 
 #include "assetmanager.h"
 #include "logger.h"
+#include "DebugRenderer.h"
 
 #define NUM_X_FRAMES 2
 #define NUM_Y_FRAMES 2
 
 typedef struct {
+    // The actual physical bounds that we will collide with
     RECT* bounds;
+    // The amount of blocks on one frame
     u_char amount;
-    LINE_F4* boundLines;
+    // Graphical representation of a block (if DebugMode)
+    TILE* boundLines;
 } CollisionBlocks;
 
 typedef struct {
@@ -33,7 +37,6 @@ void setCollisionBounds(CollisionBlocks* cbs);
 void initMap(u_long* assets[], u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
 void tickMap(GsSPRITE*);
 void drawMap();
-void drawBounds();
 
 
 Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx) {
@@ -59,24 +62,17 @@ void setCollisionBounds(CollisionBlocks* cbs) {
     cbs->bounds = blocks;
      if(DebugMode) {
         int i = 0;
-        LINE_F4* boundLines = (LINE_F4*) malloc3(sizeof(LINE_F4)* 8);
-        while(i < 8) {
-            LINE_F4 lineF4;
-            SetLineF4(&lineF4);
-            
-            // (xo, yo)                                        (x1. y1)
-            lineF4.x0 = cbs->bounds[i].x;                      lineF4.x1 = cbs->bounds[i].x + cbs->bounds[i].w;
-            lineF4.y0 = cbs->bounds[i].y;                      lineF4.y1 = cbs->bounds[i].y;
-            
-            // (x2, y2)                                         (x3. y3)
-            lineF4.x2 = cbs->bounds[i].x;                      lineF4.x3 = cbs->bounds[i].x + cbs->bounds[i].w;
-            lineF4.y2 = cbs->bounds[i].y + cbs->bounds[i].h;   lineF4.y3 = cbs->bounds[i].y + cbs->bounds[i].h;
-            
-            lineF4.r0 = 255;
-            lineF4.g0 = 0;
-            lineF4.b0 = 0;
-            boundLines[i] = lineF4;
-            logger_logVertices(&lineF4);
+        TILE* boundLines = (TILE*) malloc3(sizeof(TILE) * cbs->amount);
+        while(i < cbs->amount) {
+            TILE bounds;
+            SetTile(&bounds);
+            bounds.x0 = cbs->bounds[i].x;
+            bounds.y0 = cbs->bounds[i].y;
+            bounds.w = cbs->bounds[i].w;
+            bounds.h = cbs->bounds[i].h;
+            setRGB0(&bounds, 255, 0, 0);
+            logger_logBounds(&bounds);
+            boundLines[i] = bounds;
             i++;
         }
         cbs->boundLines = boundLines;
@@ -84,23 +80,29 @@ void setCollisionBounds(CollisionBlocks* cbs) {
 }
 
 void initMap(u_long* assets[], u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
-    CollisionBlocks* cbs1;
+    CollisionBlocks* cbs;
     map[0][0] = initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0);
     map[0][1] = initFrame(assets[tRBgIdx], assets[tRFgIdx], 0, 1);
     map[1][0] = initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0);
     map[1][1] = initFrame(assets[bRBgIdx], assets[bRFgIdx], 1, 1);
 
-    cbs1 = (CollisionBlocks*) malloc3(sizeof(CollisionBlocks));
-    setCollisionBounds(cbs1);
-    map[0][0]->cbs = cbs1;
+    cbs = (CollisionBlocks*) malloc3(sizeof(CollisionBlocks));
+    setCollisionBounds(cbs);
+    map[0][0]->cbs = cbs;
 }
 
 
 void drawMap() {
+    CollisionBlocks* blocks = map[currXFrame][currYFrame]->cbs;
+    FntPrint("Blocks in frame=%d\n", blocks->amount);
     GsSortFastSprite(map[currXFrame][currYFrame]->fg, currentOT(), 0);
     GsSortFastSprite(map[currXFrame][currYFrame]->bg, currentOT(), 2);
     if(DebugMode) {
-        drawBounds();
+        int blockIdx = 0;
+        while(blockIdx < blocks->amount) {
+            DrawPrim(&blocks->boundLines[blockIdx]);
+            blockIdx++;
+        }
     }
 }
 
@@ -148,12 +150,5 @@ void tickMap(GsSPRITE* player) {
     }
 }
 
-void drawBounds() {
-    u_short i = 0;
-    while(i < map[0][0]->cbs->amount) {
-        DrawPrim((LINE_F4*) &map[0][0]->cbs->boundLines[i]);
-        i++;
-    }
-}
 
 #endif
