@@ -1,5 +1,5 @@
 {
-    "activeFile": "0_1.tmx",
+    "activeFile": "1_0.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -7,34 +7,34 @@
     "fileStates": {
         "0_0.tmx": {
             "scale": 2,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 128,
-                "y": 127.75
+                "x": 127.75,
+                "y": 128
             }
         },
         "0_1.tmx": {
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 25.5,
-                "y": 184
+                "x": 72,
+                "y": 76.25
             }
         },
         "1_0.tmx": {
-            "scale": 2,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": -71,
-                "y": -9.25
+                "x": 127.99999999999999,
+                "y": 16.166666666666657
             }
         },
         "1_1.tmx": {
-            "scale": 2,
-            "selectedLayer": 1,
+            "scale": 3,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 128,
-                "y": 127.75
+                "x": 174.99999999999997,
+                "y": 125.16666666666666
             }
         },
         "C:/psyq/projects/psx-dev/tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx": {
@@ -53,10 +53,10 @@
     ],
     "project": "static.tiled-project",
     "recentFiles": [
-        "1_0.tmx",
-        "0_0.tmx",
+        "0_1.tmx",
         "1_1.tmx",
-        "0_1.tmx"
+        "0_0.tmx",
+        "1_0.tmx"
     ],
     "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)"
 }

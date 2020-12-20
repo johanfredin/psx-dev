@@ -26,7 +26,8 @@ typedef struct {
     u_short b;
 } Color;
 
-u_char DebugMode = 0;
+u_char PrintCoords = 0;
+u_char DrawBounds = 0;
 u_short screenWidth; 
 u_short screenHeight;
 GsOT orderingTable[OT_LENGTH];
@@ -38,7 +39,7 @@ u_char currentBuffer = 0;
 void setBounds(u_short w, u_short h);
 void initializeScreen(Color* bgColor);
 void clearVRAM();
-void initializeDebugFont();
+void initializeDebugFont(u_char bg);
 void display();
 void clearDisplay();
 void initDisplayAndDrawEnvs();
@@ -82,9 +83,9 @@ void clearVRAM(Color* bgColor) {
     DrawSync(0);    // Waits for ClearImage2 function to finish
 }
 
-void initializeDebugFont() {
+void initializeDebugFont(u_char bg) {
 	FntLoad(960, 256);
-	SetDumpFnt(FntOpen(5, 5, 320, 240, 0, 512)); //Sets the dumped font for use with FntPrint();
+	SetDumpFnt(FntOpen(16, 32, 320, 32, bg, 512)); //Sets the dumped font for use with FntPrint();
 }
 
 void display(Color* backgroundColor) {
@@ -119,5 +120,6 @@ void initializeHeap() {
 GsOT* currentOT() {
     return &orderingTable[currentBuffer];
 }
+
 
 #endif

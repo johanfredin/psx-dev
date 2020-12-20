@@ -32,20 +32,20 @@ void draw();
 void loadCDRomAssets();
 
 int main() {
-    DebugMode = 1;
+    DrawBounds = 0;
+    PrintCoords = 0;
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
     backgroundColor.b = 0;
     initializeHeap();
     initializeScreen(&backgroundColor);
-    initializeDebugFont();
+    initializeDebugFont(0);
     loadCDRomAssets();
 
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     hero = assetmanager_loadSprite("PSY_8", assets[8], 200, 50, 128, COLOR_BITS_4);
     initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
-    printf("All initialized, debugMode=%d\n", DebugMode);
     
     while(1) {
         update();
@@ -92,7 +92,9 @@ void update() {
 
 void draw() {
     currentBuffer = GsGetActiveBuff();
-    FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", hero->x, hero->y, currXFrame, currYFrame);
+    if(PrintCoords) {
+        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", hero->x, hero->y, currXFrame, currYFrame);
+    }
     drawMap();
     GsSortFastSprite(hero, currentOT(), 1);
 }
