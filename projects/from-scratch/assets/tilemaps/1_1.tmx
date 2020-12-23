@@ -63,7 +63,7 @@
  </layer>
  <objectgroup color="#ff0000" id="4" name="bounds">
   <object id="1" x="0" y="0" width="160" height="144"/>
-  <object id="3" x="0" y="176" width="144" height="64"/>
+  <object id="3" x="0" y="176" width="144" height="52"/>
   <object id="4" x="240" y="0" width="16" height="256"/>
   <object id="5" x="192" y="240" width="48" height="16"/>
   <object id="6" x="0" y="240" width="176" height="16"/>
