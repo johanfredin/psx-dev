@@ -6,6 +6,7 @@
 		<directory_tree>
 			<file name="SYSTEM.CNF"	type="data"	source="../../TOOLS/SYSTEM.CNF"/>
 			<file name="PSY_8.TIM"	type="data"	source="assets/TIM/PSY_8.TIM"/>
+			<file name="HERO.TIM"	type="data"	source="assets/TIM/HERO.TIM"/>
 			<file name="00BG.TIM"	type="data"	source="assets/TIM/L1/00bg.TIM"/>
 			<file name="01BG.TIM"	type="data"	source="assets/TIM/L1/01bg.TIM"/>
 			<file name="10BG.TIM"	type="data"	source="assets/TIM/L1/10bg.TIM"/>

@@ -85,7 +85,7 @@ void clearVRAM(Color* bgColor) {
 
 void initializeDebugFont(u_char bg) {
 	FntLoad(960, 256);
-	SetDumpFnt(FntOpen(16, 32, 320, 32, bg, 512)); //Sets the dumped font for use with FntPrint();
+	SetDumpFnt(FntOpen(5, 5, 320, 32, bg, 512)); //Sets the dumped font for use with FntPrint();
 }
 
 void display(Color* backgroundColor) {
@@ -112,7 +112,7 @@ void clearDisplay() {
 
 void initializeHeap() {
 	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
-    InitHeap3((void*)0x800F8000, 0x00100000);
+    InitHeap3((u_long*)0x800F8000, 0x00100000);
 }
 
 // GsGetActiveBuff() should have been called prior to calling this function

@@ -55,7 +55,8 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     data = (u_char*) spriteData;
 
     tim_data = malloc3(sizeof(GsIMAGE));
-    GsGetTimInfo((u_long*)(data + 4), tim_data);
+    GsGetTimInfo((u_long*)(data
+     + 4), tim_data);
         
     // malloc resources
     frameBuffer = malloc3(sizeof(RECT));

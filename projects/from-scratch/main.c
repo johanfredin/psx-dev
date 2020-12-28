@@ -13,16 +13,18 @@
 #include "gpubase.h"
 #include "assetmanager.h"
 #include "GridMapHandler.h"
+#include "AnimatedGameObject.h"
+#include "timer.h"
 
 // Constants
 #define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 256
-#define SPEED 4
+#define SPEED 3
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
 
 Color backgroundColor;
-GsSPRITE* hero;
+AnimatedGameObject* player;
 u_int currentKeyDown = 0;
 u_long* assets[9];
 
@@ -39,18 +41,21 @@ int main() {
     backgroundColor.g = 0;
     backgroundColor.b = 0;
     initializeHeap();
+    timer_init();
     initializeScreen(&backgroundColor);
     initializeDebugFont(0);
     loadCDRomAssets();
 
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
-    hero = assetmanager_loadSprite("PSY_8", assets[8], 200, 50, 128, COLOR_BITS_4);
+    player = setGameObject("HERO", assets[8], 200, 50, 16, 16, 220, COLOR_BITS_8);
     initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     
     while(1) {
+        timer_check();
         update();
-        tickMap(hero);
+        tickMap(player->textureFrame);
         draw();
+        FntPrint("Time=%d\n", timer_read());
         display(&backgroundColor);
         clearDisplay();
     }
@@ -59,7 +64,6 @@ int main() {
 
 // Definitions -----------------------------------------
 void loadCDRomAssets() {
-    // int count = 0;
     CdOpen();
     CdReadFile((u_char*)"00BG.TIM", &assets[0]);
     CdReadFile((u_char*)"01BG.TIM", &assets[1]);
@@ -69,7 +73,7 @@ void loadCDRomAssets() {
     CdReadFile((u_char*)"01FG.TIM", &assets[5]);
     CdReadFile((u_char*)"10FG.TIM", &assets[6]);
     CdReadFile((u_char*)"11FG.TIM", &assets[7]);
-    CdReadFile((u_char*)"PSY_8.TIM", &assets[8]);
+    CdReadFile((u_char*)"HERO.TIM", &assets[8]);
     CdClose();
 }
 
@@ -79,22 +83,28 @@ void update() {
     currentKeyDown = PadRead(0);
     if(currentKeyDown & PADLdown) {
         ySpeed = SPEED;
+        setHeading(player, 0, 0, 0, 1);
     } if(currentKeyDown & PADLup) {
         ySpeed = -SPEED;
+        setHeading(player, 0, 0, 1, 0);
     } if(currentKeyDown & PADLright) {
         xSpeed = SPEED;
+        setHeading(player, 0, 1, 0, 0);
     } if(currentKeyDown & PADLleft) {
         xSpeed = -SPEED;
+        setHeading(player, 1, 0, 0, 0);
     }
-    hero->x += xSpeed;
-    hero->y += ySpeed;
+    updateGameObject(player); 
+    player->textureFrame->x += xSpeed;
+    player->textureFrame->y += ySpeed;
 }
 
 void draw() {
     currentBuffer = GsGetActiveBuff();
     if(PrintCoords) {
-        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", hero->x, hero->y, currXFrame, currYFrame);
+        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, currXFrame, currYFrame);
+        FntPrint("left=%d, right=%d, up=%d, down=%d\n", player->heading.left, player->heading.right, player->heading.up, player->heading.down);
     }
     drawMap();
-    GsSortFastSprite(hero, currentOT(), 1);
+    GsSortFastSprite(player->textureFrame, currentOT(), 1);
 }

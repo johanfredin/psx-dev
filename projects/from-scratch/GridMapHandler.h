@@ -35,14 +35,14 @@ u_char rightCol, leftCol, topCol, bottomCol;
 // ----------
 Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
 void setCollisionBounds(CollisionBlocks* cbs, u_char blockIndex);
-void initMap(u_long* assets[], u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
+void initMap(u_long** assets, u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
 void tickMap(GsSPRITE*);
 void drawMap();
 void handleEdgeCollision(GsSPRITE* sprite);
 void handleBlockCollision(GsSPRITE* sprite);
 
 
-void initMap(u_long* assets[], u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
+void initMap(u_long** assets, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
     setMapCoords(1);
     map[0][0] = initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
     map[1][0] = initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0, 1);
