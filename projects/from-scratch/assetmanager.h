@@ -54,13 +54,13 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     // Load image data
     data = (u_char*) spriteData;
 
-    tim_data = malloc3(sizeof(GsIMAGE));
+    tim_data = (GsIMAGE*) malloc3(sizeof(GsIMAGE));
     GsGetTimInfo((u_long*)(data
      + 4), tim_data);
         
     // malloc resources
-    frameBuffer = malloc3(sizeof(RECT));
-    clut = malloc3(sizeof(RECT));
+    frameBuffer = (RECT*) malloc3(sizeof(RECT));
+    clut = (RECT*) malloc3(sizeof(RECT));
 
     // Load image into gpu memory
     frameBuffer->x = tim_data->px;

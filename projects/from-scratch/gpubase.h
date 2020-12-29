@@ -91,7 +91,7 @@ void initializeDebugFont(u_char bg) {
 void display(Color* backgroundColor) {
     currentBuffer = GsGetActiveBuff();
     DrawSync(0);        // Wait for drawing to end
-    VSync(0);           // Wait for vsync (2 = 30FPS moreless)
+    VSync(2);           // Wait for vsync (2 = 30FPS moreless)
     GsSwapDispBuff();   // Swap buffers
     
     // Sets a screen clear command at the start of the OT. Should be called after GsSwapDispBuff.

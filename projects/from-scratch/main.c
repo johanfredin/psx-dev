@@ -14,7 +14,6 @@
 #include "assetmanager.h"
 #include "GridMapHandler.h"
 #include "AnimatedGameObject.h"
-#include "timer.h"
 
 // Constants
 #define SCREEN_WIDTH 256
@@ -41,21 +40,18 @@ int main() {
     backgroundColor.g = 0;
     backgroundColor.b = 0;
     initializeHeap();
-    timer_init();
     initializeScreen(&backgroundColor);
     initializeDebugFont(0);
     loadCDRomAssets();
 
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
-    player = setGameObject("HERO", assets[8], 200, 50, 16, 16, 220, COLOR_BITS_8);
+    player = setGameObject("HERO", assets[8], 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
     initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     
     while(1) {
-        timer_check();
         update();
         tickMap(player->textureFrame);
         draw();
-        FntPrint("Time=%d\n", timer_read());
         display(&backgroundColor);
         clearDisplay();
     }
@@ -80,6 +76,7 @@ void loadCDRomAssets() {
 void update() {
     short xSpeed = 0;
     short ySpeed = 0;
+    setHeading(player, 0, 0, 0, 0);
     currentKeyDown = PadRead(0);
     if(currentKeyDown & PADLdown) {
         ySpeed = SPEED;
@@ -93,10 +90,10 @@ void update() {
     } if(currentKeyDown & PADLleft) {
         xSpeed = -SPEED;
         setHeading(player, 1, 0, 0, 0);
-    }
-    updateGameObject(player); 
+    } 
     player->textureFrame->x += xSpeed;
     player->textureFrame->y += ySpeed;
+    updateGameObject(player); 
 }
 
 void draw() {
