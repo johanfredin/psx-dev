@@ -12,7 +12,7 @@
 #include "cdrom.h"
 #include "gpubase.h"
 #include "assetmanager.h"
-#include "GridMapHandler.h"
+#include "gridmap.h"
 #include "AnimatedGameObject.h"
 
 // Constants
@@ -46,11 +46,11 @@ int main() {
 
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     player = setGameObject("HERO", assets[8], 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
-    initMap(assets, 0, 4, 1, 5, 2, 6, 3, 7);
+    gridmap_init(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     
     while(1) {
         update();
-        tickMap(player->textureFrame);
+        gridmap_tick(player->textureFrame);
         draw();
         display(&backgroundColor);
         clearDisplay();
@@ -102,6 +102,6 @@ void draw() {
         FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, currXFrame, currYFrame);
         FntPrint("left=%d, right=%d, up=%d, down=%d\n", player->heading.left, player->heading.right, player->heading.up, player->heading.down);
     }
-    drawMap();
+    gridmap_draw();
     GsSortFastSprite(player->textureFrame, currentOT(), 1);
 }
