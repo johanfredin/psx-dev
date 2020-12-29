@@ -22,16 +22,15 @@ typedef struct {
 
 //Prototypes----
 
-AnimatedGameObject* setGameObject(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits);
-void updateGameObject(AnimatedGameObject* gameObject);
-void setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d);
-void setXOffset(AnimatedGameObject* gobj);
+AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits);
+void animatedobject_tick(AnimatedGameObject* gameObject);
+void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d);
 void logger_logGameObject(AnimatedGameObject* gobj);
-char isMoving(AnimatedGameObject* gobj);
+char animatedobject_moving(AnimatedGameObject* gobj);
 
 // Definitions ------
 
-AnimatedGameObject* setGameObject(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits) {
+AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits) {
     AnimatedGameObject* gameObject;
     Heading heading;
     GsSPRITE* textureFrame = assetmanager_loadSprite(name, spriteData, x, y, blend, numColorBits);
@@ -45,12 +44,12 @@ AnimatedGameObject* setGameObject(char* name, u_long* spriteData, u_short x, u_s
     gameObject->keyFrames = keyFrames;
     gameObject->ticksPerFrame = ticksPerFrame;
     gameObject->acc = 0;
-    setHeading(gameObject, 0, 0, 0, 0);
+    animatedobject_setHeading(gameObject, 0, 0, 0, 0);
     logger_logGameObject(gameObject);
     return gameObject;
 }   
 
-void updateGameObject(AnimatedGameObject* gameObject) {
+void animatedobject_tick(AnimatedGameObject* gameObject) {
     short u=gameObject->curr_v;
     short v=gameObject->curr_v;
     if(gameObject->heading.left) {
@@ -64,30 +63,27 @@ void updateGameObject(AnimatedGameObject* gameObject) {
     } 
     gameObject->textureFrame->v = v;
     gameObject->curr_v = v;
-    setXOffset(gameObject);
+
+    gameObject->acc += 1;
+    FntPrint("Acc=%d\ncurr_u=%d\nmoving=%d\n", gameObject->acc, gameObject->curr_u, animatedobject_moving(gameObject));
+    if(gameObject->acc >= gameObject->ticksPerFrame) {
+        gameObject->acc = 0;
+        if(gameObject->curr_u >= ((gameObject->keyFrames * gameObject->textureFrame->w) - gameObject->textureFrame->w)) {
+            gameObject->curr_u = 0;
+        } else {
+            if(animatedobject_moving(gameObject)) {
+                gameObject->curr_u += gameObject->textureFrame->w;
+            }
+        }
+    }
+    gameObject->textureFrame->u = gameObject->curr_u;
 }
 
-void setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d) {
+void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d) {
     gobj->heading.left = l;
     gobj->heading.right = r;
     gobj->heading.up = u;
     gobj->heading.down = d;
-}
-
-void setXOffset(AnimatedGameObject* gobj) {
-    gobj->acc += 1;
-    FntPrint("Acc=%d\ncurr_u=%d\nmoving=%d\n", gobj->acc, gobj->curr_u, isMoving(gobj));
-    if(gobj->acc >= gobj->ticksPerFrame) {
-        gobj->acc = 0;
-        if(gobj->curr_u >= ((gobj->keyFrames * gobj->textureFrame->w) - gobj->textureFrame->w)) {
-            gobj->curr_u = 0;
-        } else {
-            if(isMoving(gobj)) {
-                gobj->curr_u += gobj->textureFrame->w;
-            }
-        }
-    }
-    gobj->textureFrame->u = gobj->curr_u;
 }
 
 void logger_logGameObject(AnimatedGameObject* gobj) {
@@ -100,7 +96,7 @@ void logger_logGameObject(AnimatedGameObject* gobj) {
     printf("-----------------------------\n");
 }
 
-char isMoving(AnimatedGameObject* gobj) {
+char animatedobject_moving(AnimatedGameObject* gobj) {
     return gobj->heading.left == 1 || gobj->heading.right == 1 || gobj->heading.up == 1 || gobj->heading.down == 1;
 }
 
