@@ -44,7 +44,6 @@ int main() {
     initializeDebugFont(0);
     loadCDRomAssets();
 
-    setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     player = animatedobject_set("HERO", assets[8], 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
     gridmap_init(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     
@@ -91,9 +90,7 @@ void update() {
         xSpeed = -SPEED;
         animatedobject_setHeading(player, 1, 0, 0, 0);
     } 
-    player->textureFrame->x += xSpeed;
-    player->textureFrame->y += ySpeed;
-    animatedobject_tick(player); 
+    animatedobject_tick(player, xSpeed, ySpeed); 
 }
 
 void draw() {

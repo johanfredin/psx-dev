@@ -23,7 +23,7 @@ typedef struct {
 //Prototypes----
 
 AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits);
-void animatedobject_tick(AnimatedGameObject* gameObject);
+void animatedobject_tick(AnimatedGameObject* gameObject, short xSpeed, short ySpeed);
 void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d);
 void logger_logGameObject(AnimatedGameObject* gobj);
 char animatedobject_moving(AnimatedGameObject* gobj);
@@ -49,7 +49,7 @@ AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x
     return gameObject;
 }   
 
-void animatedobject_tick(AnimatedGameObject* gameObject) {
+void animatedobject_tick(AnimatedGameObject* gameObject, short xSpeed, short ySpeed) {
     short u=gameObject->curr_v;
     short v=gameObject->curr_v;
     if(gameObject->heading.left) {
@@ -77,6 +77,8 @@ void animatedobject_tick(AnimatedGameObject* gameObject) {
         }
     }
     gameObject->textureFrame->u = gameObject->curr_u;
+    gameObject->textureFrame->x += xSpeed;
+    gameObject->textureFrame->y += ySpeed;
 }
 
 void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d) {
