@@ -1,38 +1,4 @@
-#ifndef _assetmanager_
-#define _assetmanager_
-
-#include <STDLIB.H>
-#include <STDIO.H>
-#include <LIBGTE.H>
-#include <LIBGPU.H>
-#include <LIBGS.H>
-#include <LIBETC.H>
-#include <LIBDS.H>
-#include <STRINGS.H>
-#include <SYS/TYPES.H>
-
-#include "logger.h"
-
-#define ROT_ONE 4096
-#define COLOR_BITS_4 4
-#define COLOR_BITS_8 8
-#define COLOR_BITS_16 16
-
-typedef struct {
-    RECT* frameBuffer;
-    RECT* clut;
-    u_short twidthMultiplier;
-    u_short colorMode;
-    u_char isCLUTMode;
-    u_long spriteAttr;
-} Asset;
-
-
-void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits);
-GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_short y, u_short blend, u_short numColorBits);
-u_char getTPageColorBitMode(u_short numColorBits);
-u_char getWidthByColorBitsMode(u_short numColorBits);
-u_long getAttributeByColorBitsMode(u_short numColorBits);
+#include "header/assetmanager.h"
 
 void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits) {
     // Declarations
@@ -55,8 +21,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     data = (u_char*) spriteData;
 
     tim_data = (GsIMAGE*) malloc3(sizeof(GsIMAGE));
-    GsGetTimInfo((u_long*)(data
-     + 4), tim_data);
+    GsGetTimInfo((u_long*)(data + 4), tim_data);
         
     // malloc resources
     frameBuffer = (RECT*) malloc3(sizeof(RECT));
@@ -163,5 +128,3 @@ u_long getAttributeByColorBitsMode(u_short numColorBits) {
     }
     return -1;
 }
-
-#endif
