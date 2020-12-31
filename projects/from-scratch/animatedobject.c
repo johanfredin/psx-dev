@@ -1,6 +1,8 @@
 
 #include "header/animatedobject.h"
 
+char animatedobject_moving(AnimatedGameObject* gobj);
+
 AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits) {
     AnimatedGameObject* gameObject;
     Heading heading;
@@ -57,16 +59,6 @@ void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_c
     gobj->heading.right = r;
     gobj->heading.up = u;
     gobj->heading.down = d;
-}
-
-void logger_logGameObject(AnimatedGameObject* gobj) {
-    printf("-----------------------------\n");
-    printf("Animated Game Object created:\n");
-    printf("-----------------------------\n");
-    printf("x:%d, y:%d, w%d, h%d\n", gobj->textureFrame->x, gobj->textureFrame->y, gobj->textureFrame->w, gobj->textureFrame->h);
-    printf("ticks_per_frame:%d, curr_u:%d, curr_v:%d\n", gobj->ticksPerFrame, gobj->curr_u, gobj->curr_v);
-    printf("key_frames:%d, acc:%d\n", gobj->keyFrames, gobj->acc);
-    printf("-----------------------------\n");
 }
 
 char animatedobject_moving(AnimatedGameObject* gobj) {

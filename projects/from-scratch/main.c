@@ -9,11 +9,11 @@
 #include <SYS/TYPES.H>
 
 // Custom imports
-#include "cdrom.h"
-#include "gpubase.h"
-#include "assetmanager.h"
-#include "gridmap.h"
-#include "animatedobject.h"
+#include "header/cdrom.h"
+#include "header/gpubase.h"
+#include "header/assetmanager.h"
+#include "header/gridmap.h"
+#include "header/animatedobject.h"
 
 // Constants
 #define SCREEN_WIDTH 256
@@ -33,8 +33,6 @@ void draw();
 void loadCDRomAssets();
 
 int main() {
-    DrawBounds = 0;
-    PrintCoords = 0;
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
@@ -94,8 +92,7 @@ void update() {
 }
 
 void draw() {
-    currentBuffer = GsGetActiveBuff();
-    if(PrintCoords) {
+    if(PRINT_COORDS) {
         FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, currXFrame, currYFrame);
         FntPrint("left=%d, right=%d, up=%d, down=%d\n", player->heading.left, player->heading.right, player->heading.up, player->heading.down);
     }

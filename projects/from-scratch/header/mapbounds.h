@@ -41,7 +41,7 @@ MapCoords* mapCoords;
  * @param index of the level we want boundaries for
  */
 void mapbounds_init(u_char level);
-void mapbounds_initLevelOne();
+
 /*
  * Allocates a new FrameBounds struct.
  * @param bounds the RECT boundaries array for the current frame
@@ -51,7 +51,6 @@ void mapbounds_initLevelOne();
  * @return the allocated FrameBounds variable.
  */
 FrameCoords* mapbounds_addFrameBoundaries(RECT* bounds, u_char frameX, u_char frameY, u_char amount);
-RECT mapbounds_getRect(u_short x, u_short y, u_short w, u_short h);
 void mapbounds_free(u_char level);
 
 

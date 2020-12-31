@@ -1,17 +1,7 @@
 #ifndef _assetmanager_
 #define _assetmanager_
 
-#include <STDLIB.H>
-#include <STDIO.H>
-#include <LIBGTE.H>
-#include <LIBGPU.H>
-#include <LIBGS.H>
-#include <LIBETC.H>
-#include <LIBDS.H>
-#include <STRINGS.H>
-#include <SYS/TYPES.H>
-
-#include "logger.h"
+#include "gpubase.h"
 
 #define ROT_ONE 4096
 #define COLOR_BITS_4 4
@@ -27,11 +17,7 @@ typedef struct {
     u_long spriteAttr;
 } Asset;
 
-
 void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits);
 GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_short y, u_short blend, u_short numColorBits);
-u_char getTPageColorBitMode(u_short numColorBits);
-u_char getWidthByColorBitsMode(u_short numColorBits);
-u_long getAttributeByColorBitsMode(u_short numColorBits);
 
 #endif

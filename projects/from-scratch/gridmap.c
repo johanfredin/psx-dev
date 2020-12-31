@@ -1,5 +1,10 @@
 #include "header/gridmap.h"
 
+u_char rightCol, leftCol, topCol, bottomCol;
+
+void gridmap_handleEdgeCollision(GsSPRITE* sprite);
+void gridmap_handleBlockCollision(GsSPRITE* sprite);
+
 void gridmap_init(u_long** assets, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
     mapbounds_init(1);
     map[0][0] = gridmap_initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
@@ -25,7 +30,7 @@ Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char
     logger_logBoundsArray(cbs->bounds, cbs->amount);
 
     // Draw tiles where collision bounds are supposed to be if set in main
-    if(DrawBounds) {
+    if(DRAW_BOUNDS) {
        int i = 0;
        TILE* boundLines = (TILE*) malloc3(sizeof(TILE) * cbs->amount);
        while(i < cbs->amount) {
@@ -50,14 +55,14 @@ void gridmap_draw() {
     CollisionBlocks* blocks = map[currXFrame][currYFrame]->cbs;
     GsSortFastSprite(map[currXFrame][currYFrame]->fg, currentOT(), 0);
     GsSortFastSprite(map[currXFrame][currYFrame]->bg, currentOT(), 2);
-    if(DrawBounds) {
+    if(DRAW_BOUNDS) {
         int blockIdx = 0;
         while(blockIdx < blocks->amount) {
             DrawPrim(&blocks->boundLines[blockIdx]);
             blockIdx++;
         }
     }
-    if(PrintCoords) {
+    if(PRINT_COORDS) {
         FntPrint("Blocks in frame=%d\n", blocks->amount);
         FntPrint("tc=%d, bc=%d, lc=%d, rc=%d\n", topCol, bottomCol, leftCol, rightCol);
     }

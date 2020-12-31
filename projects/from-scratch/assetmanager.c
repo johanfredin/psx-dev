@@ -1,4 +1,9 @@
 #include "header/assetmanager.h"
+#include "header/logger.h"
+
+u_char getTPageColorBitMode(u_short numColorBits);
+u_char getWidthByColorBitsMode(u_short numColorBits);
+u_long getAttributeByColorBitsMode(u_short numColorBits);
 
 void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_short numColorBits) {
     // Declarations

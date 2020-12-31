@@ -1,5 +1,7 @@
 #include "header/cdrom.h"
 
+u_char didInitDs = 0;
+
 void CdOpen() {
 	if(!didInitDs) {
 		didInitDs = 1;
@@ -19,7 +21,7 @@ void CdReadFile(unsigned char* file_path, u_long** file) {
 	int* sectors_size;
 	DslFILE* temp_file_info;
 	sectors_size = (int*)malloc3(sizeof(int));
-	temp_file_info = malloc3(sizeof(DslFILE));
+	temp_file_info = (DslFILE*) malloc3(sizeof(DslFILE));
 
 	// Exit if libDs isn't initialized
 	if(!didInitDs) {
@@ -47,7 +49,7 @@ void CdReadFile(unsigned char* file_path, u_long** file) {
 		*file = (u_long*)malloc3(*sectors_size + SECTOR);
 		
 		DsRead(&temp_file_info->pos, (*sectors_size + SECTOR - 1) / SECTOR, *file, DslModeSpeed);
-		while(DsReadSync(NULL));
+		while(DsReadSync(0));
 		printf("...file loaded!\n");
 	} else {
 		printf("...file not found\n");

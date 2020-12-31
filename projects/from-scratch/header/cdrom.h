@@ -7,13 +7,11 @@
 #ifndef cdrom_h
 #define cdrom_h
 
-#include <LIBDS.H>
+// #include <LIBCD.H>
 #include <SYS/TYPES.H>
+#include <LIBDS.H>
 
 #define SECTOR 2048
-#define NULL 0
-
-u_char didInitDs = 0;
 
 void CdOpen();
 void CdClose();

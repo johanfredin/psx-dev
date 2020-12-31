@@ -1,12 +1,12 @@
 #ifndef _gpubase_h_
 #define _gpubase_h_
 
+#include <SYS/TYPES.H>
 #include <LIBGTE.H>
 #include <LIBGPU.H>
 #include <LIBGS.H>
 #include <LIBETC.H>
 #include <STRINGS.H>
-#include <SYS/TYPES.H>
 
 // Constants
 #define NUM_BUFFERS 2
@@ -18,6 +18,8 @@
 #define PACKETMAX 3000
 #define FRAME_BUFFER_WIDTH 1024
 #define FRAME_BUFFER_HEIGHT 512
+#define DRAW_BOUNDS 0
+#define PRINT_COORDS 0
 
 // Globals
 typedef struct {
@@ -26,21 +28,15 @@ typedef struct {
     u_short b;
 } Color;
 
-u_char PrintCoords = 0;
-u_char DrawBounds = 0;
 u_short screenWidth; 
 u_short screenHeight;
-GsOT orderingTable[OT_LENGTH];
-GsOT_TAG minorOrderingTable[NUM_BUFFERS][20];
-PACKET GPUOutputPacket[NUM_BUFFERS][10*sizeof(GsSPRITE)];
-u_char currentBuffer = 0;
 
 // Prototypes
 void setBounds(u_short w, u_short h);
 void initializeScreen(Color* bgColor);
 void clearVRAM();
 void initializeDebugFont(u_char bg);
-void display();
+void display(Color* backgroundColor);
 void clearDisplay();
 void initDisplayAndDrawEnvs();
 void initializeHeap();
