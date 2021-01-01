@@ -1,9 +1,12 @@
 #include "header/gridmap.h"
 
+Frame* map[NUM_X_FRAMES][NUM_Y_FRAMES];
 u_char rightCol, leftCol, topCol, bottomCol;
 
+Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
 void gridmap_handleEdgeCollision(GsSPRITE* sprite);
 void gridmap_handleBlockCollision(GsSPRITE* sprite);
+
 
 void gridmap_init(u_long** assets, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
     mapbounds_init(1);
@@ -52,9 +55,9 @@ Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char
 }
 
 void gridmap_draw() {
-    CollisionBlocks* blocks = map[currXFrame][currYFrame]->cbs;
-    GsSortFastSprite(map[currXFrame][currYFrame]->fg, currentOT(), 0);
-    GsSortFastSprite(map[currXFrame][currYFrame]->bg, currentOT(), 2);
+    CollisionBlocks* blocks = map[gridmap_currXFrame][gridmap_currYFrame]->cbs;
+    GsSortFastSprite(map[gridmap_currXFrame][gridmap_currYFrame]->fg, currentOT(), 0);
+    GsSortFastSprite(map[gridmap_currXFrame][gridmap_currYFrame]->bg, currentOT(), 2);
     if(DRAW_BOUNDS) {
         int blockIdx = 0;
         while(blockIdx < blocks->amount) {
@@ -76,17 +79,17 @@ void gridmap_tick(GsSPRITE* sprite) {
 void gridmap_handleEdgeCollision(GsSPRITE* sprite) {
     // X bounds -------------------------------------
     if(sprite->x < 0) {
-         if(currXFrame > 0) {
+         if(gridmap_currXFrame > 0) {
             sprite->x = screenWidth - sprite->w;
-            currXFrame--;
+            gridmap_currXFrame--;
          } else {
              sprite->x = 0;
          }
     } 
     if(sprite->x + sprite->w > screenWidth) {
-        if(currXFrame < 1) {
+        if(gridmap_currXFrame < 1) {
             sprite->x = 0;
-            currXFrame++;
+            gridmap_currXFrame++;
         } else {
             sprite->x = screenWidth - sprite->w;
         }
@@ -94,17 +97,17 @@ void gridmap_handleEdgeCollision(GsSPRITE* sprite) {
 
     // Y bounds -------------------------------------
     if(sprite->y < 0) {
-        if(currYFrame > 0) {
+        if(gridmap_currYFrame > 0) {
             sprite->y = screenHeight - sprite->h;
-            currYFrame--;
+            gridmap_currYFrame--;
         } else {
             sprite->y = 0;
         }
     } 
     if(sprite->y + sprite->h > screenHeight) {
-        if(currYFrame < 1) {
+        if(gridmap_currYFrame < 1) {
             sprite->y = 0;
-            currYFrame++;
+            gridmap_currYFrame++;
         } else {
             sprite->y = screenHeight - sprite->h;
         }
@@ -112,7 +115,7 @@ void gridmap_handleEdgeCollision(GsSPRITE* sprite) {
 }
 
 void gridmap_handleBlockCollision(GsSPRITE* sprite) {
-    CollisionBlocks* blocks = map[currXFrame][currYFrame]->cbs;
+    CollisionBlocks* blocks = map[gridmap_currXFrame][gridmap_currYFrame]->cbs;
     int i = 0;
     
     // Player bounds

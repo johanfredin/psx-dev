@@ -4,12 +4,16 @@
 #include "assetmanager.h"
 #include "logger.h"
 #include "mapbounds.h"
+#include "base.h"
 
 #define NUM_X_FRAMES 2
 #define NUM_Y_FRAMES 2
 
+u_char gridmap_currXFrame;
+u_char gridmap_currYFrame;
+
 typedef struct {
-    // The actual physical bounds that we will collide with
+    // The actual physical bounds that we will collide with in the frame
     RECT* bounds;
     // The amount of blocks on one frame
     u_char amount;
@@ -22,13 +26,9 @@ typedef struct {
     GsSPRITE* bg;
     GsSPRITE* fg;
     CollisionBlocks* cbs;
+
 } Frame;
 
-Frame* map[NUM_X_FRAMES][NUM_Y_FRAMES];
-u_char currXFrame;
-u_char currYFrame;
-
-Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
 void gridmap_init(u_long** assets, u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
 void gridmap_tick(GsSPRITE*);
 void gridmap_draw();

@@ -7,15 +7,15 @@
 #ifndef cdrom_h
 #define cdrom_h
 
-// #include <LIBCD.H>
 #include <SYS/TYPES.H>
 #include <LIBDS.H>
+#include "base.h"
 
 #define SECTOR 2048
 
 void CdOpen();
 void CdClose();
-void CdReadFile(u_char* file_path, u_long** file);
+void CdReadFile(char* file_path, u_long** file);
 
 
 #endif

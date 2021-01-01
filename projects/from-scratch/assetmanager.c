@@ -96,7 +96,6 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     free3(asset->frameBuffer);
     free3(asset->clut);
     free3(asset);
-    // DrawSync(0);
     return sprite;
 }
 

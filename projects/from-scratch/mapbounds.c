@@ -3,6 +3,9 @@
 void mapbounds_initLevelOne();
 RECT mapbounds_getRect(u_short x, u_short y, u_short w, u_short h);
 
+// The current level we will be working on. Should be freed and replace with a new level upon switching
+MapCoords* mapCoords;
+
 void mapbounds_init(u_char level) {
     mapCoords = (MapCoords*) malloc3(sizeof(MapCoords));
     switch(level) {

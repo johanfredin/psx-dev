@@ -16,11 +16,11 @@ void CdClose() {
     }
 }
 
-void CdReadFile(unsigned char* file_path, u_long** file) {
+void CdReadFile(char* file_path, u_long** file) {
 	u_char* file_path_raw;
 	int* sectors_size;
 	DslFILE* temp_file_info;
-	sectors_size = (int*)malloc3(sizeof(int));
+	sectors_size = (int*) malloc3(sizeof(int));
 	temp_file_info = (DslFILE*) malloc3(sizeof(DslFILE));
 
 	// Exit if libDs isn't initialized
@@ -30,7 +30,7 @@ void CdReadFile(unsigned char* file_path, u_long** file) {
 	}
 
 	// Get raw file path
-	file_path_raw = (u_char*)malloc3(4 + strlen(file_path));
+	file_path_raw = (char*) malloc3(4 + strlen(file_path));
 	strcpy(file_path_raw, "\\");
 	strcat(file_path_raw, file_path);
 	strcat(file_path_raw, ";1");
@@ -46,10 +46,10 @@ void CdReadFile(unsigned char* file_path, u_long** file) {
 		*sectors_size = temp_file_info->size + (SECTOR % temp_file_info->size);
 		printf("...file buffer size needed: %d\n", *sectors_size);
 		printf("...sectors needed: %d\n", (*sectors_size + SECTOR - 1) / SECTOR);
-		*file = (u_long*)malloc3(*sectors_size + SECTOR);
+		*file = (u_long*) malloc3(*sectors_size + SECTOR);
 		
 		DsRead(&temp_file_info->pos, (*sectors_size + SECTOR - 1) / SECTOR, *file, DslModeSpeed);
-		while(DsReadSync(0));
+		while(DsReadSync(NULL));
 		printf("...file loaded!\n");
 	} else {
 		printf("...file not found\n");

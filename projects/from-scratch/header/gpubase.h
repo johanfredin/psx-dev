@@ -18,8 +18,7 @@
 #define PACKETMAX 3000
 #define FRAME_BUFFER_WIDTH 1024
 #define FRAME_BUFFER_HEIGHT 512
-#define DRAW_BOUNDS 0
-#define PRINT_COORDS 0
+
 
 // Globals
 typedef struct {

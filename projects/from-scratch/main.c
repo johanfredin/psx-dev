@@ -9,6 +9,7 @@
 #include <SYS/TYPES.H>
 
 // Custom imports
+#include "header/base.h"
 #include "header/cdrom.h"
 #include "header/gpubase.h"
 #include "header/assetmanager.h"
@@ -16,18 +17,13 @@
 #include "header/animatedobject.h"
 
 // Constants
-#define SCREEN_WIDTH 256
-#define SCREEN_HEIGHT 256
 #define SPEED 3
-#define __ramsize   0x00200000 // Force 2MB vram
-#define __stacksize 0x00004000
 
 Color backgroundColor;
 AnimatedGameObject* player;
 u_int currentKeyDown = 0;
 u_long* assets[9];
 
-// Prototypes
 void update();
 void draw();
 void loadCDRomAssets();
@@ -58,15 +54,15 @@ int main() {
 // Definitions -----------------------------------------
 void loadCDRomAssets() {
     CdOpen();
-    CdReadFile((u_char*)"00BG.TIM", &assets[0]);
-    CdReadFile((u_char*)"01BG.TIM", &assets[1]);
-    CdReadFile((u_char*)"10BG.TIM", &assets[2]);
-    CdReadFile((u_char*)"11BG.TIM", &assets[3]);
-    CdReadFile((u_char*)"00FG.TIM", &assets[4]);
-    CdReadFile((u_char*)"01FG.TIM", &assets[5]);
-    CdReadFile((u_char*)"10FG.TIM", &assets[6]);
-    CdReadFile((u_char*)"11FG.TIM", &assets[7]);
-    CdReadFile((u_char*)"HERO.TIM", &assets[8]);
+    CdReadFile("00BG.TIM", &assets[0]);
+    CdReadFile("01BG.TIM", &assets[1]);
+    CdReadFile("10BG.TIM", &assets[2]);
+    CdReadFile("11BG.TIM", &assets[3]);
+    CdReadFile("00FG.TIM", &assets[4]);
+    CdReadFile("01FG.TIM", &assets[5]);
+    CdReadFile("10FG.TIM", &assets[6]);
+    CdReadFile("11FG.TIM", &assets[7]);
+    CdReadFile("HERO.TIM", &assets[8]);
     CdClose();
 }
 
@@ -93,7 +89,7 @@ void update() {
 
 void draw() {
     if(PRINT_COORDS) {
-        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, currXFrame, currYFrame);
+        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, gridmap_currXFrame, gridmap_currYFrame);
         FntPrint("left=%d, right=%d, up=%d, down=%d\n", player->heading.left, player->heading.right, player->heading.up, player->heading.down);
     }
     gridmap_draw();

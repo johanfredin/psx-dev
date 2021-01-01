@@ -33,9 +33,6 @@ typedef struct {
     FrameCoords* frameCoords;
 } MapCoords;
 
-// The current level we will be working on. Should be freed and replace with a new level upon switching
-MapCoords* mapCoords;
-
 /*
  * Initialize boundaries for a new map
  * @param index of the level we want boundaries for
