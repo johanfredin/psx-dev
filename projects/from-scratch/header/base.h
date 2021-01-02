@@ -2,6 +2,7 @@
 #define _constanst_h_
 
 #include <KERNEL.H>
+#include <STDIO.H>
 
 /*
  * Constant values used throughout game

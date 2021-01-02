@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "mapbounds.h"
 #include "base.h"
+#include "player.h"
 
 #define NUM_X_FRAMES 2
 #define NUM_Y_FRAMES 2
@@ -30,7 +31,7 @@ typedef struct {
 } Frame;
 
 void gridmap_init(u_long** assets, u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
-void gridmap_tick(GsSPRITE*);
+void gridmap_tick(Player*);
 void gridmap_draw();
 
 #endif

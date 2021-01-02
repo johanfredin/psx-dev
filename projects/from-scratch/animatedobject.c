@@ -1,4 +1,3 @@
-
 #include "header/animatedobject.h"
 
 char animatedobject_moving(AnimatedGameObject* gobj);

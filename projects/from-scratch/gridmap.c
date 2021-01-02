@@ -71,9 +71,9 @@ void gridmap_draw() {
     }
 }
 
-void gridmap_tick(GsSPRITE* sprite) {
-    gridmap_handleEdgeCollision(sprite);
-    gridmap_handleBlockCollision(sprite);
+void gridmap_tick(Player* player) {
+    gridmap_handleEdgeCollision(player->gobj->textureFrame);
+    gridmap_handleBlockCollision(player->gobj->textureFrame);
 }
 
 void gridmap_handleEdgeCollision(GsSPRITE* sprite) {

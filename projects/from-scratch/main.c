@@ -15,12 +15,13 @@
 #include "header/assetmanager.h"
 #include "header/gridmap.h"
 #include "header/animatedobject.h"
+#include "header/player.h"
 
 // Constants
 #define SPEED 3
 
 Color backgroundColor;
-AnimatedGameObject* player;
+Player* player;
 u_int currentKeyDown = 0;
 u_long* assets[9];
 
@@ -29,6 +30,7 @@ void draw();
 void loadCDRomAssets();
 
 int main() {
+    AnimatedGameObject* gobj;
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
@@ -38,12 +40,13 @@ int main() {
     initializeDebugFont(0);
     loadCDRomAssets();
 
-    player = animatedobject_set("HERO", assets[8], 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
+    gobj = animatedobject_set("HERO", assets[8], 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
+    player = player_init(gobj, 0, SPEED, SPEED);
     gridmap_init(assets, 0, 4, 1, 5, 2, 6, 3, 7);
     
     while(1) {
         update();
-        gridmap_tick(player->textureFrame);
+        gridmap_tick(player);
         draw();
         display(&backgroundColor);
         clearDisplay();
@@ -67,31 +70,10 @@ void loadCDRomAssets() {
 }
 
 void update() {
-    short xSpeed = 0;
-    short ySpeed = 0;
-    animatedobject_setHeading(player, 0, 0, 0, 0);
-    currentKeyDown = PadRead(0);
-    if(currentKeyDown & PADLdown) {
-        ySpeed = SPEED;
-        animatedobject_setHeading(player, 0, 0, 0, 1);
-    } if(currentKeyDown & PADLup) {
-        ySpeed = -SPEED;
-        animatedobject_setHeading(player, 0, 0, 1, 0);
-    } if(currentKeyDown & PADLright) {
-        xSpeed = SPEED;
-        animatedobject_setHeading(player, 0, 1, 0, 0);
-    } if(currentKeyDown & PADLleft) {
-        xSpeed = -SPEED;
-        animatedobject_setHeading(player, 1, 0, 0, 0);
-    } 
-    animatedobject_tick(player, xSpeed, ySpeed); 
+    player_tick(player); 
 }
 
 void draw() {
-    if(PRINT_COORDS) {
-        FntPrint("x=%d, y=%d\ncurrXF=%d, currYF=%d\n", player->textureFrame->x, player->textureFrame->y, gridmap_currXFrame, gridmap_currYFrame);
-        FntPrint("left=%d, right=%d, up=%d, down=%d\n", player->heading.left, player->heading.right, player->heading.up, player->heading.down);
-    }
     gridmap_draw();
-    GsSortFastSprite(player->textureFrame, currentOT(), 1);
+    player_draw(player);
 }
