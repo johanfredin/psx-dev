@@ -1,19 +1,43 @@
 #include "header/gridmap.h"
+#include "header/mem.h"
+#include "header/cdrom.h"
 
 Frame* map[NUM_X_FRAMES][NUM_Y_FRAMES];
 u_char rightCol, leftCol, topCol, bottomCol;
+u_long** assets;
+
 
 Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
 void gridmap_handleEdgeCollision(GsSPRITE* sprite);
 void gridmap_handleBlockCollision(GsSPRITE* sprite);
+void setLevelAssets(u_char level);
 
 
-void gridmap_init(u_long** assets, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
-    mapbounds_init(1);
+void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
+    setLevelAssets(level);
+    mapbounds_init(level);
     map[0][0] = gridmap_initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
     map[1][0] = gridmap_initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0, 1);
     map[0][1] = gridmap_initFrame(assets[tRBgIdx], assets[tRFgIdx], 0, 1, 2);
     map[1][1] = gridmap_initFrame(assets[bRBgIdx], assets[bRFgIdx], 1, 1, 3);
+}
+
+void setLevelAssets(u_char level) {
+    CdOpen();
+    switch(level) {
+        case 1:
+            assets = MEM_CALLOC(8, u_long);
+            CdReadFile("00BG.TIM", &assets[0]);
+            CdReadFile("01BG.TIM", &assets[1]);
+            CdReadFile("10BG.TIM", &assets[2]);
+            CdReadFile("11BG.TIM", &assets[3]);
+            CdReadFile("00FG.TIM", &assets[4]);
+            CdReadFile("01FG.TIM", &assets[5]);
+            CdReadFile("10FG.TIM", &assets[6]);
+            CdReadFile("11FG.TIM", &assets[7]);
+            break;
+    }
+    CdClose();
 }
 
 Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex) {

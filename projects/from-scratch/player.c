@@ -6,6 +6,7 @@ Player* player_init(AnimatedGameObject* gobj, u_char pNum, u_char xSpeed, u_char
     p->pNum = pNum;
     p->xSpeed = xSpeed;
     p->ySpeed = ySpeed;
+    printf("Player initialized\n");
     return p;
 }
 

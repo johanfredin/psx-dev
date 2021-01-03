@@ -1,5 +1,6 @@
 #include "header/mapbounds.h"
 #include "header/logger.h"
+#include "header/cdrom.h"
 
 void mapbounds_initLevelOne();
 RECT mapbounds_getRect(u_short x, u_short y, u_short w, u_short h);

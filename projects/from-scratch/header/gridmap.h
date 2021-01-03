@@ -31,7 +31,7 @@ typedef struct {
 
 } Frame;
 
-void gridmap_init(u_long** assets, u_char, u_char, u_char, u_char, u_char, u_char, u_char, u_char);
+void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx);
 void gridmap_tick(Player*);
 void gridmap_draw();
 
