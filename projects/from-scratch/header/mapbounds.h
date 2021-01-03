@@ -6,6 +6,7 @@
  */
 
 #include "gpubase.h"
+#include "mem.h"
 
 /*
  * Struct holding boundaries coordinates for one frame within a map.
@@ -32,6 +33,9 @@ typedef struct {
     // Array of frames in this map (default is 4 frames)
     FrameCoords* frameCoords;
 } MapCoords;
+
+// The current level we will be working on. Should be freed and replace with a new level upon switching
+MapCoords* mapCoords;
 
 /*
  * Initialize boundaries for a new map

@@ -3,6 +3,7 @@
 
 #include "animatedobject.h"
 #include "base.h"
+#include "mem.h"
 #include <LIBETC.H>
 
 typedef struct {

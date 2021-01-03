@@ -6,6 +6,7 @@
 #include "mapbounds.h"
 #include "base.h"
 #include "player.h"
+#include "mem.h"
 
 #define NUM_X_FRAMES 2
 #define NUM_Y_FRAMES 2

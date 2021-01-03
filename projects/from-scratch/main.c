@@ -46,7 +46,6 @@ int main() {
     
     while(1) {
         update();
-        gridmap_tick(player);
         draw();
         display(&backgroundColor);
         clearDisplay();
@@ -71,6 +70,7 @@ void loadCDRomAssets() {
 
 void update() {
     player_tick(player); 
+    gridmap_tick(player);
 }
 
 void draw() {

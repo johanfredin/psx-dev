@@ -1,13 +1,11 @@
 #include "header/mapbounds.h"
+#include "header/logger.h"
 
 void mapbounds_initLevelOne();
 RECT mapbounds_getRect(u_short x, u_short y, u_short w, u_short h);
 
-// The current level we will be working on. Should be freed and replace with a new level upon switching
-MapCoords* mapCoords;
-
 void mapbounds_init(u_char level) {
-    mapCoords = (MapCoords*) malloc3(sizeof(MapCoords));
+    mapCoords = MEM_ALLOC(MapCoords);
     switch(level) {
         case 1:
             mapbounds_initLevelOne();
@@ -23,7 +21,7 @@ void mapbounds_initLevelOne() {
     RECT* bRCoords;
     
     // 0-0
-    tlCoords = (RECT*) malloc3(sizeof(RECT) * 8); 
+    tlCoords = MEM_CALLOC(8, RECT);
     tlCoords[0] = mapbounds_getRect(112,80,48,40);
     tlCoords[1] = mapbounds_getRect(0,32,16,224);
     tlCoords[2] = mapbounds_getRect(0,0,256,32);
@@ -34,7 +32,7 @@ void mapbounds_initLevelOne() {
     tlCoords[7] = mapbounds_getRect(32,208,80,24);
 
     // 1-0
-    tRCoords = (RECT*) malloc3(sizeof(RECT) * 6); 
+    tRCoords = MEM_CALLOC(6, RECT);
     tRCoords[0] = mapbounds_getRect(240,32,16,224);
     tRCoords[1] = mapbounds_getRect(160,32,48,56);
     tRCoords[2] = mapbounds_getRect(112,48,48,24);
@@ -43,7 +41,7 @@ void mapbounds_initLevelOne() {
     tRCoords[5] = mapbounds_getRect(0,0,256,32);
     
     // 0-1
-    bLCoords = (RECT*) malloc3(sizeof(RECT) * 6); 
+    bLCoords = MEM_CALLOC(6, RECT);
     bLCoords[0] = mapbounds_getRect(144,0,112,146);
     bLCoords[1] = mapbounds_getRect(0,0,16,240);
     bLCoords[2] = mapbounds_getRect(0,240,128,16);
@@ -51,7 +49,7 @@ void mapbounds_initLevelOne() {
     bLCoords[4] = mapbounds_getRect(36,176,8,12);
     bLCoords[5] = mapbounds_getRect(48,64,48,24);
     // 1-1
-    bRCoords = (RECT*) malloc3(sizeof(RECT) * 5); 
+    bRCoords = MEM_CALLOC(5, RECT);
     bRCoords[0] = mapbounds_getRect(0,0,160,144);
     bRCoords[1] = mapbounds_getRect(240,0,16,256);
     bRCoords[2] = mapbounds_getRect(192,240,48,16);
@@ -65,7 +63,7 @@ void mapbounds_initLevelOne() {
 }
 
 FrameCoords* mapbounds_addFrameBoundaries(RECT* bounds, u_char frameX, u_char frameY, u_char amount) {
-    FrameCoords* frameCoords = (FrameCoords*) malloc3(sizeof(FrameCoords));
+    FrameCoords* frameCoords = MEM_ALLOC(FrameCoords);
     frameCoords->bounds = bounds;
     frameCoords->frameX = frameX;
     frameCoords->frameY = frameY;
@@ -75,11 +73,11 @@ FrameCoords* mapbounds_addFrameBoundaries(RECT* bounds, u_char frameX, u_char fr
 
 RECT mapbounds_getRect(u_short x, u_short y, u_short w, u_short h) {
     RECT r = {x, y, w, h};
-    printf("Bounds added: {x:%d, y:%d, w:%d, h:%d}\n", x, y, w, h);
+    logger_logCoords(&r, "bounds");
     return r;
 }
 
 
 void mapbounds_free(u_char level) {
-    free3(mapCoords->frameCoords->bounds);
+    MEM_FREE(mapCoords->frameCoords->bounds);
 }

@@ -7,6 +7,7 @@
 #include <LIBGS.H>
 #include <LIBETC.H>
 #include <STRINGS.H>
+#include "mem.h"
 
 // Constants
 #define NUM_BUFFERS 2

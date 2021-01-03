@@ -18,5 +18,7 @@
 #define DRAW_BOUNDS 0
 // Set to 1 to FntPrint player coordinates to screen
 #define PRINT_COORDS 0
+// Set to 1 to FntPrint player animation to screen
+#define PRINT_ANIMATION 0
 
 #endif

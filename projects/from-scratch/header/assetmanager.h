@@ -2,6 +2,7 @@
 #define _assetmanager_
 
 #include "gpubase.h"
+#include "mem.h"
 
 #define ROT_ONE 4096
 #define COLOR_BITS_4 4

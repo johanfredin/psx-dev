@@ -1,4 +1,5 @@
 #include "header/animatedobject.h"
+#include "header/logger.h"
 
 char animatedobject_moving(AnimatedGameObject* gobj);
 
@@ -8,7 +9,7 @@ AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x
     GsSPRITE* textureFrame = assetmanager_loadSprite(name, spriteData, x, y, blend, numColorBits);
     textureFrame->w = w;
     textureFrame->h = h;
-    gameObject = (AnimatedGameObject*) malloc3(sizeof(AnimatedGameObject));
+    gameObject = MEM_ALLOC(AnimatedGameObject);
     gameObject->textureFrame = textureFrame;
     gameObject->heading = heading;
     gameObject->curr_u = textureFrame->u;
@@ -21,7 +22,7 @@ AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x
     return gameObject;
 }   
 
-void animatedobject_tick(AnimatedGameObject* gameObject, short xSpeed, short ySpeed) {
+void animatedobject_tick(AnimatedGameObject* gameObject) {
     short u=gameObject->curr_v;
     short v=gameObject->curr_v;
     if(gameObject->heading.left) {
@@ -37,7 +38,11 @@ void animatedobject_tick(AnimatedGameObject* gameObject, short xSpeed, short ySp
     gameObject->curr_v = v;
 
     gameObject->acc += 1;
-    FntPrint("Acc=%d\ncurr_u=%d\nmoving=%d\n", gameObject->acc, gameObject->curr_u, animatedobject_moving(gameObject));
+    
+    if(PRINT_ANIMATION) {
+        FntPrint("Acc=%d, curr_u=%d, moving=%d\n", gameObject->acc, gameObject->curr_u, animatedobject_moving(gameObject));
+    }
+
     if(gameObject->acc >= gameObject->ticksPerFrame) {
         gameObject->acc = 0;
         if(gameObject->curr_u >= ((gameObject->keyFrames * gameObject->textureFrame->w) - gameObject->textureFrame->w)) {
@@ -49,8 +54,6 @@ void animatedobject_tick(AnimatedGameObject* gameObject, short xSpeed, short ySp
         }
     }
     gameObject->textureFrame->u = gameObject->curr_u;
-    gameObject->textureFrame->x += xSpeed;
-    gameObject->textureFrame->y += ySpeed;
 }
 
 void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d) {

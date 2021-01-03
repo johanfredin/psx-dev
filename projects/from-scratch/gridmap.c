@@ -17,8 +17,8 @@ void gridmap_init(u_long** assets, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgId
 }
 
 Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex) {
-    Frame* frame = (Frame*) malloc3(sizeof(Frame));
-    CollisionBlocks* cbs = (CollisionBlocks*) malloc3(sizeof(CollisionBlocks));
+    Frame* frame = MEM_ALLOC(Frame);
+    CollisionBlocks* cbs = MEM_ALLOC(CollisionBlocks);
     frame->bg = assetmanager_loadSprite("bg", bgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->fg = assetmanager_loadSprite("fg", fgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->xIdx = xIdx;
@@ -32,10 +32,9 @@ Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char
     printf("Bounds amount=%d\n", cbs->amount);
     logger_logBoundsArray(cbs->bounds, cbs->amount);
 
-    // Draw tiles where collision bounds are supposed to be if set in main
     if(DRAW_BOUNDS) {
        int i = 0;
-       TILE* boundLines = (TILE*) malloc3(sizeof(TILE) * cbs->amount);
+       TILE* boundLines = MEM_CALLOC(cbs->amount, TILE);
        while(i < cbs->amount) {
            TILE bounds;
            SetTile(&bounds);
