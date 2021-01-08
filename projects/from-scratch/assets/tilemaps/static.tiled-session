@@ -1,0 +1,45 @@
+{
+    "activeFile": "L1/0_0.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/psyq/projects/psx-dev/projects/tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "L1/0_0.tmx": {
+            "scale": 2.196875,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 1801.877667140825,
+                "y": -1565.633001422475
+            }
+        },
+        "L1/0_1.tmx": {
+            "scale": 2.196875,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 98.09388335704125,
+                "y": 128.59174964438125
+            }
+        },
+        "tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "openFiles": [
+        "L1/0_1.tmx",
+        "tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx",
+        "L1/0_0.tmx"
+    ],
+    "project": "",
+    "recentFiles": [
+        "L1/0_1.tmx",
+        "tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx",
+        "L1/0_0.tmx"
+    ],
+    "tileset.lastUsedFilter": "Tiled tileset files (*.tsx *.xml)"
+}

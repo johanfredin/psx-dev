@@ -15,6 +15,15 @@ u_char gridmap_currXFrame;
 u_char gridmap_currYFrame;
 
 typedef struct {
+    u_char x, y;
+} Point;
+
+typedef struct {
+    Point* origin;
+    Point* destination;
+} Teleport;
+
+typedef struct {
     // The actual physical bounds that we will collide with in the frame
     RECT* bounds;
     // The amount of blocks on one frame
@@ -28,7 +37,7 @@ typedef struct {
     GsSPRITE* bg;
     GsSPRITE* fg;
     CollisionBlocks* cbs;
-
+    Teleport* teleports;
 } Frame;
 
 void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx);
