@@ -8,17 +8,17 @@
  * Constant values used throughout game
  */
 
-// Width of screen
-#define SCREEN_WIDTH 256
-// Height of screen
-#define SCREEN_HEIGHT 256
+#define SCREEN_WIDTH 256    // Width of screen
+#define SCREEN_HEIGHT 256   // Height of screen
+
 #define __ramsize   0x00200000 // Force 2MB vram
 #define __stacksize 0x00004000
-// Set to 1 to draw map bounds as red rectangles 
-#define DRAW_BOUNDS 0
-// Set to 1 to FntPrint player coordinates to screen
-#define PRINT_COORDS 0
-// Set to 1 to FntPrint player animation to screen
-#define PRINT_ANIMATION 0
+
+#define DRAW_BOUNDS 0           // Set to 1 to draw map bounds as red rectangles 
+#define PRINT_COORDS 0          // Set to 1 to FntPrint player coordinates to screen
+#define PRINT_ANIMATION 0       // Set to 1 to FntPrint player animation to screen
+#define LOG_INDIVIDUAL_BOUNDS 1 // Set to 1 to Log all asigned mab boundarie coordinates
+
+#define ARR_LENGTH(arr) sizeof(arr) / sizeof(arr[0])    // Calculate the size of an array
 
 #endif

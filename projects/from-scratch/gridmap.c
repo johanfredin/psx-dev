@@ -1,32 +1,32 @@
 #include "header/gridmap.h"
-#include "header/mem.h"
-#include "header/cdrom.h"
+#include "header/mapbounds.h"
 
-Frame* map[NUM_X_FRAMES][NUM_Y_FRAMES];
+GridMap* map;
 u_char rightCol, leftCol, topCol, bottomCol;
 u_long** assets;
 
-
-Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
-void gridmap_handleEdgeCollision(GsSPRITE* sprite);
-void gridmap_handleBlockCollision(GsSPRITE* sprite);
+Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
+void handleEdgeCollision(GsSPRITE* sprite);
+void handleBlockCollision(GsSPRITE* sprite);
 void setLevelAssets(u_char level);
 
 
 void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
+    map = MEM_ALLOC(GridMap);
+    map->level = level;
     setLevelAssets(level);
-    mapbounds_init(level);
-    map[0][0] = gridmap_initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
-    map[1][0] = gridmap_initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0, 1);
-    map[0][1] = gridmap_initFrame(assets[tRBgIdx], assets[tRFgIdx], 0, 1, 2);
-    map[1][1] = gridmap_initFrame(assets[bRBgIdx], assets[bRFgIdx], 1, 1, 3);
+    map->mainFrames[0][0] = initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
+    map->mainFrames[1][0] = initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0, 1);
+    map->mainFrames[0][1] = initFrame(assets[tRBgIdx], assets[tRFgIdx], 0, 1, 2);
+    map->mainFrames[1][1] = initFrame(assets[bRBgIdx], assets[bRFgIdx], 1, 1, 3);
+    mapbounds_init(map);
 }
 
 void setLevelAssets(u_char level) {
     CdOpen();
     switch(level) {
         case 1:
-            assets = MEM_CALLOC(8, u_long);
+            assets = (u_long**) calloc3(8, sizeof(u_long));  //MEM_CALLOC(8, u_long);
             CdReadFile("00BG.TIM", &assets[0]);
             CdReadFile("01BG.TIM", &assets[1]);
             CdReadFile("10BG.TIM", &assets[2]);
@@ -40,47 +40,21 @@ void setLevelAssets(u_char level) {
     CdClose();
 }
 
-Frame* gridmap_initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex) {
+Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex) {
     Frame* frame = MEM_ALLOC(Frame);
     CollisionBlocks* cbs = MEM_ALLOC(CollisionBlocks);
     frame->bg = assetmanager_loadSprite("bg", bgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->fg = assetmanager_loadSprite("fg", fgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->xIdx = xIdx;
     frame->yIdx = yIdx;
-
-    printf("--------------------------------------------\n");
-    printf("Setting collision bounds from bounds holder.\n");
-    printf("--------------------------------------------\n");
-    cbs->amount = mapCoords->frameCoords[blockIndex].amount;
-    cbs->bounds = mapCoords->frameCoords[blockIndex].bounds;
-    printf("Bounds amount=%d\n", cbs->amount);
-    logger_logBoundsArray(cbs->bounds, cbs->amount);
-
-    if(DRAW_BOUNDS) {
-       int i = 0;
-       TILE* boundLines = MEM_CALLOC(cbs->amount, TILE);
-       while(i < cbs->amount) {
-           TILE bounds;
-           SetTile(&bounds);
-           bounds.x0 = cbs->bounds[i].x;
-           bounds.y0 = cbs->bounds[i].y;
-           bounds.w = cbs->bounds[i].w;
-           bounds.h = cbs->bounds[i].h;
-           setRGB0(&bounds, 255, 0, 0);
-           logger_logBounds(&bounds);
-           boundLines[i] = bounds;
-           i++;
-       }
-       cbs->boundLines = boundLines;
-    }
     frame->cbs = cbs;
     return frame;
 }
 
 void gridmap_draw() {
-    CollisionBlocks* blocks = map[gridmap_currXFrame][gridmap_currYFrame]->cbs;
-    GsSortFastSprite(map[gridmap_currXFrame][gridmap_currYFrame]->fg, currentOT(), 0);
-    GsSortFastSprite(map[gridmap_currXFrame][gridmap_currYFrame]->bg, currentOT(), 2);
+    CollisionBlocks* blocks = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->cbs;
+    GsSortFastSprite(map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->fg, currentOT(), 0);
+    GsSortFastSprite(map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->bg, currentOT(), 2);
     if(DRAW_BOUNDS) {
         int blockIdx = 0;
         while(blockIdx < blocks->amount) {
@@ -95,11 +69,11 @@ void gridmap_draw() {
 }
 
 void gridmap_tick(Player* player) {
-    gridmap_handleEdgeCollision(player->gobj->textureFrame);
-    gridmap_handleBlockCollision(player->gobj->textureFrame);
+    handleEdgeCollision(player->gobj->textureFrame);
+    handleBlockCollision(player->gobj->textureFrame);
 }
 
-void gridmap_handleEdgeCollision(GsSPRITE* sprite) {
+void handleEdgeCollision(GsSPRITE* sprite) {
     // X bounds -------------------------------------
     if(sprite->x < 0) {
          if(gridmap_currXFrame > 0) {
@@ -137,8 +111,8 @@ void gridmap_handleEdgeCollision(GsSPRITE* sprite) {
     }
 }
 
-void gridmap_handleBlockCollision(GsSPRITE* sprite) {
-    CollisionBlocks* blocks = map[gridmap_currXFrame][gridmap_currYFrame]->cbs;
+void handleBlockCollision(GsSPRITE* sprite) {
+    CollisionBlocks* blocks = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->cbs;
     int i = 0;
     
     // Player bounds
@@ -180,3 +154,5 @@ void gridmap_handleBlockCollision(GsSPRITE* sprite) {
         i++;
     }   
 }
+
+
