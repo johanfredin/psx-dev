@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="19">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="20">
  <editorsettings>
   <export target="../img/0_0_bounds.csv" format="csv"/>
  </editorsettings>
- <tileset firstgid="1" source="../../../../tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx"/>
+ <tileset firstgid="1" source="tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx"/>
  <layer id="1" name="bg" width="16" height="16">
   <data encoding="csv">
 1,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,
@@ -73,5 +73,8 @@
   <object id="15" x="0" y="0" width="256" height="32"/>
   <object id="16" x="0" y="32" width="16" height="224"/>
   <object id="18" x="112" y="80" width="48" height="40"/>
+ </objectgroup>
+ <objectgroup color="#00aaff" id="5" name="teleports">
+  <object id="19" x="128" y="116" width="16" height="12"/>
  </objectgroup>
 </map>

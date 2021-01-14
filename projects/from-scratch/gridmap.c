@@ -8,6 +8,7 @@ u_long** assets;
 Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
 void handleEdgeCollision(GsSPRITE* sprite);
 void handleBlockCollision(GsSPRITE* sprite);
+void handleTeleportCollision(GsSPRITE* sprite);
 void setLevelAssets(u_char level);
 
 
@@ -26,7 +27,7 @@ void setLevelAssets(u_char level) {
     CdOpen();
     switch(level) {
         case 1:
-            assets = (u_long**) calloc3(8, sizeof(u_long));  //MEM_CALLOC(8, u_long);
+            assets = (u_long**) calloc3(10, sizeof(u_long));  //MEM_CALLOC(8, u_long);
             CdReadFile("00BG.TIM", &assets[0]);
             CdReadFile("01BG.TIM", &assets[1]);
             CdReadFile("10BG.TIM", &assets[2]);
@@ -35,6 +36,8 @@ void setLevelAssets(u_char level) {
             CdReadFile("01FG.TIM", &assets[5]);
             CdReadFile("10FG.TIM", &assets[6]);
             CdReadFile("11FG.TIM", &assets[7]);
+            CdReadFile("1000iBG.TIM", &assets[8]);
+            CdReadFile("1000iFG.TIM", &assets[9]);
             break;
     }
     CdClose();
@@ -153,6 +156,15 @@ void handleBlockCollision(GsSPRITE* sprite) {
 
         i++;
     }   
+}
+
+void handleTeleportCollision(GsSPRITE* sprite) {
+    Teleports* teleports = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->teleports;
+    int i = 0;
+    while(i < teleports->amount) {
+        
+        i++;
+    }
 }
 
 

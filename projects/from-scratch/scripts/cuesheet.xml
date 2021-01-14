@@ -5,7 +5,6 @@
 		<license file="../../../TOOLS/LICENSEE.DAT"/>
 		<directory_tree>
 			<file name="SYSTEM.CNF"	type="data"	source="../../../TOOLS/SYSTEM.CNF"/>
-			<file name="PSY_8.TIM"	type="data"	source="../assets/TIM/PSY_8.TIM"/>
 			<file name="HERO.TIM"	type="data"	source="../assets/TIM/HERO.TIM"/>
 			<file name="00BG.TIM"	type="data"	source="../assets/TIM/00bg.TIM"/>
 			<file name="01BG.TIM"	type="data"	source="../assets/TIM/01bg.TIM"/>
@@ -15,6 +14,8 @@
 			<file name="01FG.TIM"	type="data"	source="../assets/TIM/01fg.TIM"/>
 			<file name="10FG.TIM"	type="data"	source="../assets/TIM/10fg.TIM"/>
 			<file name="11FG.TIM"	type="data"	source="../assets/TIM/11fg.TIM"/>
+			<file name="1000iBG.TIM"	type="data"	source="../assets/TIM/100i0bg.TIM"/>
+			<file name="100i0FG.TIM"	type="data"	source="../assets/TIM/100i0fg.TIM"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

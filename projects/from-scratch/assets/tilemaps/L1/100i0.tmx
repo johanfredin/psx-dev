@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="17">
+ <tileset firstgid="1" source="tilesetformattedupdate1.tsx"/>
+ <tileset firstgid="85" source="16x16extratiles.tsx"/>
+ <layer id="1" name="bg" width="8" height="8">
+  <data encoding="csv">
+29,30,30,30,30,30,30,31,
+86,87,86,87,87,87,87,87,
+93,94,86,87,87,87,87,87,
+86,87,93,94,87,87,87,87,
+87,94,94,94,87,87,87,87,
+87,87,94,87,87,87,87,87,
+87,87,87,87,87,87,87,87,
+3221225503,3221225516,3221225516,87,37,3221225516,3221225516,3221225501
+</data>
+ </layer>
+ <layer id="5" name="bg2" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,46,47,
+48,0,0,0,0,0,53,54,
+0,1,2,2,2,2,3,0,
+0,8,9,9,9,9,10,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+1610612772,1610612772,1610612772,0,0,1610612772,1610612772,1610612772
+</data>
+ </layer>
+ <layer id="6" name="bg3" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+36,0,0,0,0,0,0,38
+</data>
+ </layer>
+ <layer id="7" name="bg4" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+36,0,0,0,0,0,0,38,
+36,0,0,0,0,0,0,38,
+36,22,22,0,0,0,0,38,
+36,0,0,0,0,0,0,38,
+36,0,0,0,0,0,0,38,
+36,0,0,0,0,0,0,38,
+36,1610612772,1610612772,0,0,1610612772,1610612772,1610612772
+</data>
+ </layer>
+ <layer id="3" name="fg" width="8" height="8">
+  <data encoding="csv">
+42,0,0,0,0,32,0,0,
+0,0,0,0,0,39,0,0,
+0,0,0,0,0,0,0,0,
+0,55,56,0,0,0,33,0,
+0,62,63,0,0,0,40,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+3221225514,0,0,0,0,0,0,3221225514
+</data>
+ </layer>
+ <objectgroup color="#ff0000" id="4" name="bounds" visible="0">
+  <object id="1" x="0" y="0" width="4" height="128"/>
+  <object id="4" x="124" y="0" width="4" height="128"/>
+  <object id="6" x="4" y="0" width="120" height="16"/>
+  <object id="8" x="80" y="16" width="44" height="16"/>
+  <object id="9" x="16" y="48" width="32" height="32"/>
+  <object id="11" x="4" y="112" width="44" height="16"/>
+  <object id="12" x="80" y="112" width="44" height="16"/>
+  <object id="13" x="96" y="60" width="16" height="20"/>
+ </objectgroup>
+ <objectgroup color="#0055ff" id="8" name="teleport" visible="0">
+  <object id="15" x="48" y="120" width="32" height="8"/>
+ </objectgroup>
+</map>
