@@ -7,7 +7,7 @@
 
 #include "gridmap.h"
 
-void mapbounds_init(GridMap* map);
+void mapbounds_init(u_char level, Frame* frames);
 
 
 #endif

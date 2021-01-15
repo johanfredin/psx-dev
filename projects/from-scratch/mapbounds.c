@@ -3,16 +3,13 @@
 #include "header/gridmap.h"
 
 void initLevelOne();
-Teleport* getTeleport(u_char originX, u_char originY, u_char destX, u_char destY, u_char w, u_char h);
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount);
 RECT getRect(u_short x, u_short y, u_short w, u_short h);
 
 
-void mapbounds_init(GridMap* map) {
+void mapbounds_init(u_char level, Frame* frames) {
     RECT *tlCoords, *tRCoords, *bLCoords, *bRCoords;    // Main frame bounds
-    RECT *tlAddCooords; // Additional frame bounds
-    Teleports *tlTeleports;  // Teleport coords 
-    switch(map->level) {
+    switch(level) {
         case 1:
              // 0-0
             tlCoords = MEM_CALLOC(8, RECT);
@@ -26,15 +23,14 @@ void mapbounds_init(GridMap* map) {
             tlCoords[7] = getRect(32,208,80,24);
 
             // 0-0-i0 (additional)
-            tlAddCooords = MEM_CALLOC(5, RECT);
-            tlAddCooords[0] = getRect(0, 0, 4, 80);
-            tlAddCooords[1] = getRect(4, 64, 28, 16);
-            tlAddCooords[2] = getRect(48, 64, 32, 16);
-            tlAddCooords[3] = getRect(76, 0, 4, 64);
-            tlAddCooords[4] = getRect(4, 0, 72, 4);
+            // tlAddCooords = MEM_CALLOC(5, RECT);
+            // tlAddCooords[0] = getRect(0, 0, 4, 80);
+            // tlAddCooords[1] = getRect(4, 64, 28, 16);
+            // tlAddCooords[2] = getRect(48, 64, 32, 16);
+            // tlAddCooords[3] = getRect(76, 0, 4, 64);
+            // tlAddCooords[4] = getRect(4, 0, 72, 4);
 
              // 0-0 Teleports
-            tlTeleports = MEM_CALLOC(2, Teleports);
 
             // 1-0
             tRCoords = MEM_CALLOC(6, RECT);
@@ -61,21 +57,10 @@ void mapbounds_init(GridMap* map) {
             bRCoords[4] = getRect(0,176,144,52);
             break;
     }
-    addCollisionBlocks(map->mainFrames[0][0]->cbs, tlCoords, 8);
-    addCollisionBlocks(map->mainFrames[1][0]->cbs, tRCoords, 6);
-    addCollisionBlocks(map->mainFrames[0][1]->cbs, bLCoords, 6);
-    addCollisionBlocks(map->mainFrames[1][1]->cbs, bRCoords, 5);
-
-    if(tlAddCooords != NULL) {
-
-    }
-}
-
-Teleport* getTeleport(RECT* origin, RECT dest) {
-    Teleport* t = MEM_ALLOC(Teleport);
-    t->origin = origin;
-    t->destination = dest;
-    return t;
+    addCollisionBlocks(frames[0].cbs, tlCoords, 8);
+    addCollisionBlocks(frames[1].cbs, tRCoords, 6);
+    addCollisionBlocks(frames[2].cbs, bLCoords, 6);
+    addCollisionBlocks(frames[3].cbs, bRCoords, 5);
 }
 
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
@@ -88,7 +73,7 @@ void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
     logger_logBoundsArray(cbs->bounds, cbs->amount);
     if(DRAW_BOUNDS) {
        TILE* boundLines = MEM_CALLOC(cbs->amount, TILE);
-       int i;
+       int i = 0;
        while(i < cbs->amount) {
            TILE bounds;
            SetTile(&bounds);
@@ -99,7 +84,6 @@ void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
            setRGB0(&bounds, 255, 0, 0);
            logger_logBounds(&bounds);
            boundLines[i] = bounds;
-
            i++;
        }
        cbs->boundLines = boundLines;

@@ -45,7 +45,7 @@ int main() {
 
     gobj = animatedobject_set("HERO", *heroTexture, 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
     player = player_init(gobj, 0, SPEED, SPEED);
-    gridmap_init(1, 0, 4, 1, 5, 2, 6, 3, 7);
+    gridmap_init(1);
     
     while(1) {
         update();

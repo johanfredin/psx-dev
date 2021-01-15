@@ -8,21 +8,12 @@
 
 #include "player.h"
 
-#define NUM_X_FRAMES 2
-#define NUM_Y_FRAMES 2
-
-u_char gridmap_currXFrame;
-u_char gridmap_currYFrame;
-
 typedef struct {
     RECT* origin;
-    RECT* destination;
+    u_char destX, destY, frameIdx;
+    // Graphical representation of a block (if DebugMode)
+    TILE* boundLines;
 } Teleport;
-
-typedef struct {
-    Teleport* entries;
-    u_char amount;
-} Teleports;
 
 typedef struct {
     // The actual physical bounds that we will collide with in the frame
@@ -34,24 +25,14 @@ typedef struct {
 } CollisionBlocks;
 
 typedef struct {
-    u_char xIdx, yIdx, t_amount;
+    u_char t_amount;
     GsSPRITE* bg;
     GsSPRITE* fg;
     CollisionBlocks* cbs;
-    Teleports* teleports;
+    Teleport* teleports;
 } Frame;
 
-/* 
- * Main struct. 
- * Holds the 4 main frames as well as optional additional frames (e.g for houses etc)
- */
-typedef struct {
-    u_char level;
-    Frame* mainFrames[NUM_X_FRAMES][NUM_Y_FRAMES];
-    Frame* additionalFrames;
-} GridMap;
-
-void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx);
+void gridmap_init(u_char level);
 void gridmap_tick(Player*);
 void gridmap_draw();
 

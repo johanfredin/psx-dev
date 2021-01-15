@@ -1,29 +1,29 @@
 #include "header/gridmap.h"
 #include "header/mapbounds.h"
 
-GridMap* map;
+Frame* frames;
+u_char assetsCount, currentFrame=0;
 u_char rightCol, leftCol, topCol, bottomCol;
 u_long** assets;
 
-Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex);
-void handleEdgeCollision(GsSPRITE* sprite);
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite);
 void handleBlockCollision(GsSPRITE* sprite);
 void handleTeleportCollision(GsSPRITE* sprite);
-void setLevelAssets(u_char level);
+u_char setLevelAssets(u_char level);
 
 
-void gridmap_init(u_char level, u_char tLBgIdx, u_char tLFgIdx, u_char tRBgIdx, u_char tRFgIdx, u_char bLBgIdx, u_char bLFgIdx, u_char bRBgIdx, u_char bRFgIdx) {
-    map = MEM_ALLOC(GridMap);
-    map->level = level;
-    setLevelAssets(level);
-    map->mainFrames[0][0] = initFrame(assets[tLBgIdx], assets[tLFgIdx], 0, 0, 0);
-    map->mainFrames[1][0] = initFrame(assets[bLBgIdx], assets[bLFgIdx], 1, 0, 1);
-    map->mainFrames[0][1] = initFrame(assets[tRBgIdx], assets[tRFgIdx], 0, 1, 2);
-    map->mainFrames[1][1] = initFrame(assets[bRBgIdx], assets[bRFgIdx], 1, 1, 3);
-    mapbounds_init(map);
+void gridmap_init(u_char level) {
+    assetsCount = setLevelAssets(level);
+    frames = (Frame*) calloc3(assetsCount, sizeof(Frame)); //MEM_CALLOC(assetsCount, Frame);
+    initFrame(&frames[0], assets[0], assets[4]);
+    initFrame(&frames[1], assets[1], assets[5]);
+    initFrame(&frames[2], assets[2], assets[6]);
+    initFrame(&frames[3], assets[3], assets[7]);
+    mapbounds_init(level, frames);
 }
 
-void setLevelAssets(u_char level) {
+u_char setLevelAssets(u_char level) {
+    u_char count = 0;
     CdOpen();
     switch(level) {
         case 1:
@@ -38,26 +38,25 @@ void setLevelAssets(u_char level) {
             CdReadFile("11FG.TIM", &assets[7]);
             CdReadFile("1000iBG.TIM", &assets[8]);
             CdReadFile("1000iFG.TIM", &assets[9]);
+            count = 10;
             break;
     }
     CdClose();
+    return count;
 }
 
-Frame* initFrame(u_long* bgSprite, u_long* fgSprite, u_char xIdx, u_char yIdx, u_char blockIndex) {
-    Frame* frame = MEM_ALLOC(Frame);
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite) {
     CollisionBlocks* cbs = MEM_ALLOC(CollisionBlocks);
     frame->bg = assetmanager_loadSprite("bg", bgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->fg = assetmanager_loadSprite("fg", fgSprite, 0, 0, 128, COLOR_BITS_8);
-    frame->xIdx = xIdx;
-    frame->yIdx = yIdx;
     frame->cbs = cbs;
-    return frame;
 }
 
 void gridmap_draw() {
-    CollisionBlocks* blocks = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->cbs;
-    GsSortFastSprite(map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->fg, currentOT(), 0);
-    GsSortFastSprite(map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->bg, currentOT(), 2);
+    CollisionBlocks* blocks = frames[currentFrame].cbs;
+    FntPrint("Blocks=%d\n", blocks);
+    GsSortFastSprite(frames[currentFrame].fg, currentOT(), 0);
+    GsSortFastSprite(frames[currentFrame].bg, currentOT(), 2);
     if(DRAW_BOUNDS) {
         int blockIdx = 0;
         while(blockIdx < blocks->amount) {
@@ -72,50 +71,12 @@ void gridmap_draw() {
 }
 
 void gridmap_tick(Player* player) {
-    handleEdgeCollision(player->gobj->textureFrame);
+    handleTeleportCollision(player->gobj->textureFrame);
     handleBlockCollision(player->gobj->textureFrame);
 }
 
-void handleEdgeCollision(GsSPRITE* sprite) {
-    // X bounds -------------------------------------
-    if(sprite->x < 0) {
-         if(gridmap_currXFrame > 0) {
-            sprite->x = screenWidth - sprite->w;
-            gridmap_currXFrame--;
-         } else {
-             sprite->x = 0;
-         }
-    } 
-    if(sprite->x + sprite->w > screenWidth) {
-        if(gridmap_currXFrame < 1) {
-            sprite->x = 0;
-            gridmap_currXFrame++;
-        } else {
-            sprite->x = screenWidth - sprite->w;
-        }
-    } 
-
-    // Y bounds -------------------------------------
-    if(sprite->y < 0) {
-        if(gridmap_currYFrame > 0) {
-            sprite->y = screenHeight - sprite->h;
-            gridmap_currYFrame--;
-        } else {
-            sprite->y = 0;
-        }
-    } 
-    if(sprite->y + sprite->h > screenHeight) {
-        if(gridmap_currYFrame < 1) {
-            sprite->y = 0;
-            gridmap_currYFrame++;
-        } else {
-            sprite->y = screenHeight - sprite->h;
-        }
-    }
-}
-
 void handleBlockCollision(GsSPRITE* sprite) {
-    CollisionBlocks* blocks = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->cbs;
+    CollisionBlocks* blocks = frames[currentFrame].cbs;
     int i = 0;
     
     // Player bounds
@@ -159,12 +120,47 @@ void handleBlockCollision(GsSPRITE* sprite) {
 }
 
 void handleTeleportCollision(GsSPRITE* sprite) {
-    Teleports* teleports = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->teleports;
-    int i = 0;
-    while(i < teleports->amount) {
+    // Teleports* teleports = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->teleports;
+    // int i = 0;
+    // while(i < teleports->amount) {
         
-        i++;
-    }
+    //     i++;
+    // }
+    // X bounds -------------------------------------
+    // if(sprite->x < 0) {
+    //      if(gridmap_currXFrame > 0) {
+    //         sprite->x = screenWidth - sprite->w;
+    //         gridmap_currXFrame--;
+    //      } else {
+    //          sprite->x = 0;
+    //      }
+    // } 
+    // if(sprite->x + sprite->w > screenWidth) {
+    //     if(gridmap_currXFrame < 1) {
+    //         sprite->x = 0;
+    //         gridmap_currXFrame++;
+    //     } else {
+    //         sprite->x = screenWidth - sprite->w;
+    //     }
+    // } 
+
+    // // Y bounds -------------------------------------
+    // if(sprite->y < 0) {
+    //     if(gridmap_currYFrame > 0) {
+    //         sprite->y = screenHeight - sprite->h;
+    //         gridmap_currYFrame--;
+    //     } else {
+    //         sprite->y = 0;
+    //     }
+    // } 
+    // if(sprite->y + sprite->h > screenHeight) {
+    //     if(gridmap_currYFrame < 1) {
+    //         sprite->y = 0;
+    //         gridmap_currYFrame++;
+    //     } else {
+    //         sprite->y = screenHeight - sprite->h;
+    //     }
+    // }
 }
 
 
