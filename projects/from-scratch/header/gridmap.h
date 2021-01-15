@@ -10,7 +10,7 @@
 
 typedef struct {
     RECT* origin;
-    u_char destX, destY, frameIdx;
+    short destX, destY;
     // Graphical representation of a block (if DebugMode)
     TILE* boundLines;
 } Teleport;

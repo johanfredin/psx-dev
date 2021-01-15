@@ -54,7 +54,6 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite) {
 
 void gridmap_draw() {
     CollisionBlocks* blocks = frames[currentFrame].cbs;
-    FntPrint("Blocks=%d\n", blocks);
     GsSortFastSprite(frames[currentFrame].fg, currentOT(), 0);
     GsSortFastSprite(frames[currentFrame].bg, currentOT(), 2);
     if(DRAW_BOUNDS) {
