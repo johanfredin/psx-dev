@@ -19,6 +19,9 @@
 #define PRINT_ANIMATION 0       // Set to 1 to FntPrint player animation to screen
 #define LOG_INDIVIDUAL_BOUNDS 0 // Set to 1 to Log all asigned mab boundarie coordinates
 
-#define ARR_LENGTH(arr) sizeof(arr) / sizeof(arr[0])    // Calculate the size of an array
+#if !defined(ARRAY_SIZE)
+    #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
+#endif
+
 
 #endif
