@@ -2,6 +2,7 @@
 #include "header/gpubase.h"
 #include "header/gridmap.h"
 
+void addTeleports(Frame* frame, Teleport* teleports, u_char i, u_char amount);
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount);
 RECT getRect(u_short x, u_short y, u_short w, u_short h);
 RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h);
@@ -80,13 +81,39 @@ void mapbounds_init(u_char level, Frame* frames) {
 
     for(i = 0; i < frameCount; i++) {
         addCollisionBlocks(frames[i].cbs, frameCoords[i], levelBoundsAmounts[i]);
-        if(levelTeleportsAmount[i] > 0) {
-            frames[i].teleports = teleports[i];
-            printf("Added %d teleports to frame nr %d\n", levelTeleportsAmount[i], i);
-        }
-        frames[i].t_amount = levelTeleportsAmount[i];    
+        addTeleports(&frames[i], teleports[i], i, levelTeleportsAmount[i]);
+        // if(levelTeleportsAmount[i] > 0) {
+        //     frames[i].teleports = teleports[i];
+        //     printf("Added %d teleports to frame nr %d\n", levelTeleportsAmount[i], i);
+        // }
+        // frames[i].t_amount = levelTeleportsAmount[i];    
     }
     
+}
+
+void addTeleports(Frame* frame, Teleport* teleports, u_char i, u_char amount) {
+    if(amount > 0) {
+        frame->teleports = &teleports[i];
+        if(DRAW_BOUNDS) {
+            TILE* boundLines = MEM_CALLOC(amount, TILE);
+            int i = 0;
+            while(i < amount) {
+                TILE bounds;
+                SetTile(&bounds);
+                bounds.x0 = teleports[i].origin->x;
+                bounds.y0 = teleports[i].origin->y;
+                bounds.w = teleports[i].origin->w;
+                bounds.h = teleports[i].origin->h;
+                setRGB0(&bounds, 0, 0, 255);
+                logger_logBounds(&bounds);
+                boundLines[i] = bounds;
+                i++;
+            }
+            teleports[i].boundLines = boundLines;
+        }
+    }
+    printf("Added %d teleports to frame nr %d\n", amount, i);
+    frame->t_amount = amount;
 }
 
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
@@ -133,7 +160,7 @@ RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h) {
 Teleport getTeleport(RECT* origin, u_char destX, u_char destY) {
     Teleport t = {origin, destX, destY};
     if(LOG_INDIVIDUAL_BOUNDS) {
-        // logger_logCoords(&t, "bounds");
+        // logger_logTeleport(&t);
     }
     return t;
 }
