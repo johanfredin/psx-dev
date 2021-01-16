@@ -20,8 +20,8 @@ void CdReadFile(char* file_path, u_long** file) {
 	u_char* file_path_raw;
 	int* sectors_size;
 	DslFILE* temp_file_info;
-	sectors_size = (int*) malloc3(sizeof(int));
-	temp_file_info = (DslFILE*) malloc3(sizeof(DslFILE));
+	sectors_size = MALLOC(int);
+	temp_file_info = MALLOC(DslFILE);
 
 	// Exit if libDs isn't initialized
 	if(!didInitDs) {
@@ -56,9 +56,9 @@ void CdReadFile(char* file_path, u_long** file) {
 	}
 
 	// Clean up
-	free3(file_path_raw);
-	free3(sectors_size);
-	free3(temp_file_info);
+	FREE(file_path_raw);
+	FREE(sectors_size);
+	FREE(temp_file_info);
 
 	printf("File %s loaded into memory addr=%p\n", file_path, *file);
 }

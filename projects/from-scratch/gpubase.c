@@ -70,7 +70,7 @@ void clearDisplay() {
 
 void initializeHeap() {
 	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
-    MEM_RESERVE(HEAP_DEFALT_START_ADDR, HEAP_DEFALT_SIZE);
+    INIT_HEAP(HEAP_DEFALT_START_ADDR, HEAP_DEFALT_SIZE);
 }
 
 // GsGetActiveBuff() should have been called prior to calling this function

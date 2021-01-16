@@ -9,7 +9,7 @@ AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x
     GsSPRITE* textureFrame = assetmanager_loadSprite(name, spriteData, x, y, blend, numColorBits);
     textureFrame->w = w;
     textureFrame->h = h;
-    gameObject = MEM_ALLOC(AnimatedGameObject);
+    gameObject = MALLOC(AnimatedGameObject);
     gameObject->textureFrame = textureFrame;
     gameObject->heading = heading;
     gameObject->curr_u = textureFrame->u;

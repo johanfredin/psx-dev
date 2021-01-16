@@ -23,13 +23,13 @@ void mapbounds_init(u_char level, Frame* frames) {
 
             // ----
             // Teleports
-            teleports[0] = MEM_CALLOC(3, Teleport);
+            teleports[0] = CALLOC(3, Teleport);
             teleports[0][0] = getTeleport(getRectPtr(252, 32, 4, 144), 5, -1);
             teleports[0][1] = getTeleport(getRectPtr(16, 252, 128, 4), 5, -1);
             teleports[0][2] = getTeleport(getRectPtr(128, 116, 16, 12), 25, 125);
             levelTeleportsAmount[frameCount] = 3;
             // Frames
-            frameCoords[0] = MEM_CALLOC(8, RECT);
+            frameCoords[0] = CALLOC(8, RECT);
             frameCoords[0][0] = getRect(112,80,48,40);
             frameCoords[0][1] = getRect(0,32,16,224);
             frameCoords[0][2] = getRect(0,0,256,32);
@@ -41,7 +41,7 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 8);
 
             // 1-0
-            frameCoords[1] = MEM_CALLOC(6, RECT);
+            frameCoords[1] = CALLOC(6, RECT);
             frameCoords[1][0] = getRect(240,32,16,224);
             frameCoords[1][1] = getRect(160,32,48,56);
             frameCoords[1][2] = getRect(112,48,48,24);
@@ -51,7 +51,7 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 6);
 
             // 0-1
-            frameCoords[2] = MEM_CALLOC(6, RECT);
+            frameCoords[2] = CALLOC(6, RECT);
             frameCoords[2][0] = getRect(144,0,112,146);
             frameCoords[2][1] = getRect(0,0,16,240);
             frameCoords[2][2] = getRect(0,240,128,16);
@@ -61,7 +61,7 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 6);
 
             // 1-1
-            frameCoords[3] = MEM_CALLOC(5, RECT);
+            frameCoords[3] = CALLOC(5, RECT);
             frameCoords[3][0] = getRect(0,0,160,144);
             frameCoords[3][1] = getRect(240,0,16,256);
             frameCoords[3][2] = getRect(192,240,48,16);
@@ -70,7 +70,7 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 5);
 
              // 0-0-i0 (additional)
-            // tlAddCooords = MEM_CALLOC(5, RECT);
+            // tlAddCooords = CALLOC(5, RECT);
             // tlAddCooords[0] = getRect(0, 0, 4, 80);
             // tlAddCooords[1] = getRect(4, 64, 28, 16);
             // tlAddCooords[2] = getRect(48, 64, 32, 16);
@@ -95,7 +95,7 @@ void addTeleports(Frame* frame, Teleport* teleports, u_char i, u_char amount) {
     if(amount > 0) {
         frame->teleports = &teleports[i];
         if(DRAW_BOUNDS) {
-            TILE* boundLines = MEM_CALLOC(amount, TILE);
+            TILE* boundLines = CALLOC(amount, TILE);
             int i = 0;
             while(i < amount) {
                 TILE bounds;
@@ -125,7 +125,7 @@ void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
     printf("Bounds amount=%d\n", cbs->amount);
     logger_logBoundsArray(cbs->bounds, cbs->amount);
     if(DRAW_BOUNDS) {
-       TILE* boundLines = MEM_CALLOC(cbs->amount, TILE);
+       TILE* boundLines = CALLOC(cbs->amount, TILE);
        int i = 0;
        while(i < cbs->amount) {
            TILE bounds;
@@ -152,7 +152,7 @@ RECT getRect(u_short x, u_short y, u_short w, u_short h) {
 }
 
 RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h) {
-    RECT* r = MEM_ALLOC(RECT);
+    RECT* r = MALLOC(RECT);
     *r = getRect(x, y, w, h);
     return r;
 }

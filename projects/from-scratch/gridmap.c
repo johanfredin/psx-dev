@@ -14,7 +14,7 @@ u_char setLevelAssets(u_char level);
 
 void gridmap_init(u_char level) {
     assetsCount = setLevelAssets(level);
-    frames = (Frame*) calloc3(assetsCount, sizeof(Frame)); //MEM_CALLOC(assetsCount, Frame);
+    frames = CALLOC(assetsCount, Frame);
     initFrame(&frames[0], assets[0], assets[4]);
     initFrame(&frames[1], assets[1], assets[5]);
     initFrame(&frames[2], assets[2], assets[6]);
@@ -46,7 +46,7 @@ u_char setLevelAssets(u_char level) {
 }
 
 void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite) {
-    CollisionBlocks* cbs = MEM_ALLOC(CollisionBlocks);
+    CollisionBlocks* cbs = MALLOC(CollisionBlocks);
     frame->bg = assetmanager_loadSprite("bg", bgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->fg = assetmanager_loadSprite("fg", fgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->cbs = cbs;

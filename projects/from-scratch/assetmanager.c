@@ -25,7 +25,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     // Load image data
     data = (u_char*) spriteData;
 
-    tim_data = MEM_ALLOC(GsIMAGE);
+    tim_data = MALLOC(GsIMAGE);
     GsGetTimInfo((u_long*)(data + 4), tim_data);
         
     // malloc resources
@@ -52,7 +52,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
         printf("16 bit mode so no CLUT\n");
     }
 
-    MEM_FREE(tim_data);
+    FREE(tim_data);
     asset->clut=clut;
     asset->frameBuffer=frameBuffer;
     asset->isCLUTMode=isCLUTMode;
@@ -65,9 +65,9 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     Asset* asset;
     GsSPRITE* sprite;
 
-    asset = MEM_ALLOC(Asset);
+    asset = MALLOC(Asset);
     assetmanager_loadAsset(asset, name, spriteData, numColorBits);
-    sprite = MEM_ALLOC(GsSPRITE);
+    sprite = MALLOC(GsSPRITE);
     sprite->attribute = asset->spriteAttr;
     sprite->x = x;
     sprite->y = y;
@@ -93,9 +93,9 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     printf("cx=%d, cy=%d\n", sprite->cx, sprite->cy);
     printf("u=%d, v=%d\n", sprite->u, sprite->v);
 
-    MEM_FREE(asset->frameBuffer);
-    MEM_FREE(asset->clut);
-    MEM_FREE(asset);
+    FREE(asset->frameBuffer);
+    FREE(asset->clut);
+    FREE(asset);
     return sprite;
 }
 

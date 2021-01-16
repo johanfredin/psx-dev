@@ -1,7 +1,7 @@
 #include "header/player.h"
 
 Player* player_init(AnimatedGameObject* gobj, u_char pNum, u_char xSpeed, u_char ySpeed) {
-    Player* p = MEM_ALLOC(Player);
+    Player* p = MALLOC(Player);
     p->gobj = gobj;
     p->pNum = pNum;
     p->xSpeed = xSpeed;

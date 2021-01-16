@@ -10,6 +10,7 @@
 #include <SYS/TYPES.H>
 #include <LIBDS.H>
 #include "base.h"
+#include "mem.h"
 
 #define SECTOR 2048
 
