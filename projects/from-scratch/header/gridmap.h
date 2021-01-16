@@ -9,10 +9,10 @@
 #include "player.h"
 
 typedef struct {
-    RECT* origin;
+    RECT origin;
     short destX, destY;
     // Graphical representation of a block (if DebugMode)
-    TILE* boundLines;
+    TILE boundLines;
 } Teleport;
 
 typedef struct {

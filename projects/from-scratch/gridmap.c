@@ -53,19 +53,21 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite) {
 }
 
 void gridmap_draw() {
-    CollisionBlocks* blocks = frames[currentFrame].cbs;
-    GsSortFastSprite(frames[currentFrame].fg, currentOT(), 0);
-    GsSortFastSprite(frames[currentFrame].bg, currentOT(), 2);
+    Frame* frame = &frames[currentFrame];
+    CollisionBlocks* blocks = frame->cbs;
+    Teleport* teleports = frame->teleports;
+    GsSortFastSprite(frame->fg, currentOT(), 0);
+    GsSortFastSprite(frame->bg, currentOT(), 2);
     if(DRAW_BOUNDS) {
         int blockIdx = 0, t_idx = 0;
         while(blockIdx < blocks->amount) {
             DrawPrim(&blocks->boundLines[blockIdx]);
             blockIdx++;
         }
-        // while(t_idx < frames[currentFrame].t_amount) {
-        //     DrawPrim(&frames[currentFrame].teleports[t_idx].boundLines[t_idx]);
-        //     t_idx++;
-        // }
+        while(t_idx < frame->t_amount) {
+            DrawPrim(&teleports[t_idx].boundLines);
+            t_idx++;
+        }
     }
     if(PRINT_COORDS) {
         FntPrint("Blocks in frame=%d\n", blocks->amount);

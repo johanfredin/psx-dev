@@ -2,16 +2,18 @@
 #include "header/gpubase.h"
 #include "header/gridmap.h"
 
-void addTeleports(Frame* frame, Teleport* teleports, u_char i, u_char amount);
+void addTeleports(Frame* frame, Teleport* frameTeleports, u_char i, u_char amount);
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount);
 RECT getRect(u_short x, u_short y, u_short w, u_short h);
 RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h);
-Teleport getTeleport(RECT* origin, u_char destX, u_char destY);
+void printTeleports(Teleport* teleports, u_char amount);
+Teleport getTeleport(RECT origin, short destX, short destY);
 void updateCounts(u_char* frameCount, u_char* levelBoundsAmounts, u_char frameBoundsAmount);
 
 void mapbounds_init(u_char level, Frame* frames) {
+    Teleport* subPorts;
     RECT** frameCoords;
-    Teleport** teleports;
+    Teleport** levelTeleports;
     u_char levelBoundsAmounts[50];  // Reserve a total of 50 elements for level bounds
     u_char levelTeleportsAmount[20];
     u_char frameCount = 0;
@@ -23,11 +25,12 @@ void mapbounds_init(u_char level, Frame* frames) {
 
             // ----
             // Teleports
-            teleports[0] = CALLOC(3, Teleport);
-            teleports[0][0] = getTeleport(getRectPtr(252, 32, 4, 144), 5, -1);
-            teleports[0][1] = getTeleport(getRectPtr(16, 252, 128, 4), 5, -1);
-            teleports[0][2] = getTeleport(getRectPtr(128, 116, 16, 12), 25, 125);
+            levelTeleports[0] = CALLOC(30, Teleport);
+            levelTeleports[0][0] = getTeleport(getRect(252, 32, 4, 144), 5, -1);
+            levelTeleports[0][1] = getTeleport(getRect(16, 252, 128, 4), 5, -1);
+            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 12), 25, 125);
             levelTeleportsAmount[frameCount] = 3;
+
             // Frames
             frameCoords[0] = CALLOC(8, RECT);
             frameCoords[0][0] = getRect(112,80,48,40);
@@ -80,40 +83,51 @@ void mapbounds_init(u_char level, Frame* frames) {
     }
 
     for(i = 0; i < frameCount; i++) {
-        addCollisionBlocks(frames[i].cbs, frameCoords[i], levelBoundsAmounts[i]);
-        addTeleports(&frames[i], teleports[i], i, levelTeleportsAmount[i]);
-        // if(levelTeleportsAmount[i] > 0) {
-        //     frames[i].teleports = teleports[i];
-        //     printf("Added %d teleports to frame nr %d\n", levelTeleportsAmount[i], i);
-        // }
-        // frames[i].t_amount = levelTeleportsAmount[i];    
+        Frame* f = &frames[i];
+        if(levelTeleports[i] != NULL) {
+            addTeleports(f, levelTeleports[i], i, levelTeleportsAmount[i]);
+        }
+        addCollisionBlocks(f->cbs, frameCoords[i], levelBoundsAmounts[i]);
     }
     
 }
 
-void addTeleports(Frame* frame, Teleport* teleports, u_char i, u_char amount) {
+void printTeleports(Teleport* teleports, u_char amount) {
+    int k = 0;
+    while(k < amount) {
+        Teleport* t = &teleports[k];
+        printf("Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t->origin.x, t->origin.y, t->origin.w, t->origin.h, t->destX, t->destY);
+        k++;
+    }
+}
+
+void printTeleport(Teleport t) {
+    printf("Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t.origin.x, t.origin.y, t.origin.w, t.origin.h, t.destX, t.destY);
+}
+
+void addTeleports(Frame* frame, Teleport* frameTeleports, u_char i, u_char amount) {
     if(amount > 0) {
-        frame->teleports = &teleports[i];
+        frame->teleports = frameTeleports;
         if(DRAW_BOUNDS) {
-            TILE* boundLines = CALLOC(amount, TILE);
             int i = 0;
+            printf("Adding bound lines for teleport at frame nr %d\n", i);
+            printf("----------------------------------------------\n");
             while(i < amount) {
                 TILE bounds;
                 SetTile(&bounds);
-                bounds.x0 = teleports[i].origin->x;
-                bounds.y0 = teleports[i].origin->y;
-                bounds.w = teleports[i].origin->w;
-                bounds.h = teleports[i].origin->h;
+                bounds.x0 = frameTeleports[i].origin.x;
+                bounds.y0 = frameTeleports[i].origin.y;
+                bounds.w = frameTeleports[i].origin.w;
+                bounds.h = frameTeleports[i].origin.h;
                 setRGB0(&bounds, 0, 0, 255);
-                logger_logBounds(&bounds);
-                boundLines[i] = bounds;
+                frameTeleports[i].boundLines = bounds;
+                logger_logBounds(&frameTeleports[i].boundLines);
                 i++;
             }
-            teleports[i].boundLines = boundLines;
         }
     }
-    printf("Added %d teleports to frame nr %d\n", amount, i);
     frame->t_amount = amount;
+    printf("Added %d frameTeleports to frame nr %d\n", amount, i);
 }
 
 void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
@@ -157,11 +171,9 @@ RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h) {
     return r;
 }
 
-Teleport getTeleport(RECT* origin, u_char destX, u_char destY) {
+Teleport getTeleport(RECT origin, short destX, short destY) {
     Teleport t = {origin, destX, destY};
-    if(LOG_INDIVIDUAL_BOUNDS) {
-        // logger_logTeleport(&t);
-    }
+    printf("Teleport added: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t.origin.x, t.origin.y, t.origin.w, t.origin.h, t.destX, t.destY);
     return t;
 }
 
