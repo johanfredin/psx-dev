@@ -43,23 +43,23 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 8);
 
             // 1-0
-            frameCoords[1] = CALLOC(6, RECT);
-            frameCoords[1][0] = getRect(240,32,16,224);
-            frameCoords[1][1] = getRect(160,32,48,56);
-            frameCoords[1][2] = getRect(112,48,48,24);
-            frameCoords[1][3] = getRect(0,176,160,80);
-            frameCoords[1][4] = getRect(48,96,96,24);
-            frameCoords[1][5] = getRect(0,0,256,32);
+            frameCoords[2] = CALLOC(6, RECT);
+            frameCoords[2][0] = getRect(240,32,16,224);
+            frameCoords[2][1] = getRect(160,32,48,56);
+            frameCoords[2][2] = getRect(112,48,48,24);
+            frameCoords[2][3] = getRect(0,176,160,80);
+            frameCoords[2][4] = getRect(48,96,96,24);
+            frameCoords[2][5] = getRect(0,0,256,32);
             updateCounts(&frameCount, levelBoundsAmounts, 6);
 
             // 0-1
-            frameCoords[2] = CALLOC(6, RECT);
-            frameCoords[2][0] = getRect(144,0,112,146);
-            frameCoords[2][1] = getRect(0,0,16,240);
-            frameCoords[2][2] = getRect(0,240,128,16);
-            frameCoords[2][3] = getRect(144,240,112,16);
-            frameCoords[2][4] = getRect(36,176,8,12);
-            frameCoords[2][5] = getRect(48,64,48,24);
+            frameCoords[1] = CALLOC(6, RECT);
+            frameCoords[1][0] = getRect(144,0,112,146);
+            frameCoords[1][1] = getRect(0,0,16,240);
+            frameCoords[1][2] = getRect(0,240,128,16);
+            frameCoords[1][3] = getRect(144,240,112,16);
+            frameCoords[1][4] = getRect(36,176,8,12);
+            frameCoords[1][5] = getRect(48,64,48,24);
             updateCounts(&frameCount, levelBoundsAmounts, 6);
 
             // 1-1
