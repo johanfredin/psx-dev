@@ -11,11 +11,10 @@ Teleport getTeleport(RECT origin, short destX, short destY);
 void updateCounts(u_char* frameCount, u_char* levelBoundsAmounts, u_char frameBoundsAmount);
 
 void mapbounds_init(u_char level, Frame* frames) {
-    Teleport* subPorts;
     RECT** frameCoords;
     Teleport** levelTeleports;
-    u_char levelBoundsAmounts[50];  // Reserve a total of 50 elements for level bounds
-    u_char levelTeleportsAmount[20];
+    u_char levelBoundsAmounts[50];      // Reserve elements for level bounds
+    u_char levelTeleportsAmount[20];    // Reserve elements for level teleports
     u_char frameCount = 0;
     int i;
 

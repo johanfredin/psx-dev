@@ -2,7 +2,7 @@
 #include "header/mapbounds.h"
 
 Frame* frames;
-u_char assetsCount, currentFrame=0;
+u_char assetsCount, currentFrame=1;
 u_char rightCol, leftCol, topCol, bottomCol;
 u_long** assets;
 
