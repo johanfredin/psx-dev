@@ -67,11 +67,10 @@ void mapbounds_init(u_char level, Frame* frames) {
             updateCounts(&frameCount, levelBoundsAmounts, 6);
             
             // 1-0
-            // Teleports
-            // levelTeleports[2] = CALLOC(2, Teleport);
-            // levelTeleports[2][0] = getTeleport(getRect(160, 252, 80, 4), -1, 4);
-            // levelTeleports[2][1] = getTeleport(getRect(0, 32, 4, 144), (SCREEN_WIDTH - 4) - 16, -1);
-            // levelTeleportsAmount[++frameCount] = 2;
+            levelTeleports[2] = CALLOC(2, Teleport);
+            levelTeleports[2][0] = getTeleport(getRect(160, 252, 80, 4), -1, 4);
+            levelTeleports[2][1] = getTeleport(getRect(0, 32, 4, 144), (SCREEN_WIDTH - 4) - 16, -1);
+            levelTeleportsAmount[frameCount] = 2;
 
             // 1-1
             frameCoords[3] = CALLOC(5, RECT);
@@ -94,9 +93,7 @@ void mapbounds_init(u_char level, Frame* frames) {
 
     for(i = 0; i < frameCount; i++) {
         Frame* f = &frames[i];
-        if(levelTeleportsAmount[i] > 0) {
-            // addTeleports(f, levelTeleports[i], i, levelTeleportsAmount[i]);
-        }
+        addTeleports(f, levelTeleports[i], i, levelTeleportsAmount[i]);
         addCollisionBlocks(f->cbs, frameCoords[i], levelBoundsAmounts[i]);
     }
     
