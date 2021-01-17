@@ -19,5 +19,4 @@
 #define PRINT_ANIMATION 0       // Set to 1 to FntPrint player animation to screen
 #define LOG_INDIVIDUAL_BOUNDS 0 // Set to 1 to Log all asigned mab boundarie coordinates
 
-
 #endif

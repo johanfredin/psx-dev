@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "L1/1_0.tmx",
     "expandedProjectPaths": [
         "L1"
     ],
@@ -15,19 +15,19 @@
             "scaleInDock": 1
         },
         "L1/0_0.tmx": {
-            "scale": 2,
-            "selectedLayer": 2,
+            "scale": 2.8964,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 166.75,
-                "y": 126.5
+                "x": 136.20356304377847,
+                "y": 126.53639000138102
             }
         },
         "L1/0_1.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 135.87482219061167,
-                "y": 120.17069701280228
+                "x": 136.3300142247511,
+                "y": 120.39829302987197
             }
         },
         "L1/100i0.tmx": {
@@ -43,10 +43,10 @@
         },
         "L1/1_0.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 0,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 136.78520625889047,
-                "y": 182.53200568990042
+                "x": 199.60170697012802,
+                "y": 144.5234708392603
             }
         },
         "L1/tilesetformattedupdate1.tsx": {
@@ -68,12 +68,15 @@
     "map.tileWidth": 16,
     "map.width": 4,
     "openFiles": [
+        "L1/0_0.tmx",
+        "L1/0_1.tmx",
+        "L1/1_0.tmx"
     ],
     "project": "",
     "recentFiles": [
         "L1/0_0.tmx",
-        "L1/1_0.tmx",
         "L1/0_1.tmx",
+        "L1/1_0.tmx",
         "L1/tilesetformattedupdate1.tsx",
         "L1/16x16extratiles.tsx",
         "tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx",
