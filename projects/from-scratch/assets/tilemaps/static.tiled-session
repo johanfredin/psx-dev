@@ -24,7 +24,7 @@
         },
         "L1/0_1.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 136.3300142247511,
                 "y": 120.39829302987197
@@ -43,10 +43,10 @@
         },
         "L1/1_0.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 199.60170697012802,
-                "y": 144.5234708392603
+                "y": 204.15362731152206
             }
         },
         "L1/tilesetformattedupdate1.tsx": {

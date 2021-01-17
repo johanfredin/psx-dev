@@ -40,6 +40,12 @@ void mapbounds_init(u_char level, Frame* frames) {
             frameCoords[0][7] = getRect(32,208,80,24);
 
             updateCounts(&frameCount, levelBoundsAmounts, 8);
+            
+            levelTeleports[0] = CALLOC(3, Teleport);
+            levelTeleports[0][0] = getTeleport(getRect(252, 32, 4, 144), 5, -1, 2);
+            levelTeleports[0][1] = getTeleport(getRect(16, 252, 128, 4), 5, -1, 1);
+            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 12), 25, 125, 4);
+            levelTeleportsAmount[frameCount - 1] = 3;
 
             // 0-1
             frameCoords[1] = CALLOC(6, RECT);
@@ -64,12 +70,6 @@ void mapbounds_init(u_char level, Frame* frames) {
             levelTeleports[2][0] = getTeleport(getRect(160, 252, 80, 4), -1, 4, 3);
             levelTeleports[2][1] = getTeleport(getRect(0, 32, 4, 144), (SCREEN_WIDTH - 4) - 16, -1, 0);
             levelTeleportsAmount[frameCount] = 2;
-
-            levelTeleports[0] = CALLOC(3, Teleport);
-            levelTeleports[0][0] = getTeleport(getRect(252, 32, 4, 144), 5, -1, 2);
-            levelTeleports[0][1] = getTeleport(getRect(16, 252, 128, 4), 5, -1, 1);
-            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 12), 25, 125, 4);
-            levelTeleportsAmount[frameCount - 2] = 3;
 
             updateCounts(&frameCount, levelBoundsAmounts, 6);
 
