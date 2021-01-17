@@ -7,7 +7,7 @@ void addCollisionBlocks(CollisionBlocks* cbs, RECT* bounds, u_char amount);
 RECT getRect(u_short x, u_short y, u_short w, u_short h);
 RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h);
 void printTeleports(Teleport* teleports, u_char amount);
-Teleport getTeleport(RECT origin, short destX, short destY);
+Teleport getTeleport(RECT origin, short destX, short destY, u_char destFrame);
 void updateCounts(u_char* frameCount, u_char* levelBoundsAmounts, u_char frameBoundsAmount);
 
 void initArr(u_char size, u_char arr[]) {
@@ -29,12 +29,6 @@ void mapbounds_init(u_char level, Frame* frames) {
     switch(level) {
         case 1:
             // 0-0
-            levelTeleports[0] = CALLOC(3, Teleport);
-            levelTeleports[0][0] = getTeleport(getRect(252, 32, 4, 144), 5, -1);
-            levelTeleports[0][1] = getTeleport(getRect(16, 252, 128, 4), 5, -1);
-            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 12), 25, 125);
-            levelTeleportsAmount[frameCount] = 3;
-
             frameCoords[0] = CALLOC(8, RECT);
             frameCoords[0][0] = getRect(112,80,48,40);
             frameCoords[0][1] = getRect(0,32,16,224);
@@ -44,6 +38,7 @@ void mapbounds_init(u_char level, Frame* frames) {
             frameCoords[0][5] = getRect(176,64,64,24);
             frameCoords[0][6] = getRect(48,64,48,24);
             frameCoords[0][7] = getRect(32,208,80,24);
+
             updateCounts(&frameCount, levelBoundsAmounts, 8);
 
             // 0-1
@@ -64,13 +59,19 @@ void mapbounds_init(u_char level, Frame* frames) {
             frameCoords[2][3] = getRect(0,176,160,80);
             frameCoords[2][4] = getRect(48,96,96,24);
             frameCoords[2][5] = getRect(0,0,256,32);
-            updateCounts(&frameCount, levelBoundsAmounts, 6);
-            
-            // 1-0
+
             levelTeleports[2] = CALLOC(2, Teleport);
-            levelTeleports[2][0] = getTeleport(getRect(160, 252, 80, 4), -1, 4);
-            levelTeleports[2][1] = getTeleport(getRect(0, 32, 4, 144), (SCREEN_WIDTH - 4) - 16, -1);
+            levelTeleports[2][0] = getTeleport(getRect(160, 252, 80, 4), -1, 4, 3);
+            levelTeleports[2][1] = getTeleport(getRect(0, 32, 4, 144), (SCREEN_WIDTH - 4) - 16, -1, 0);
             levelTeleportsAmount[frameCount] = 2;
+
+            levelTeleports[0] = CALLOC(3, Teleport);
+            levelTeleports[0][0] = getTeleport(getRect(252, 32, 4, 144), 5, -1, 2);
+            levelTeleports[0][1] = getTeleport(getRect(16, 252, 128, 4), 5, -1, 1);
+            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 12), 25, 125, 4);
+            levelTeleportsAmount[frameCount - 2] = 3;
+
+            updateCounts(&frameCount, levelBoundsAmounts, 6);
 
             // 1-1
             frameCoords[3] = CALLOC(5, RECT);
@@ -103,7 +104,7 @@ void printTeleports(Teleport* teleports, u_char amount) {
     int k = 0;
     while(k < amount) {
         Teleport* t = &teleports[k];
-        printf("Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t->origin.x, t->origin.y, t->origin.w, t->origin.h, t->destX, t->destY);
+        printf("Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d, destFrame=%d\n", t->origin.x, t->origin.y, t->origin.w, t->origin.h, t->destX, t->destY, t->destFrame);
         k++;
     }
 }
@@ -114,11 +115,14 @@ void printTeleport(Teleport t) {
 
 void addTeleports(Frame* frame, Teleport* frameTeleports, u_char frameIndex, u_char amount) {
     if(amount > 0) {
+        printf("----------------------------------------------\n");
+        printf("Adding bound lines for teleport at frame nr %d\n", frameIndex);
+        printf("----------------------------------------------\n");
         frame->teleports = frameTeleports;
+        frame->t_amount = amount;
+        printTeleports(frame->teleports, frame->t_amount);
         if(DRAW_BOUNDS) {
             int i = 0;
-            printf("Adding bound lines for teleport at frame nr %d\n", frameIndex);
-            printf("----------------------------------------------\n");
             while(i < amount) {
                 TILE bounds;
                 SetTile(&bounds);
@@ -128,12 +132,12 @@ void addTeleports(Frame* frame, Teleport* frameTeleports, u_char frameIndex, u_c
                 bounds.h = frameTeleports[i].origin.h;
                 setRGB0(&bounds, 0, 0, 255);
                 frameTeleports[i].boundLines = bounds;
+                printTeleport(frameTeleports[i]);
                 logger_logBounds(&frameTeleports[i].boundLines);
                 i++;
             }
         }
     }
-    frame->t_amount = amount;
     printf("Added %d frameTeleports to frame nr %d\n", amount, frameIndex);
 }
 
@@ -178,16 +182,18 @@ RECT* getRectPtr(u_short x, u_short y, u_short w, u_short h) {
     return r;
 }
 
-Teleport getTeleport(RECT origin, short destX, short destY) {
+Teleport getTeleport(RECT origin, short destX, short destY, u_char destFrame) {
     Teleport t = {origin, destX, destY};
-    printf("Teleport added: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t.origin.x, t.origin.y, t.origin.w, t.origin.h, t.destX, t.destY);
+    t.destFrame = destFrame;
+    if(LOG_INDIVIDUAL_BOUNDS) {
+        printf("Teleport added: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d, frameToGoTo=%d\n", t.origin.x, t.origin.y, t.origin.w, t.origin.h, t.destX, t.destY, t.destFrame);
+    }
     return t;
 }
 
 void updateCounts(u_char* frameCount, u_char* levelBoundsAmounts, u_char frameBoundsAmount) {
     u_char i = *frameCount;
     levelBoundsAmounts[i] = frameBoundsAmount;
-    printf("frameCount=%d, levelBoundsAmount[%d]=%d\n", *frameCount, levelBoundsAmounts[i], frameBoundsAmount);
     i++;
     *frameCount = i;
 }

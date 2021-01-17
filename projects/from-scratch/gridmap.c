@@ -1,9 +1,10 @@
 #include "header/gridmap.h"
 #include "header/mapbounds.h"
 
+#include <LIBETC.H> // Temp import
+
 Frame* frames;
-u_char assetsCount, currentFrame=3;
-u_char rightCol, leftCol, topCol, bottomCol;
+u_char assetsCount, currentFrame=0;
 u_long** assets;
 
 void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite);
@@ -13,12 +14,14 @@ u_char setLevelAssets(u_char level);
 
 
 void gridmap_init(u_char level) {
+
     assetsCount = setLevelAssets(level);
     frames = CALLOC(assetsCount, Frame);
     initFrame(&frames[0], assets[0], assets[4]);
     initFrame(&frames[1], assets[1], assets[5]);
     initFrame(&frames[2], assets[2], assets[6]);
     initFrame(&frames[3], assets[3], assets[7]);
+    initFrame(&frames[4], assets[8], assets[9]);
     mapbounds_init(level, frames);
 }
 
@@ -58,6 +61,12 @@ void gridmap_draw() {
     Teleport* teleports = frame->teleports;
     GsSortFastSprite(frame->fg, currentOT(), 0);
     GsSortFastSprite(frame->bg, currentOT(), 2);
+    if(PRINT_COORDS) {
+        FntPrint("Current framee=%d\n", currentFrame);
+        FntPrint("Blocks in frame=%d\n", blocks->amount);
+        FntPrint("Teleports in frame=%d\n", frame->t_amount);
+    }
+
     if(DRAW_BOUNDS) {
         int blockIdx = 0, t_idx = 0;
         while(blockIdx < blocks->amount) {
@@ -69,18 +78,25 @@ void gridmap_draw() {
             t_idx++;
         }
     }
-    if(PRINT_COORDS) {
-        FntPrint("Blocks in frame=%d\n", blocks->amount);
-        FntPrint("tc=%d, bc=%d, lc=%d, rc=%d\n", topCol, bottomCol, leftCol, rightCol);
-    }
 }
 
 void gridmap_tick(Player* player) {
+    // TEMP
+    u_long btn = PadRead(1);
+    if(btn & PADselect) {
+        if(currentFrame >= 3) {
+            currentFrame = 0;
+        } else {
+            currentFrame++;
+        }
+    }
+
     handleTeleportCollision(player->gobj->textureFrame);
     handleBlockCollision(player->gobj->textureFrame);
 }
 
 void handleBlockCollision(GsSPRITE* sprite) {
+    u_char rightCol, leftCol, topCol, bottomCol;
     CollisionBlocks* blocks = frames[currentFrame].cbs;
     int i = 0;
     
@@ -125,47 +141,44 @@ void handleBlockCollision(GsSPRITE* sprite) {
 }
 
 void handleTeleportCollision(GsSPRITE* sprite) {
-    // Teleports* teleports = map->mainFrames[gridmap_currXFrame][gridmap_currYFrame]->teleports;
-    // int i = 0;
-    // while(i < teleports->amount) {
-        
-    //     i++;
-    // }
-    // X bounds -------------------------------------
-    // if(sprite->x < 0) {
-    //      if(gridmap_currXFrame > 0) {
-    //         sprite->x = screenWidth - sprite->w;
-    //         gridmap_currXFrame--;
-    //      } else {
-    //          sprite->x = 0;
-    //      }
-    // } 
-    // if(sprite->x + sprite->w > screenWidth) {
-    //     if(gridmap_currXFrame < 1) {
-    //         sprite->x = 0;
-    //         gridmap_currXFrame++;
-    //     } else {
-    //         sprite->x = screenWidth - sprite->w;
-    //     }
-    // } 
+    u_char rightCol, leftCol, topCol, bottomCol;
+    Teleport* teleports = frames[currentFrame].teleports;
+    int i = 0;
 
-    // // Y bounds -------------------------------------
-    // if(sprite->y < 0) {
-    //     if(gridmap_currYFrame > 0) {
-    //         sprite->y = screenHeight - sprite->h;
-    //         gridmap_currYFrame--;
-    //     } else {
-    //         sprite->y = 0;
-    //     }
-    // } 
-    // if(sprite->y + sprite->h > screenHeight) {
-    //     if(gridmap_currYFrame < 1) {
-    //         sprite->y = 0;
-    //         gridmap_currYFrame++;
-    //     } else {
-    //         sprite->y = screenHeight - sprite->h;
-    //     }
-    // }
+     // Player bounds
+    short px = sprite->x;
+    short py = sprite->y;
+    u_short pw = sprite->w;
+    u_short ph = sprite->h;
+    u_short pxw = px + pw;
+    u_short pyh = py + ph;
+    while(i < frames[currentFrame].t_amount) {
+        RECT bounds = teleports[i].origin;
+        short bx = bounds.x;
+        short by = bounds.y;
+        u_short bw = bounds.w;
+        u_short bh = bounds.h;
+        u_short bxw = bx + bw;
+        u_short byh = by + bh;
+
+        rightCol = pxw >= bx && px <= bx && pyh > by && py < byh;
+        leftCol = px <= bxw && pxw > bxw && pyh > by && py < byh;
+        topCol = pyh >= by && py < by && pxw > bx && px < bxw;
+        bottomCol = py <= byh && pyh > byh && pxw > bx && px < bxw;
+        
+        if(rightCol || leftCol || topCol || bottomCol) {
+            Teleport t = teleports[i];
+            currentFrame = t.destFrame;
+            if(t.destX > -1) {
+                sprite->x = t.destX;
+            }
+            if(t.destY > -1) {
+                sprite->y = t.destY;
+            }
+            FntPrint("COOOOL with teleport nr %d\n", i);
+        }
+        i++;
+    }
 }
 
 

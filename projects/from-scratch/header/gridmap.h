@@ -13,6 +13,7 @@ typedef struct {
     short destX, destY;
     // Graphical representation of a block (if DebugMode)
     TILE boundLines;
+    u_char destFrame;   // frame array index of frame to change to when colliding with this teleport
 } Teleport;
 
 typedef struct {
