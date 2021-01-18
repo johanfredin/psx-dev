@@ -39,8 +39,8 @@ u_char setLevelAssets(u_char level) {
             CdReadFile("01FG.TIM", &assets[5]);
             CdReadFile("10FG.TIM", &assets[6]);
             CdReadFile("11FG.TIM", &assets[7]);
-            CdReadFile("1000iBG.TIM", &assets[8]);
-            CdReadFile("1000iFG.TIM", &assets[9]);
+            CdReadFile("100i0BG.TIM", &assets[8]);
+            CdReadFile("100i0FG.TIM", &assets[9]);
             count = 10;
             break;
     }
