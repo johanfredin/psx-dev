@@ -14,8 +14,8 @@
 			<file name="01FG.TIM"	type="data"	source="../assets/TIM/01fg.TIM"/>
 			<file name="10FG.TIM"	type="data"	source="../assets/TIM/10fg.TIM"/>
 			<file name="11FG.TIM"	type="data"	source="../assets/TIM/11fg.TIM"/>
-			<file name="100i0BG.TIM"	type="data"	source="../assets/TIM/100i0bg.TIM"/>
-			<file name="100i0FG.TIM"	type="data"	source="../assets/TIM/100i0fg.TIM"/>
+			<file name="YOLOBG.TIM"	type="data"	source="../assets/TIM/yolobg.TIM"/>
+			<file name="YOLOFG.TIM"	type="data"	source="../assets/TIM/yolofg.TIM"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

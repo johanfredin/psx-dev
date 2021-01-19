@@ -7,21 +7,21 @@ Frame* frames;
 u_char assetsCount, currentFrame=0;
 u_long** assets;
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite);
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[]);
+void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]);
 void handleBlockCollision(GsSPRITE* sprite);
 void handleTeleportCollision(GsSPRITE* sprite);
 u_char setLevelAssets(u_char level);
 
 
 void gridmap_init(u_char level) {
-
     assetsCount = setLevelAssets(level);
     frames = CALLOC(assetsCount, Frame);
-    initFrame(&frames[0], assets[0], assets[4]);
-    initFrame(&frames[1], assets[1], assets[5]);
-    initFrame(&frames[2], assets[2], assets[6]);
-    initFrame(&frames[3], assets[3], assets[7]);
-    initFrame(&frames[4], assets[8], assets[9]);
+    initFrame(&frames[0], assets[0], assets[4], "00");
+    initFrame(&frames[1], assets[1], assets[5], "01");
+    initFrame(&frames[2], assets[2], assets[6], "10");
+    initFrame(&frames[3], assets[3], assets[7], "11");
+    initSmallerFrame(&frames[4], assets[8], assets[9], 256 / 4, 256 / 4, "yolo");
     mapbounds_init(level, frames);
 }
 
@@ -39,8 +39,8 @@ u_char setLevelAssets(u_char level) {
             CdReadFile("01FG.TIM", &assets[5]);
             CdReadFile("10FG.TIM", &assets[6]);
             CdReadFile("11FG.TIM", &assets[7]);
-            CdReadFile("100i0BG.TIM", &assets[8]);
-            CdReadFile("100i0FG.TIM", &assets[9]);
+            CdReadFile("YOLOBG.TIM", &assets[8]);
+            CdReadFile("YOLOFG.TIM", &assets[9]);
             count = 10;
             break;
     }
@@ -48,11 +48,19 @@ u_char setLevelAssets(u_char level) {
     return count;
 }
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite) {
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6]) {
     CollisionBlocks* cbs = MALLOC(CollisionBlocks);
-    frame->bg = assetmanager_loadSprite("bg", bgSprite, 0, 0, 128, COLOR_BITS_8);
-    frame->fg = assetmanager_loadSprite("fg", fgSprite, 0, 0, 128, COLOR_BITS_8);
+    frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
+    frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
     frame->cbs = cbs;
+}
+
+void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]) {
+    initFrame(frame, bgSprite, fgSprite, name);
+    frame->bg->x = x; 
+    frame->fg->x = x;
+    frame->bg->y = y;
+    frame->fg->y = y;
 }
 
 void gridmap_draw() {

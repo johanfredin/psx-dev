@@ -16,18 +16,18 @@
         },
         "L1/0_0.tmx": {
             "scale": 2.8964,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 136.20356304377847,
-                "y": 126.53639000138102
+                "x": 128.26267090180912,
+                "y": 127.91741472172352
             }
         },
         "L1/0_1.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 80.34139402560457,
-                "y": 2.2759601706970045
+                "x": 128.13655761024182,
+                "y": 128.13655761024182
             }
         },
         "L1/100i0.tmx": {
@@ -43,24 +43,25 @@
         },
         "L1/1_0.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 199.60170697012802,
-                "y": 190.72546230440966
+                "y": 190.04267425320057
             }
         },
         "L1/1_1.tmx": {
             "scale": 2.1549632352941175,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 2.0882026784952643,
-                "y": 192.11464642156446
+                "x": 128.30845346754245,
+                "y": 128.30845346754245
             }
         },
         "L1/tilesetformattedupdate1.tsx": {
             "scaleInEditor": 1
         },
         "L1/tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -78,12 +79,14 @@
     "openFiles": [
         "L1/0_0.tmx",
         "L1/0_1.tmx",
-        "L1/1_0.tmx"
+        "L1/1_0.tmx",
+        "L1/1_1.tmx"
     ],
     "project": "",
     "recentFiles": [
         "L1/0_0.tmx",
         "L1/0_1.tmx",
+        "L1/1_1.tmx",
         "L1/1_0.tmx",
         "L1/tilesetformattedupdate1.tsx",
         "L1/16x16extratiles.tsx",
