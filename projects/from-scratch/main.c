@@ -43,7 +43,7 @@ int main() {
     CdReadFile("HERO.TIM", heroTexture);
     CdClose();
 
-    gobj = animatedobject_set("HERO", *heroTexture, 200, 50, 16, 16, 220, 3, 3, COLOR_BITS_8);
+    gobj = animatedobject_set("HERO", *heroTexture, 120, 150, 16, 16, 220, 3, 3, COLOR_BITS_8);
     player = player_init(gobj, 0, SPEED, SPEED);
     gridmap_init(1);
     

@@ -16,7 +16,7 @@ void addTeleportsToLevel(u_char level, Frame* frames);
 void addTeleportsToFrame(Frame* frame, Teleport* frameTeleports, u_char frameIndex, u_char amount);
 void addBoundriesToFrame(CollisionBlocks* cbs, RECT* bounds, u_char amount);
 RECT getRect(u_short x, u_short y, u_short w, u_short h);
-RECT getRectWithOffset(RECT r, u_char xOffset, u_char yOffset);
+RECT getRectWO(u_short x, u_short y, u_short w, u_short h, short xOffset, short yOffset);
 Teleport getTeleport(RECT origin, short destX, short destY, u_char destFrame);
 void printTeleports(Teleport* teleports, u_char amount);
 void printTeleport(Teleport t);
@@ -83,18 +83,21 @@ void addBoundriesToLevel(u_char level, Frame* frames) {
             frameCoords[3][4] = getRect(0,176,144,52);
 
                 // 0-0-i0 (additional)
-            frameCoords[4] = CALLOC(5, RECT);
-            frameCoords[4][0] = getRectWithOffset(getRect(0, 0, 4, 80), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
-            frameCoords[4][1] = getRectWithOffset(getRect(4, 64, 28, 16), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
-            frameCoords[4][2] = getRectWithOffset(getRect(48, 64, 32, 16), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
-            frameCoords[4][3] = getRectWithOffset(getRect(76, 0, 4, 64), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
-            frameCoords[4][4] = getRectWithOffset(getRect(4, 0, 72, 4), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4] = CALLOC(8, RECT);
+            frameCoords[4][0] = getRectWO(96, 60, 16, 20, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][1] = getRectWO(80, 112, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][2] = getRectWO(4, 112, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][3] = getRectWO(16, 48, 32, 32, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][4] = getRectWO(80, 16, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][5] = getRectWO(4, 0, 120, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][6] = getRectWO(128, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][7] = getRectWO(-4, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
 
             addBoundriesToFrame(frames[0].cbs, frameCoords[0], 8);
             addBoundriesToFrame(frames[1].cbs, frameCoords[1], 6);
             addBoundriesToFrame(frames[2].cbs, frameCoords[2], 6);
             addBoundriesToFrame(frames[3].cbs, frameCoords[3], 5);
-            addBoundriesToFrame(frames[4].cbs, frameCoords[4], 5);
+            addBoundriesToFrame(frames[4].cbs, frameCoords[4], 8);
         break;
     }
 }
@@ -113,20 +116,20 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
 
             levelTeleports[0][0] = getTeleport(getRect(SCREEN_WIDTH - 1, 32, 1, 144), 2, -1, 2);
             levelTeleports[0][1] = getTeleport(getRect(16, SCREEN_HEIGHT - 1, 128, 1), -1, 2, 1);
-            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 8), -1, (48 - 18) + (SCREEN_HEIGHT / 4), 4);
+            levelTeleports[0][2] = getTeleport(getRect(128, 116, 16, 8), -1, (120 - 18) + (SCREEN_HEIGHT / 4), 4);
             levelTeleports[1][0] = getTeleport(getRect(SCREEN_WIDTH - 1, 144, 1, 96), 2, -1, 3);
             levelTeleports[1][1] = getTeleport(getRect(16, 0, 128, 1), -1, (SCREEN_HEIGHT - 2) - 16, 0);
             levelTeleports[2][0] = getTeleport(getRect(160, SCREEN_HEIGHT - 1, 80, 1), -1, 2, 3);
             levelTeleports[2][1] = getTeleport(getRect(0, 32, 1, 144), (SCREEN_WIDTH - 2) - 16, -1, 0);
             levelTeleports[3][0] = getTeleport(getRect(160, 0, 80, 1), -1, (SCREEN_HEIGHT - 2) - 16, 2);
             levelTeleports[3][1] = getTeleport(getRect(0, 144, 1, 96), (SCREEN_WIDTH - 2) - 16, -1, 1);
-            levelTeleports[4][1] = getTeleport(getRectWithOffset(getRect(48, 120, 32, 8), SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), -1, 118, 0);
+            levelTeleports[4][0] = getTeleport(getRectWO(48, 120, 32, 8, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 128, 126, 0);
 
             addTeleportsToFrame(&frames[0], levelTeleports[0], 0, 3);
             addTeleportsToFrame(&frames[1], levelTeleports[1], 1, 2);
             addTeleportsToFrame(&frames[2], levelTeleports[2], 2, 2);
             addTeleportsToFrame(&frames[3], levelTeleports[3], 3, 2);
-            // addTeleportsToFrame(&frames[4], levelTeleports[3], 4, 1);
+            addTeleportsToFrame(&frames[4], levelTeleports[4], 4, 1);
         break;
     }
 }
@@ -195,9 +198,11 @@ RECT getRect(u_short x, u_short y, u_short w, u_short h) {
     return r;
 }
 
-RECT getRectWithOffset(RECT r, u_char xOffset, u_char yOffset) {
-    r.x += xOffset;
-    r.y += yOffset;
+RECT getRectWO(u_short x, u_short y, u_short w, u_short h, short xOffset, short yOffset) {
+    RECT r = {x + xOffset, y + yOffset, w, h};
+    if(LOG_INDIVIDUAL_BOUNDS) {
+        logger_logCoords(&r, "bounds");
+    }
     return r;
 }
 
