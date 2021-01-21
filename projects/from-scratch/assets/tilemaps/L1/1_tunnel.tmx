@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="16" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="25">
+ <tileset firstgid="1" source="tilesetformattedupdate1.tsx"/>
+ <tileset firstgid="85" source="16x16extratiles.tsx"/>
+ <tileset firstgid="113" source="tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx"/>
+ <layer id="6" name="bg" width="16" height="4">
+  <data encoding="csv">
+3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,3221225746,
+242,242,242,242,242,242,242,242,242,242,242,242,242,242,242,242,
+122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,
+186,186,186,186,186,186,186,186,186,186,186,186,186,186,186,186
+</data>
+ </layer>
+ <layer id="9" name="bg2" width="16" height="4">
+  <data encoding="csv">
+0,1076,0,1076,0,1076,0,1076,0,1076,0,1076,0,1076,0,0,
+34,1108,51,1108,0,1108,0,1108,0,1108,0,1108,0,1108,0,2147483682,
+41,0,0,0,0,480,0,0,372,0,0,589,0,0,0,2147483689,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup color="#0055ff" id="8" name="teleport" visible="0">
+  <object id="23" x="0" y="24" width="4" height="24"/>
+  <object id="24" x="252" y="24" width="4" height="24"/>
+ </objectgroup>
+ <objectgroup color="#ff0000" id="4" name="bounds">
+  <object id="6" x="0" y="20" width="256" height="4"/>
+  <object id="13" x="0" y="60" width="256" height="4"/>
+  <object id="17" x="0" y="48" width="4" height="12"/>
+  <object id="19" x="252" y="48" width="4" height="12"/>
+  <object id="21" x="180" y="32" width="8" height="8"/>
+  <object id="22" x="84" y="32" width="8" height="8"/>
+ </objectgroup>
+</map>

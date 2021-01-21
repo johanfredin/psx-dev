@@ -93,11 +93,21 @@ void addBoundriesToLevel(u_char level, Frame* frames) {
             frameCoords[4][6] = getRectWO(128, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][7] = getRectWO(-4, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
 
+            frameCoords[5] = CALLOC(6, RECT);
+            frameCoords[5][0] = getRectWO(84, 32, 8, 8, 0, SCREEN_HEIGHT / 3);
+            frameCoords[5][1] = getRectWO(180, 32, 8, 8, 0, SCREEN_HEIGHT / 3);
+            frameCoords[5][2] = getRectWO(252, 48, 4, 12, 0, SCREEN_HEIGHT / 3);
+            frameCoords[5][3] = getRectWO(0, 48, 4, 12, 0, SCREEN_HEIGHT / 3);
+            frameCoords[5][4] = getRectWO(0, 60, 256, 4, 0, SCREEN_HEIGHT / 3);
+            frameCoords[5][5] = getRectWO(0, 20, 256, 4, 0, SCREEN_HEIGHT / 3);
+
+
             addBoundriesToFrame(frames[0].cbs, frameCoords[0], 8);
             addBoundriesToFrame(frames[1].cbs, frameCoords[1], 6);
             addBoundriesToFrame(frames[2].cbs, frameCoords[2], 6);
             addBoundriesToFrame(frames[3].cbs, frameCoords[3], 5);
             addBoundriesToFrame(frames[4].cbs, frameCoords[4], 8);
+            addBoundriesToFrame(frames[5].cbs, frameCoords[5], 6);
         break;
     }
 }
@@ -112,7 +122,8 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
             levelTeleports[1] = CALLOC(2, Teleport);
             levelTeleports[2] = CALLOC(2, Teleport);
             levelTeleports[3] = CALLOC(2, Teleport);
-            levelTeleports[4] = CALLOC(1, Teleport);
+            levelTeleports[4] = CALLOC(2, Teleport);
+            levelTeleports[5] = CALLOC(2, Teleport);
 
             levelTeleports[0][0] = getTeleport(getRect(SCREEN_WIDTH - 1, 32, 1, 144), 2, -1, 2);
             levelTeleports[0][1] = getTeleport(getRect(16, SCREEN_HEIGHT - 1, 128, 1), -1, 2, 1);
@@ -124,12 +135,16 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
             levelTeleports[3][0] = getTeleport(getRect(160, 0, 80, 1), -1, (SCREEN_HEIGHT - 2) - 16, 2);
             levelTeleports[3][1] = getTeleport(getRect(0, 144, 1, 96), (SCREEN_WIDTH - 2) - 16, -1, 1);
             levelTeleports[4][0] = getTeleport(getRectWO(48, 120, 32, 8, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 128, 126, 0);
+            levelTeleports[4][1] = getTeleport(getRectWO(4, 16, 12, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 15, 24 + (SCREEN_HEIGHT / 3), 5);
+            levelTeleports[5][0] = getTeleport(getRectWO(252, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 128, 126, 2);
+            levelTeleports[5][1] = getTeleport(getRectWO(0, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 20 + SCREEN_WIDTH / 4, 16 + SCREEN_HEIGHT / 4, 4);
 
             addTeleportsToFrame(&frames[0], levelTeleports[0], 0, 3);
             addTeleportsToFrame(&frames[1], levelTeleports[1], 1, 2);
             addTeleportsToFrame(&frames[2], levelTeleports[2], 2, 2);
             addTeleportsToFrame(&frames[3], levelTeleports[3], 3, 2);
-            addTeleportsToFrame(&frames[4], levelTeleports[4], 4, 1);
+            addTeleportsToFrame(&frames[4], levelTeleports[4], 4, 2);
+            addTeleportsToFrame(&frames[5], levelTeleports[5], 5, 2);
         break;
     }
 }

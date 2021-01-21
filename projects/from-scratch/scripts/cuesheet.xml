@@ -16,6 +16,7 @@
 			<file name="11FG.TIM"	type="data"	source="../assets/TIM/11fg.TIM"/>
 			<file name="YOLOBG.TIM"	type="data"	source="../assets/TIM/yolobg.TIM"/>
 			<file name="YOLOFG.TIM"	type="data"	source="../assets/TIM/yolofg.TIM"/>
+			<file name="1_TUNNEL.TIM"	type="data"	source="../assets/TIM/1_tunnel.TIM"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>
 			<!-- Add your own files or folders here -->
 			<dummy sectors="1024"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="17">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="18">
  <tileset firstgid="1" source="tilesetformattedupdate1.tsx"/>
  <tileset firstgid="85" source="16x16extratiles.tsx"/>
  <layer id="1" name="bg" width="8" height="8">
@@ -74,5 +74,6 @@
  </objectgroup>
  <objectgroup color="#0055ff" id="8" name="teleport">
   <object id="15" x="48" y="120" width="32" height="8"/>
+  <object id="17" x="4" y="16" width="12" height="16"/>
  </objectgroup>
 </map>
