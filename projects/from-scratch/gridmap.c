@@ -49,10 +49,21 @@ u_char setLevelAssets(u_char level) {
 }
 
 void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6]) {
-    CollisionBlocks* cbs = MALLOC(CollisionBlocks);
-    frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
-    frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
-    frame->cbs = cbs;
+    frame->cbs = MALLOC(CollisionBlocks);
+    
+    if(bgSprite == NULL) {
+        frame->bg = NULL;
+        printf("BG sprite NULL so no BG for frame");
+    } else {
+        frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
+    }
+
+    if(fgSprite == NULL) {
+        frame->fg = NULL;
+        printf("FG sprite NULL so no FG for frame");
+    } else {
+        frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
+    }
 }
 
 void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]) {
@@ -67,8 +78,14 @@ void gridmap_draw() {
     Frame* frame = &frames[currentFrame];
     CollisionBlocks* blocks = frame->cbs;
     Teleport* teleports = frame->teleports;
-    GsSortFastSprite(frame->fg, currentOT(), 0);
-    GsSortFastSprite(frame->bg, currentOT(), 2);
+    
+    if(frame->fg != NULL) {
+        GsSortFastSprite(frame->fg, currentOT(), 0);
+    }
+    if(frame->bg != NULL) {
+        GsSortFastSprite(frame->bg, currentOT(), 2);
+    }
+
     if(PRINT_COORDS) {
         FntPrint("Current framee=%d\n", currentFrame);
         FntPrint("Blocks in frame=%d\n", blocks->amount);
