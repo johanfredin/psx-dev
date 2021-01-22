@@ -34,8 +34,8 @@
             "scale": 4,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 10,
-                "y": 24.125
+                "x": 64,
+                "y": 64.125
             }
         },
         "L1/16x16extratiles.tsx": {
@@ -44,7 +44,7 @@
         },
         "L1/1_0.tmx": {
             "scale": 2.196875,
-            "selectedLayer": 0,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 128.3641536273115,
                 "y": 128.13655761024182
@@ -58,11 +58,19 @@
                 "y": 128.30845346754245
             }
         },
+        "L1/1_h2.tmx": {
+            "scale": 4,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 64,
+                "y": 187.875
+            }
+        },
         "L1/1_tunnel.tmx": {
             "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 2,
+                "x": 43.25,
                 "y": 36.125
             }
         },

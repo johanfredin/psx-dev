@@ -7,6 +7,9 @@ Teleport** levelTeleports;
 u_char levelBoundsAmount[50];      // Reserve elements for level bounds
 u_char levelTeleportsAmount[20];    // Reserve elements for level teleports
 
+int f6XOff = SCREEN_WIDTH / 4;
+int f6YOff = SCREEN_HEIGHT / 8;
+
 // Prototypes
 // ----------
 void initGlobals(u_char isFreeAllocatedMem);
@@ -101,6 +104,16 @@ void addBoundriesToLevel(u_char level, Frame* frames) {
             frameCoords[5][4] = getRectWO(0, 60, 256, 4, 0, SCREEN_HEIGHT / 3);
             frameCoords[5][5] = getRectWO(0, 20, 256, 4, 0, SCREEN_HEIGHT / 3);
 
+            
+            frameCoords[6] = CALLOC(8, RECT);
+            frameCoords[6][0] = getRectWO(16, 100, 16, 4, f6XOff, f6YOff);
+            frameCoords[6][1] = getRectWO(20, 80, 8, 8, f6XOff, f6YOff);
+            frameCoords[6][2] = getRectWO(80, 16, 32, 16, f6XOff, f6YOff);
+            frameCoords[6][3] = getRectWO(80, 176, 48, 16, f6XOff, f6YOff);
+            frameCoords[6][4] = getRectWO(4, 176, 44, 16, f6XOff, f6YOff);
+            frameCoords[6][5] = getRectWO(4, 0, 120, 16, f6XOff, f6YOff);
+            frameCoords[6][6] = getRectWO(124, 0, 4, 176, f6XOff, f6YOff);
+            frameCoords[6][7] = getRectWO(0, 0, 4, 192, f6XOff, f6YOff);
 
             addBoundriesToFrame(frames[0].cbs, frameCoords[0], 8);
             addBoundriesToFrame(frames[1].cbs, frameCoords[1], 6);
@@ -108,6 +121,7 @@ void addBoundriesToLevel(u_char level, Frame* frames) {
             addBoundriesToFrame(frames[3].cbs, frameCoords[3], 5);
             addBoundriesToFrame(frames[4].cbs, frameCoords[4], 8);
             addBoundriesToFrame(frames[5].cbs, frameCoords[5], 6);
+            addBoundriesToFrame(frames[6].cbs, frameCoords[6], 8);
         break;
     }
 }
@@ -120,10 +134,11 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
         case 1:
             levelTeleports[0] = CALLOC(3, Teleport);
             levelTeleports[1] = CALLOC(2, Teleport);
-            levelTeleports[2] = CALLOC(2, Teleport);
+            levelTeleports[2] = CALLOC(3, Teleport);
             levelTeleports[3] = CALLOC(2, Teleport);
             levelTeleports[4] = CALLOC(2, Teleport);
             levelTeleports[5] = CALLOC(2, Teleport);
+            levelTeleports[6] = CALLOC(2, Teleport);
 
             levelTeleports[0][0] = getTeleport(getRect(SCREEN_WIDTH - 1, 32, 1, 144), 2, -1, 2);
             levelTeleports[0][1] = getTeleport(getRect(16, SCREEN_HEIGHT - 1, 128, 1), -1, 2, 1);
@@ -132,19 +147,25 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
             levelTeleports[1][1] = getTeleport(getRect(16, 0, 128, 1), -1, (SCREEN_HEIGHT - 2) - 16, 0);
             levelTeleports[2][0] = getTeleport(getRect(160, SCREEN_HEIGHT - 1, 80, 1), -1, 2, 3);
             levelTeleports[2][1] = getTeleport(getRect(0, 32, 1, 144), (SCREEN_WIDTH - 2) - 16, -1, 0);
+            levelTeleports[2][2] = getTeleport(getRect(176, 84, 16, 8), 48 + f6XOff, 156 + f6YOff, 6);
+
             levelTeleports[3][0] = getTeleport(getRect(160, 0, 80, 1), -1, (SCREEN_HEIGHT - 2) - 16, 2);
             levelTeleports[3][1] = getTeleport(getRect(0, 144, 1, 96), (SCREEN_WIDTH - 2) - 16, -1, 1);
             levelTeleports[4][0] = getTeleport(getRectWO(48, 120, 32, 8, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 128, 126, 0);
             levelTeleports[4][1] = getTeleport(getRectWO(4, 16, 12, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 15, 24 + (SCREEN_HEIGHT / 3), 5);
-            levelTeleports[5][0] = getTeleport(getRectWO(252, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 128, 126, 2);
+            levelTeleports[5][0] = getTeleport(getRectWO(252, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 32 + f6XOff, 16 + f6YOff, 6);
             levelTeleports[5][1] = getTeleport(getRectWO(0, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 20 + SCREEN_WIDTH / 4, 16 + SCREEN_HEIGHT / 4, 4);
+
+            levelTeleports[6][0] = getTeleport(getRectWO(4, 16, 12, 16, f6XOff, f6YOff), 222, 24 + SCREEN_HEIGHT / 3, 5);
+            levelTeleports[6][1] = getTeleport(getRectWO(48, 184, 32, 1, f6XOff, f6YOff), 178, 106, 2);
 
             addTeleportsToFrame(&frames[0], levelTeleports[0], 0, 3);
             addTeleportsToFrame(&frames[1], levelTeleports[1], 1, 2);
-            addTeleportsToFrame(&frames[2], levelTeleports[2], 2, 2);
+            addTeleportsToFrame(&frames[2], levelTeleports[2], 2, 3);
             addTeleportsToFrame(&frames[3], levelTeleports[3], 3, 2);
             addTeleportsToFrame(&frames[4], levelTeleports[4], 4, 2);
             addTeleportsToFrame(&frames[5], levelTeleports[5], 5, 2);
+            addTeleportsToFrame(&frames[6], levelTeleports[6], 6, 2);
         break;
     }
 }

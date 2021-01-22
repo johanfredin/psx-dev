@@ -19,7 +19,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup color="#0055ff" id="8" name="teleport" visible="0">
+ <objectgroup color="#0055ff" id="8" name="teleport">
   <object id="23" x="0" y="24" width="4" height="24"/>
   <object id="24" x="252" y="24" width="4" height="24"/>
  </objectgroup>

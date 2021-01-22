@@ -16,13 +16,14 @@ u_char setLevelAssets(u_char level);
 
 void gridmap_init(u_char level) {
     assetsCount = setLevelAssets(level);
-    frames = CALLOC(6, Frame);
+    frames = CALLOC(7, Frame);
     initFrame(&frames[0], assets[0], assets[4], "00");
     initFrame(&frames[1], assets[1], assets[5], "01");
     initFrame(&frames[2], assets[2], assets[6], "10");
     initFrame(&frames[3], assets[3], assets[7], "11");
     initSmallerFrame(&frames[4], assets[8], assets[9], 256 / 4, 256 / 4, "yolo");
     initSmallerFrame(&frames[5], assets[10], NULL, 0, 256 / 3, "tunnel");
+    initSmallerFrame(&frames[6], assets[11], NULL, 256 / 4, 256 / 8, "1_h2");
     mapbounds_init(level, frames);
 }
 
@@ -31,7 +32,7 @@ u_char setLevelAssets(u_char level) {
     CdOpen();
     switch(level) {
         case 1:
-            assets = (u_long**) calloc3(11, sizeof(u_long));  //MEM_CALLOC(8, u_long);
+            assets = (u_long**) calloc3(12, sizeof(u_long));  //MEM_CALLOC(8, u_long);
             CdReadFile("00BG.TIM", &assets[0]);
             CdReadFile("01BG.TIM", &assets[1]);
             CdReadFile("10BG.TIM", &assets[2]);
@@ -43,7 +44,8 @@ u_char setLevelAssets(u_char level) {
             CdReadFile("YOLOBG.TIM", &assets[8]);
             CdReadFile("YOLOFG.TIM", &assets[9]);
             CdReadFile("1_TUNNEL.TIM", &assets[10]);
-            count = 11;
+            CdReadFile("1_H2.TIM", &assets[11]);
+            count = 12;
             break;
     }
     CdClose();
