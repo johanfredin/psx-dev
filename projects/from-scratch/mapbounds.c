@@ -91,7 +91,7 @@ void addBoundriesToLevel(u_char level, Frame* frames) {
             frameCoords[4][1] = getRectWO(80, 112, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][2] = getRectWO(4, 112, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][3] = getRectWO(16, 48, 32, 32, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
-            frameCoords[4][4] = getRectWO(80, 16, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
+            frameCoords[4][4] = getRectWO(4, 16, 44, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][5] = getRectWO(4, 0, 120, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][6] = getRectWO(128, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
             frameCoords[4][7] = getRectWO(-4, 0, 4, 128, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
@@ -152,9 +152,9 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
             levelTeleports[3][0] = getTeleport(getRect(160, 0, 80, 1), -1, (SCREEN_HEIGHT - 2) - 16, 2);
             levelTeleports[3][1] = getTeleport(getRect(0, 144, 1, 96), (SCREEN_WIDTH - 2) - 16, -1, 1);
             levelTeleports[4][0] = getTeleport(getRectWO(48, 120, 32, 8, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 128, 126, 0);
-            levelTeleports[4][1] = getTeleport(getRectWO(4, 16, 12, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 15, 24 + (SCREEN_HEIGHT / 3), 5);
+            levelTeleports[4][1] = getTeleport(getRectWO(112, 16, 12, 16, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4), 15, 24 + (SCREEN_HEIGHT / 3), 5);
             levelTeleports[5][0] = getTeleport(getRectWO(252, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 32 + f6XOff, 16 + f6YOff, 6);
-            levelTeleports[5][1] = getTeleport(getRectWO(0, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 20 + SCREEN_WIDTH / 4, 16 + SCREEN_HEIGHT / 4, 4);
+            levelTeleports[5][1] = getTeleport(getRectWO(0, 24, 4, 24, 0, SCREEN_HEIGHT / 3), 92 + SCREEN_WIDTH / 4, 16 + SCREEN_HEIGHT / 4, 4);
 
             levelTeleports[6][0] = getTeleport(getRectWO(4, 16, 12, 16, f6XOff, f6YOff), 222, 24 + SCREEN_HEIGHT / 3, 5);
             levelTeleports[6][1] = getTeleport(getRectWO(48, 184, 32, 1, f6XOff, f6YOff), 178, 106, 2);

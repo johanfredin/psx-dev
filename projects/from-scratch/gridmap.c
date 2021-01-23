@@ -4,10 +4,10 @@
 #include <LIBETC.H> // Temp import
 
 Frame* frames;
-u_char assetsCount, currentFrame=0;
+u_char assetsCount, currentFrame=4;
 u_long** assets;
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[]);
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[], u_long* gameObjectAsset);
 void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]);
 void handleBlockCollision(GsSPRITE* sprite);
 void handleTeleportCollision(GsSPRITE* sprite);
@@ -17,10 +17,10 @@ u_char setLevelAssets(u_char level);
 void gridmap_init(u_char level) {
     assetsCount = setLevelAssets(level);
     frames = CALLOC(7, Frame);
-    initFrame(&frames[0], assets[0], assets[4], "00");
-    initFrame(&frames[1], assets[1], assets[5], "01");
-    initFrame(&frames[2], assets[2], assets[6], "10");
-    initFrame(&frames[3], assets[3], assets[7], "11");
+    initFrame(&frames[0], assets[0], assets[4], "00", assets[14]);
+    initFrame(&frames[1], assets[1], assets[5], "01", NULL);
+    initFrame(&frames[2], assets[2], assets[6], "10", NULL);
+    initFrame(&frames[3], assets[3], assets[7], "11", NULL);
     initSmallerFrame(&frames[4], assets[8], assets[9], 256 / 4, 256 / 4, "yolo");
     initSmallerFrame(&frames[5], assets[10], NULL, 0, 256 / 3, "tunnel");
     initSmallerFrame(&frames[6], assets[11], NULL, 256 / 4, 256 / 8, "1_h2");
@@ -32,7 +32,7 @@ u_char setLevelAssets(u_char level) {
     CdOpen();
     switch(level) {
         case 1:
-            assets = (u_long**) calloc3(12, sizeof(u_long));  //MEM_CALLOC(8, u_long);
+            assets = (u_long**) calloc3(16, sizeof(u_long));  //MEM_CALLOC(8, u_long);
             CdReadFile("00BG.TIM", &assets[0]);
             CdReadFile("01BG.TIM", &assets[1]);
             CdReadFile("10BG.TIM", &assets[2]);
@@ -45,16 +45,21 @@ u_char setLevelAssets(u_char level) {
             CdReadFile("YOLOFG.TIM", &assets[9]);
             CdReadFile("1_TUNNEL.TIM", &assets[10]);
             CdReadFile("1_H2.TIM", &assets[11]);
-            count = 12;
+            CdReadFile("PSY_8.TIM", &assets[12]);
+            CdReadFile("RAICHU.TIM", &assets[13]);
+            CdReadFile("RAICHU_2.TIM", &assets[14]);
+            CdReadFile("ALOLA.TIM", &assets[15]);
+            count = 16;
             break;
     }
     CdClose();
     return count;
 }
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6]) {
+void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u_long* gameObjectAsset) {
     frame->cbs = MALLOC(CollisionBlocks);
     
+    // Init BG sprite if provided
     if(bgSprite == NULL) {
         frame->bg = NULL;
         printf("BG sprite NULL so no BG for frame");
@@ -62,16 +67,23 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6]) {
         frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
     }
 
+    // Init FG sprite if provided
     if(fgSprite == NULL) {
         frame->fg = NULL;
         printf("FG sprite NULL so no FG for frame");
     } else {
         frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
     }
+
+    // Init Game object if provided
+    if(gameObjectAsset != NULL) {
+        GsSPRITE* sprite = assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8);
+        frame->gameObject = gameobject_init(sprite, 0, 100);
+    }
 }
 
 void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]) {
-    initFrame(frame, bgSprite, fgSprite, name);
+    initFrame(frame, bgSprite, fgSprite, name, NULL);
     frame->bg->x = x; 
     frame->fg->x = x;
     frame->bg->y = y;
@@ -88,6 +100,9 @@ void gridmap_draw() {
     }
     if(frame->bg != NULL) {
         GsSortFastSprite(frame->bg, currentOT(), 2);
+    }
+    if(frame->gameObject != NULL) {
+        gameobject_draw(frame->gameObject);
     }
 
     if(PRINT_COORDS) {
@@ -204,7 +219,6 @@ void handleTeleportCollision(GsSPRITE* sprite) {
             if(t.destY > -1) {
                 sprite->y = t.destY;
             }
-            FntPrint("COOOOL with teleport nr %d\n", i);
         }
         i++;
     }

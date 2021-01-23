@@ -4,6 +4,7 @@
 #include "base.h"
 #include "assetmanager.h"
 #include "logger.h"
+#include "gameobject.h"
 #include "cdrom.h"
 
 #include "player.h"
@@ -31,6 +32,7 @@ typedef struct {
     GsSPRITE* fg;
     CollisionBlocks* cbs;
     Teleport* teleports;
+    GameObject* gameObject;
 } Frame;
 
 void gridmap_init(u_char level);
