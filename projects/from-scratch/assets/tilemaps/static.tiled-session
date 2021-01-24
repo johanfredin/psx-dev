@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "L1/1_tunnel.tmx",
+    "activeFile": "L1/100i0.tmx",
     "expandedProjectPaths": [
         "L1"
     ],
@@ -34,8 +34,8 @@
             "scale": 4,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 64,
-                "y": 64.125
+                "x": 56.5,
+                "y": 24.125
             }
         },
         "L1/16x16extratiles.tsx": {
@@ -62,8 +62,8 @@
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 64,
-                "y": 187.875
+                "x": 40.75,
+                "y": 187.625
             }
         },
         "L1/1_tunnel.tmx": {
@@ -100,6 +100,7 @@
         "L1/1_0.tmx",
         "L1/1_1.tmx",
         "L1/1_tunnel.tmx",
+        "L1/1_h2.tmx",
         "L1/100i0.tmx"
     ],
     "project": "",
@@ -108,8 +109,9 @@
         "L1/0_1.tmx",
         "L1/1_0.tmx",
         "L1/1_1.tmx",
-        "L1/100i0.tmx",
         "L1/1_tunnel.tmx",
+        "L1/1_h2.tmx",
+        "L1/100i0.tmx",
         "L1/tilesetformattedupdate1.tsx",
         "L1/16x16extratiles.tsx",
         "tinySLATES [16x16px orthogonal tileset by Ivan Voirol].tsx",

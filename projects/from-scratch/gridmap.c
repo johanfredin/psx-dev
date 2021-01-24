@@ -3,13 +3,21 @@
 
 #include <LIBETC.H> // Temp import
 
+#define ON_COL_SWDIR 1
+#define ON_COL_STOP  0
+
 Frame* frames;
 u_char assetsCount, currentFrame=4;
 u_long** assets;
 
 void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[], u_long* gameObjectAsset);
 void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]);
-void handleBlockCollision(GsSPRITE* sprite);
+/**
+ * Handle collision between a sprite and the CollisionBlocks of the current Frame.
+ * @param sprite the sprite colliding
+ * @param onCol what will happen upon collision. 0=Stop movement, 1=Switch direction
+ */
+void handleBlockCollision(GsSPRITE* sprite, u_char onCol);
 void handleTeleportCollision(GsSPRITE* sprite);
 u_char setLevelAssets(u_char level);
 
@@ -62,7 +70,7 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u
     // Init BG sprite if provided
     if(bgSprite == NULL) {
         frame->bg = NULL;
-        printf("BG sprite NULL so no BG for frame");
+        printf("BG sprite NULL so no BG for frame\n");
     } else {
         frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
     }
@@ -70,15 +78,14 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u
     // Init FG sprite if provided
     if(fgSprite == NULL) {
         frame->fg = NULL;
-        printf("FG sprite NULL so no FG for frame");
+        printf("FG sprite NULL so no FG for frame\n");
     } else {
         frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
     }
 
     // Init Game object if provided
     if(gameObjectAsset != NULL) {
-        GsSPRITE* sprite = assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8);
-        frame->gameObject = gameobject_init(sprite, 0, 100);
+        frame->gameObject = gameobject_init(assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8), 4, 100);
     }
 }
 
@@ -139,7 +146,7 @@ void gridmap_tick(Player* player) {
     handleBlockCollision(player->gobj->textureFrame);
 }
 
-void handleBlockCollision(GsSPRITE* sprite) {
+void handleBlockCollision(GsSPRITE* sprite, u_char onCol) {
     u_char rightCol, leftCol, topCol, bottomCol;
     CollisionBlocks* blocks = frames[currentFrame].cbs;
     int i = 0;
@@ -167,19 +174,23 @@ void handleBlockCollision(GsSPRITE* sprite) {
         topCol = pyh >= by && py < by && pxw > bx && px < bxw;
         bottomCol = py <= byh && pyh > byh && pxw > bx && px < bxw;
 
-        if(rightCol) {
-            sprite->x = bx - pw;
-        } 
-        if(leftCol) {
-            sprite->x = bxw;
-        }
-        if(topCol) {
-            sprite->y = by - ph;
-        }
-        if(bottomCol) {
-            sprite->y = byh;
-        }
+        if(rightCol || leftCol || topCol || bottomCol) {
+            if(rightCol) {
+                sprite->x = bx - pw;
+            } 
+            if(leftCol) {
+                sprite->x = bxw;
+            }
+            if(topCol) {
+                sprite->y = by - ph;
+            }
+            if(bottomCol) {
+                sprite->y = byh;
+            }
+            
+            // Check if we are going to switch dir or not
 
+        }
         i++;
     }   
 }

@@ -50,7 +50,7 @@
 36,1610612772,1610612772,0,0,1610612772,1610612772,1610612772
 </data>
  </layer>
- <layer id="3" name="fg" width="8" height="8" visible="0">
+ <layer id="3" name="fg" width="8" height="8">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,
@@ -62,7 +62,7 @@
 3221225514,0,0,0,0,0,0,3221225514
 </data>
  </layer>
- <objectgroup color="#ff0000" id="4" name="bounds" visible="0">
+ <objectgroup color="#ff0000" id="4" name="bounds">
   <object id="1" x="0" y="0" width="4" height="128"/>
   <object id="4" x="124" y="0" width="4" height="128"/>
   <object id="6" x="4" y="0" width="120" height="16"/>
@@ -72,8 +72,8 @@
   <object id="12" x="80" y="112" width="44" height="16"/>
   <object id="13" x="96" y="60" width="16" height="20"/>
  </objectgroup>
- <objectgroup color="#0055ff" id="8" name="teleport" visible="0">
-  <object id="15" x="48" y="120" width="32" height="8"/>
+ <objectgroup color="#0055ff" id="8" name="teleport">
+  <object id="15" x="48" y="120" width="32" height="8" visible="0"/>
   <object id="17" x="112" y="16" width="12" height="16"/>
  </objectgroup>
 </map>

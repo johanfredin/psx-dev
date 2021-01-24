@@ -5,18 +5,19 @@
 
 typedef struct {
     GsSPRITE* sprite;
-    char speed;
+    char xSpeed, ySpeed;
     u_char health;
 } GameObject;
 
 /**
  * Allocates heap memory for new game object
  * @param sprite the sprite
- * @param speed movement speed of the game object
+ * @param xSpeed movement speed of the game object on the x axis
+ * @param ySpeed movement speed of the game object on the y axis
  * @param health health of the game object
  * @return a pointer to a heap allocated game object with given parameters
  */
-GameObject* gameobject_init(GsSPRITE* sprite, u_char speed, u_char health);
+GameObject* gameobject_init(GsSPRITE* sprite, char xSpeed, char ySpeed, u_char health);
 /**
  * Draw the game object
  * @param gameObject the game object sprite to draw 

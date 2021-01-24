@@ -16,7 +16,7 @@ void logger_logBoundsArray(RECT* rect, u_char amount) {
     }
 }
 
-void logger_logGameObject(AnimatedGameObject* gobj) {
+void logger_logGameObject(Animation* gobj) {
     printf("-----------------------------\n");
     printf("Animated Game Object created:\n");
     printf("-----------------------------\n");

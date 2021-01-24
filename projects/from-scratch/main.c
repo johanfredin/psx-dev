@@ -1,35 +1,35 @@
-#include <STDLIB.H>
-#include <STDIO.H>
-#include <LIBGTE.H>
+#include <LIBDS.H>
+#include <LIBETC.H>
 #include <LIBGPU.H>
 #include <LIBGS.H>
-#include <LIBETC.H>
-#include <LIBDS.H>
+#include <LIBGTE.H>
+#include <STDIO.H>
+#include <STDLIB.H>
 #include <STRINGS.H>
 #include <SYS/TYPES.H>
 
 // Custom imports
+#include "header/animation.h"
+#include "header/assetmanager.h"
 #include "header/base.h"
 #include "header/cdrom.h"
 #include "header/gpubase.h"
-#include "header/assetmanager.h"
 #include "header/gridmap.h"
-#include "header/animatedobject.h"
 #include "header/player.h"
 
 // Constants
 #define SPEED 3
+#define MAX_PLAYERS 4
 
 Color backgroundColor;
-Player* player;
+Player *player;
 u_int currentKeyDown = 0;
 
+void initPlayers(u_char numPlayers);
 void update();
 void draw();
 
 int main() {
-    u_long** heroTexture;
-    AnimatedGameObject* gobj;
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
@@ -37,17 +37,10 @@ int main() {
     initializeHeap();
     initializeScreen(&backgroundColor);
     initializeDebugFont(0);
-
-    // Load hero sprite
-    CdOpen();
-    CdReadFile("HERO.TIM", heroTexture);
-    CdClose();
-
-    gobj = animatedobject_set("HERO", *heroTexture, 126, 128, 16, 16, 220, 3, 3, COLOR_BITS_8);
-    player = player_init(gobj, 0, SPEED, SPEED);
+    initPlayers(1);
     gridmap_init(1);
-    
-    while(1) {
+
+    while (1) {
         update();
         draw();
         display(&backgroundColor);
@@ -56,8 +49,29 @@ int main() {
     return 0;
 }
 
+void initPlayers(u_char numPlayers) {
+    u_long **heroTexture[MAX_PLAYERS];  // Reserve space for max 4 players
+    int i;
+    
+    // Load hero sprites from disc
+    CdOpen();
+    CdReadFile("HERO.TIM", heroTexture[0]);
+    CdClose();
+    
+    for(i = 0; i < numPlayers; i++) {
+        GsSPRITE* sprite;
+        GameObject* go;
+        Animation* anim;
+
+        sprite = assetmanager_loadSprite("Player", *heroTexture[0], 126, 128, 220, COLOR_BITS_8);
+        go = gameobject_init(sprite, SPEED, SPEED, 100);
+        anim = animation_init(sprite, 16, 16, 3, 3);
+        player = player_init(anim, go, 0);
+    }
+}
+
 void update() {
-    player_tick(player); 
+    player_tick(player);
     gridmap_tick(player);
 }
 

@@ -1,5 +1,5 @@
-#ifndef _constanst_h_
-#define _constanst_h_
+#ifndef _base_h_
+#define _base_h_
 
 #include <KERNEL.H>
 #include <STDIO.H>

@@ -1,6 +1,6 @@
 #include "header/player.h"
 
-Player* player_init(AnimatedGameObject* gobj, u_char pNum, u_char xSpeed, u_char ySpeed) {
+Player* player_init(Animation* animation, u_char pNum, u_char xSpeed, u_char ySpeed) {
     Player* p = MALLOC(Player);
     p->gobj = gobj;
     p->pNum = pNum;
@@ -36,7 +36,7 @@ void player_tick(Player* p) {
         xSpeed = -p->xSpeed;
         animatedobject_setHeading(p->gobj, 1, 0, 0, 0);
     } 
-    animatedobject_tick(p->gobj);
+    animation_tick(p->gobj);
     p->gobj->textureFrame->x += xSpeed;
     p->gobj->textureFrame->y += ySpeed;
 }

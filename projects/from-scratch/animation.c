@@ -1,15 +1,14 @@
-#include "header/animatedobject.h"
-#include "header/logger.h"
+#include "header/animation.h"
 
-char animatedobject_moving(AnimatedGameObject* gobj);
 
-AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x, u_short y, u_short w, u_short h, u_short blend, u_char keyFrames, u_short ticksPerFrame, u_short numColorBits) {
-    AnimatedGameObject* gameObject;
+char animatedobject_moving(Animation* gobj);
+
+Animation* animation_init(GsSPRITE* textureFrame, u_short w, u_short h, u_char keyFrames, u_short ticksPerFrame) {
+    Animation* gameObject;
     Heading heading;
-    GsSPRITE* textureFrame = assetmanager_loadSprite(name, spriteData, x, y, blend, numColorBits);
     textureFrame->w = w;
     textureFrame->h = h;
-    gameObject = MALLOC(AnimatedGameObject);
+    gameObject = MALLOC(Animation);
     gameObject->textureFrame = textureFrame;
     gameObject->heading = heading;
     gameObject->curr_u = textureFrame->u;
@@ -22,7 +21,7 @@ AnimatedGameObject* animatedobject_set(char* name, u_long* spriteData, u_short x
     return gameObject;
 }   
 
-void animatedobject_tick(AnimatedGameObject* gameObject) {
+void animation_tick(Animation* gameObject) {
     short u=gameObject->curr_v;
     short v=gameObject->curr_v;
     if(gameObject->heading.left) {
@@ -56,13 +55,13 @@ void animatedobject_tick(AnimatedGameObject* gameObject) {
     gameObject->textureFrame->u = gameObject->curr_u;
 }
 
-void animatedobject_setHeading(AnimatedGameObject* gobj, u_char l, u_char r, u_char u, u_char d) {
+void animatedobject_setHeading(Animation* gobj, u_char l, u_char r, u_char u, u_char d) {
     gobj->heading.left = l;
     gobj->heading.right = r;
     gobj->heading.up = u;
     gobj->heading.down = d;
 }
 
-char animatedobject_moving(AnimatedGameObject* gobj) {
+char animatedobject_moving(Animation* gobj) {
     return gobj->heading.left == 1 || gobj->heading.right == 1 || gobj->heading.up == 1 || gobj->heading.down == 1;
 }
