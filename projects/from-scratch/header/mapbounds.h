@@ -9,5 +9,4 @@
 
 void mapbounds_init(u_char level, Frame* frames);
 
-
 #endif

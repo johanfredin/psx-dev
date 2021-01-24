@@ -12,12 +12,7 @@ u_long** assets;
 
 void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[], u_long* gameObjectAsset);
 void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]);
-/**
- * Handle collision between a sprite and the CollisionBlocks of the current Frame.
- * @param sprite the sprite colliding
- * @param onCol what will happen upon collision. 0=Stop movement, 1=Switch direction
- */
-void handleBlockCollision(GsSPRITE* sprite, u_char onCol);
+void handleBlockCollision(GsSPRITE* sprite);
 void handleTeleportCollision(GsSPRITE* sprite);
 u_char setLevelAssets(u_char level);
 
@@ -85,7 +80,7 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u
 
     // Init Game object if provided
     if(gameObjectAsset != NULL) {
-        frame->gameObject = gameobject_init(assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8), 4, 100);
+        frame->gameObject = gameobject_init(assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8), 16, 16, 4, 4, 100);
     }
 }
 
@@ -146,7 +141,7 @@ void gridmap_tick(Player* player) {
     handleBlockCollision(player->gobj->textureFrame);
 }
 
-void handleBlockCollision(GsSPRITE* sprite, u_char onCol) {
+void handleBlockCollision(GsSPRITE* sprite) {
     u_char rightCol, leftCol, topCol, bottomCol;
     CollisionBlocks* blocks = frames[currentFrame].cbs;
     int i = 0;

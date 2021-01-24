@@ -16,12 +16,11 @@ void logger_logBoundsArray(RECT* rect, u_char amount) {
     }
 }
 
-void logger_logGameObject(Animation* gobj) {
+void logger_logGameObject(Animation* anim) {
     printf("-----------------------------\n");
     printf("Animated Game Object created:\n");
     printf("-----------------------------\n");
-    printf("x:%d, y:%d, w%d, h%d\n", gobj->textureFrame->x, gobj->textureFrame->y, gobj->textureFrame->w, gobj->textureFrame->h);
-    printf("ticks_per_frame:%d, curr_u:%d, curr_v:%d\n", gobj->ticksPerFrame, gobj->curr_u, gobj->curr_v);
-    printf("key_frames:%d, acc:%d\n", gobj->keyFrames, gobj->acc);
+    printf("ticks_per_frame:%d, curr_u:%d, curr_v:%d\n", anim->ticksPerFrame, anim->curr_u, anim->curr_v);
+    printf("key_frames:%d, acc:%d\n", anim->keyFrames, anim->accTicks);
     printf("-----------------------------\n");
 }

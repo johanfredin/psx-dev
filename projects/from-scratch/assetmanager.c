@@ -1,5 +1,4 @@
 #include "header/assetmanager.h"
-#include "header/logger.h"
 
 u_char getTPageColorBitMode(u_short numColorBits);
 u_char getWidthByColorBitsMode(u_short numColorBits);

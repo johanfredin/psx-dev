@@ -50,22 +50,23 @@ int main() {
 }
 
 void initPlayers(u_char numPlayers) {
-    u_long **heroTexture[MAX_PLAYERS];  // Reserve space for max 4 players
+    u_long **heroTexture[MAX_PLAYERS]; // Reserve space for max 4 players
     int i;
-    
+
     // Load hero sprites from disc
     CdOpen();
     CdReadFile("HERO.TIM", heroTexture[0]);
     CdClose();
-    
-    for(i = 0; i < numPlayers; i++) {
-        GsSPRITE* sprite;
-        GameObject* go;
-        Animation* anim;
+
+    for (i = 0; i < numPlayers; i++) {
+        Heading h = {0, 0, 0, 0};
+        GsSPRITE *sprite;
+        GameObject *go;
+        Animation *anim;
 
         sprite = assetmanager_loadSprite("Player", *heroTexture[0], 126, 128, 220, COLOR_BITS_8);
-        go = gameobject_init(sprite, SPEED, SPEED, 100);
-        anim = animation_init(sprite, 16, 16, 3, 3);
+        go = gameobject_init(sprite, 16, 16, SPEED, SPEED, 100);
+        anim = animation_init(0, 0, 3, 3);
         player = player_init(anim, go, 0);
     }
 }

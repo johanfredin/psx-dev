@@ -8,7 +8,7 @@
 void logger_logCoords(RECT* rect, char* source);
 void logger_logBounds(TILE* bounds);
 void logger_logBoundsArray(RECT* rect, u_char amount);
-void logger_logGameObject(Animation* gobj);
+void logger_logGameObject(Animation* anim);
 // void logger_logTeleport(Teleport* t);
 
 #endif
