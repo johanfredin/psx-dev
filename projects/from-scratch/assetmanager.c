@@ -37,7 +37,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     frameBuffer->w = tim_data->pw;
     frameBuffer->h = tim_data->ph;
     LoadImage(frameBuffer, tim_data->pixel);
-    logger_logCoords(frameBuffer, "FrameBuffer");
+    LOG_NAMED_RECT(frameBuffer, "FrameBuffer");
    
    if(isCLUTMode) {
         // load clut into gpu memory
@@ -46,7 +46,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
         clut->w = tim_data->cw;
         clut->h = tim_data->ch;
         LoadImage(clut, tim_data->clut);
-        logger_logCoords(clut, "CLUT");
+        LOG_NAMED_RECT(clut, "CLUT");
     } else {
         printf("16 bit mode so no CLUT\n");
     }

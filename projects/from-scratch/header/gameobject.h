@@ -1,9 +1,9 @@
 #ifndef _gameobject_h_
 #define _gameobject_h_
 
-#include "player.h"
+#include "gpubase.h"
 
-typedef struct {
+typedef struct Heading {
     u_int left : 1;
     u_int right : 1;
     u_int up : 1;
@@ -32,18 +32,19 @@ typedef struct {
  * @param health health of the game object
  * @return a pointer to a heap allocated game object with given parameters
  */
-GameObject *gameobject_init(GsSPRITE *sprite, short w, short h, char xSpeed, char ySpeed, u_char health);
+GameObject *gameobject_init(GsSPRITE* sprite, short w, short h, char xSpeed, char ySpeed, u_char health);
 /**
  * Draw the game object
  * @param gameObject the game object sprite to draw 
  */
 void gameobject_draw(GameObject *gameObject);
+
 /**
  * Update the game object
  * @param gameObject the game object to update
- * @param player how to interact with a player
  */
-void gameobject_tick(GameObject *gameObject, Player *player);
+void gameobject_tick(GameObject* gameObject);
+
 /**
  * Update the Heading struct of the passed in game object
  * @param gobj the game object owning the heading struct

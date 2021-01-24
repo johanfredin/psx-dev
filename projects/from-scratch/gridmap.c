@@ -137,8 +137,8 @@ void gridmap_tick(Player* player) {
         }
     }
 
-    handleTeleportCollision(player->gobj->textureFrame);
-    handleBlockCollision(player->gobj->textureFrame);
+    handleTeleportCollision(player->gobj->sprite);
+    handleBlockCollision(player->gobj->sprite);
 }
 
 void handleBlockCollision(GsSPRITE* sprite) {
@@ -226,6 +226,7 @@ void handleTeleportCollision(GsSPRITE* sprite) {
                 sprite->y = t.destY;
             }
         }
+        
         i++;
     }
 }

@@ -7,7 +7,6 @@ Animation* animation_init(u_short curr_u, u_short curr_v, u_char keyFrames, u_sh
     anim->keyFrames = keyFrames;
     anim->ticksPerFrame = ticksPerFrame;
     anim->accTicks = 0;
-    logger_logGameObject(anim);
     return anim;
 }
 

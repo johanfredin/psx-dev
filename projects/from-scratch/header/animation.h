@@ -2,10 +2,11 @@
 #define _animation_h_
 
 #include "base.h"
+#include "logger.h"
 #include "gpubase.h"
 #include "gameobject.h"
 
-typedef struct Animation {
+typedef struct {
     u_char keyFrames;
     u_short ticksPerFrame;
     u_short curr_u;

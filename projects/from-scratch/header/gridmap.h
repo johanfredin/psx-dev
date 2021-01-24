@@ -1,13 +1,12 @@
 #ifndef _gridmap_
 #define _gridmap_
 
+#include "player.h"
 #include "base.h"
 #include "assetmanager.h"
-#include "logger.h"
 #include "gameobject.h"
 #include "cdrom.h"
 
-#include "player.h"
 
 typedef struct {
     RECT origin;

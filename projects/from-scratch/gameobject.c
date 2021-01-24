@@ -18,8 +18,8 @@ void gameobject_draw(GameObject* gameObject) {
     GsSortFastSprite(gameObject->sprite, currentOT(), 1);
 }
 
-void gameobject_tick(GameObject* gameObject, Player* player) {
-
+void gameobject_tick(GameObject* gameObject) {
+    return;
 }
 
 void gamedobject_setHeading(GameObject* gobj, u_char l, u_char r, u_char u, u_char d) {

@@ -1,14 +1,31 @@
 #ifndef _logger_h_
 #define _logger_h_
 
-#include "gpubase.h"
-#include "gridmap.h"
-#include "animation.h"
+#define LOG_NAMED_RECT(rect, rectName) printf("%s Coords assigned at {x:%d, y%d, w:%d, h:%d}\n", rectName, rect->x, rect->y, rect->w, rect->h)
+#define LOG_RECT(rect) printf("Coords assigned at {x:%d, y%d, w:%d, h:%d}\n", (rect)->x, (rect)->y, (rect)->w, (rect)->h)
+#define LOG_TILE(tile) printf("TILE bounds={x:%d, y:%d, w:%d, h:%d}\n", (tile)->x0, (tile)->y0, (tile)->w, (tile)->h)
 
-void logger_logCoords(RECT* rect, char* source);
-void logger_logBounds(TILE* bounds);
-void logger_logBoundsArray(RECT* rect, u_char amount);
-void logger_logGameObject(Animation* anim);
-// void logger_logTeleport(Teleport* t);
+#define LOG_RECTS(rects, amount) ({                                                                                         \
+    u_char i = 0;                                                                                                           \
+    for (i = 0; i < amount; i++)                                                                                            \
+        printf("Coords assigned at {x:%d, y%d, w:%d, h:%d}\n", (rects[i])->x, (rects[i])->y, (rects[i])->w, (rects[i])->h); \
+})
+
+#define LOG_ANIM(anim) ({                                                                                        \
+    printf("-----------------------------\n");                                                                   \
+    printf("Animated Game Object created:\n");                                                                   \
+    printf("ticks_per_frame:%d, curr_u:%d, curr_v:%d\n", (anim)->ticksPerFrame, (anim)->curr_u, (anim)->curr_v); \
+    printf("key_frames:%d, acc:%d\n", (anim)->keyFrames, (anim)->accTicks);                                      \
+    printf("-----------------------------\n");                                                                   \
+})
+
+#define LOG_TELEPORT(t) printf("Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", (t)->origin.x, (t)->origin.y, (t)->origin.w, (t)->origin.h, (t)->destX, (t)->destY)
+
+#define LOG_TELEPORTS(ts, amount) ({ \
+    int i;                           \
+    for (i = 0; i < amount; i++) {   \
+        LOG_TELEPORT(ts[i]);         \
+    }                                \
+})
 
 #endif
