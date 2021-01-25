@@ -1,4 +1,4 @@
-#include "header/animation.h"
+#include "header/gameobject.h"
 
 Animation* animation_init(u_short curr_u, u_short curr_v, u_char keyFrames, u_short ticksPerFrame) {
     Animation *anim = MALLOC(Animation);

@@ -1,7 +1,4 @@
 #include "header/gridmap.h"
-#include "header/mapbounds.h"
-
-#include <LIBETC.H> // Temp import
 
 #define ON_COL_SWDIR 1
 #define ON_COL_STOP  0

@@ -1,21 +1,9 @@
-#include <LIBDS.H>
-#include <LIBETC.H>
-#include <LIBGPU.H>
-#include <LIBGS.H>
-#include <LIBGTE.H>
-#include <STDIO.H>
-#include <STDLIB.H>
-#include <STRINGS.H>
-#include <SYS/TYPES.H>
-
-// Custom imports
-#include "header/animation.h"
-#include "header/assetmanager.h"
 #include "header/base.h"
 #include "header/cdrom.h"
+#include "header/assetmanager.h"
 #include "header/gpubase.h"
+#include "header/gameobject.h"
 #include "header/gridmap.h"
-#include "header/player.h"
 
 // Constants
 #define SPEED 3
@@ -59,7 +47,6 @@ void initPlayers(u_char numPlayers) {
     CdClose();
 
     for (i = 0; i < numPlayers; i++) {
-        Heading h = {0, 0, 0, 0};
         GsSPRITE *sprite;
         GameObject *go;
         Animation *anim;

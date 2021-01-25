@@ -1,5 +1,3 @@
-#include "header/mapbounds.h"
-#include "header/gpubase.h"
 #include "header/gridmap.h"
 
 RECT** frameCoords;
@@ -40,7 +38,7 @@ void initGlobals(u_char isFreeAllocatedMem) {
 }
 
 void initArr(u_char size, u_char arr[]) {
-    int i = 0;
+    int i;
     for(i = 0; i < size; i++) {
         arr[i] = 0;
     }
@@ -169,15 +167,15 @@ void addTeleportsToLevel(u_char level, Frame* frames) {
 }
 
 void addTeleportsToFrame(Frame* frame, Teleport* frameTeleports, u_char frameIndex, u_char amount) {
+    u_char i;
     if(amount > 0) {
         printf("----------------------------------------------\n");
         printf("Adding bound lines for teleport at frame nr %d\n", frameIndex);
         printf("----------------------------------------------\n");
         frame->teleports = frameTeleports;
         frame->t_amount = amount;
-        LOG_TELEPORTS(frameTeleports, frame->t_amount);
+        LOG_TELEPORTS(frameTeleports, frame->t_amount, i);
         if(DRAW_BOUNDS) {
-            int i = 0;
             while(i < amount) {
                 TILE bounds;
                 SetTile(&bounds);
@@ -197,16 +195,16 @@ void addTeleportsToFrame(Frame* frame, Teleport* frameTeleports, u_char frameInd
 }
 
 void addBoundriesToFrame(CollisionBlocks* cbs, RECT* bounds, u_char amount) {
+    u_char i;
     printf("--------------------------------------------\n");
     printf("Setting collision bounds for frame.\n");
     printf("--------------------------------------------\n");
     cbs->bounds = bounds;
     cbs->amount = amount;
     printf("Bounds amount=%d\n", cbs->amount);
-    LOG_RECTS(cbs->bounds, cbs->amount);
+    LOG_RECTS(cbs->bounds, cbs->amount, i);
     if(DRAW_BOUNDS) {
        TILE* boundLines = CALLOC(cbs->amount, TILE);
-       int i = 0;
        while(i < cbs->amount) {
            TILE bounds;
            SetTile(&bounds);
