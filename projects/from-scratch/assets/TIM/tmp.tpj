@@ -1,7 +1,0 @@
-<tim_project>
-    <properties buffer_res="2004252020" buffer_order="0"/>
-    <tim_group name="global">
-        <tim file="100i0bg.tim"/>
-        <tim file="100i0fg.tim"/>
-    </tim_group>
-</tim_project>

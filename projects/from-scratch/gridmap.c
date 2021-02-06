@@ -44,7 +44,7 @@ u_char setLevelAssets(u_char level) {
         CdReadFile("YOLOFG.TIM", &assets[9], &count);
         CdReadFile("1_TUNNEL.TIM", &assets[10], &count);
         CdReadFile("1_H2.TIM", &assets[11], &count);
-        CdReadFile("PSY_8.TIM", &assets[12], &count);
+        CdReadFile("PSYDUCK.TIM", &assets[12], &count);
         CdReadFile("RAICHU.TIM", &assets[13], &count);
         CdReadFile("RAICHU_2.TIM", &assets[14], &count);
         CdReadFile("ALOLA.TIM", &assets[15], &count);

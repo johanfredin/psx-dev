@@ -43,7 +43,7 @@ void initPlayers(u_char numPlayers) {
 
     // Load hero sprites from disc
     CdOpen();
-    CdReadFile("HERO.TIM", heroTexture[0], NULL);
+    CdReadFile("PLAYER.TIM", heroTexture[0], NULL);
     CdClose();
 
     for (i = 0; i < numPlayers; i++) {
@@ -51,7 +51,7 @@ void initPlayers(u_char numPlayers) {
         GameObject *go;
         Animation *anim;
 
-        sprite = assetmanager_loadSprite("Player", *heroTexture[0], 126, 128, 255, COLOR_BITS_8);
+        sprite = assetmanager_loadSprite("Player", *heroTexture[0], 126, 128, 128, COLOR_BITS_8);
         go = gameobject_init(sprite, 16, 16, SPEED, SPEED, 100, TYPE_PLAYER);
         anim = animation_init(0, 0, 3, 3);
         player = player_init(anim, go, 0);
