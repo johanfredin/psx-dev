@@ -1,26 +1,25 @@
 #include "header/gridmap.h"
 
 #define ON_COL_SWDIR 1
-#define ON_COL_STOP  0
+#define ON_COL_STOP 0
 
-Frame* frames;
-u_char assetsCount, currentFrame=4;
-u_long** assets;
+Frame *frames;
+u_char assetsCount, currentFrame = 4;
+u_long **assets;
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[], u_long* gameObjectAsset);
-void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]);
-void handleBlockCollision(GsSPRITE* sprite);
-void handleTeleportCollision(GsSPRITE* sprite);
+void initFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, char name[], u_long *gameObjectAsset);
+void initSmallerFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, u_char x, u_char y, char name[]);
+void handleBlockCollision(GameObject *gobj, Frame *frame);
+void handleTeleportCollision(GameObject *gobj, Frame *frame);
 u_char setLevelAssets(u_char level);
-
 
 void gridmap_init(u_char level) {
     assetsCount = setLevelAssets(level);
     frames = CALLOC(7, Frame);
-    initFrame(&frames[0], assets[0], assets[4], "00", assets[14]);
-    initFrame(&frames[1], assets[1], assets[5], "01", NULL);
-    initFrame(&frames[2], assets[2], assets[6], "10", NULL);
-    initFrame(&frames[3], assets[3], assets[7], "11", NULL);
+    initFrame(&frames[0], assets[0], assets[4], "00", assets[12]);
+    initFrame(&frames[1], assets[1], assets[5], "01", assets[13]);
+    initFrame(&frames[2], assets[2], assets[6], "10", assets[14]);
+    initFrame(&frames[3], assets[3], assets[7], "11", assets[15]);
     initSmallerFrame(&frames[4], assets[8], assets[9], 256 / 4, 256 / 4, "yolo");
     initSmallerFrame(&frames[5], assets[10], NULL, 0, 256 / 3, "tunnel");
     initSmallerFrame(&frames[6], assets[11], NULL, 256 / 4, 256 / 8, "1_h2");
@@ -30,37 +29,36 @@ void gridmap_init(u_char level) {
 u_char setLevelAssets(u_char level) {
     u_char count = 0;
     CdOpen();
-    switch(level) {
-        case 1:
-            assets = (u_long**) calloc3(16, sizeof(u_long));  //MEM_CALLOC(8, u_long);
-            CdReadFile("00BG.TIM", &assets[0]);
-            CdReadFile("01BG.TIM", &assets[1]);
-            CdReadFile("10BG.TIM", &assets[2]);
-            CdReadFile("11BG.TIM", &assets[3]);
-            CdReadFile("00FG.TIM", &assets[4]);
-            CdReadFile("01FG.TIM", &assets[5]);
-            CdReadFile("10FG.TIM", &assets[6]);
-            CdReadFile("11FG.TIM", &assets[7]);
-            CdReadFile("YOLOBG.TIM", &assets[8]);
-            CdReadFile("YOLOFG.TIM", &assets[9]);
-            CdReadFile("1_TUNNEL.TIM", &assets[10]);
-            CdReadFile("1_H2.TIM", &assets[11]);
-            CdReadFile("PSY_8.TIM", &assets[12]);
-            CdReadFile("RAICHU.TIM", &assets[13]);
-            CdReadFile("RAICHU_2.TIM", &assets[14]);
-            CdReadFile("ALOLA.TIM", &assets[15]);
-            count = 16;
-            break;
+    switch (level) {
+    case 1:
+        assets = (u_long **)calloc3(16, sizeof(u_long)); //MEM_CALLOC(8, u_long);
+        CdReadFile("00BG.TIM", &assets[0], &count);
+        CdReadFile("01BG.TIM", &assets[1], &count);
+        CdReadFile("10BG.TIM", &assets[2], &count);
+        CdReadFile("11BG.TIM", &assets[3], &count);
+        CdReadFile("00FG.TIM", &assets[4], &count);
+        CdReadFile("01FG.TIM", &assets[5], &count);
+        CdReadFile("10FG.TIM", &assets[6], &count);
+        CdReadFile("11FG.TIM", &assets[7], &count);
+        CdReadFile("YOLOBG.TIM", &assets[8], &count);
+        CdReadFile("YOLOFG.TIM", &assets[9], &count);
+        CdReadFile("1_TUNNEL.TIM", &assets[10], &count);
+        CdReadFile("1_H2.TIM", &assets[11], &count);
+        CdReadFile("PSY_8.TIM", &assets[12], &count);
+        CdReadFile("RAICHU.TIM", &assets[13], &count);
+        CdReadFile("RAICHU_2.TIM", &assets[14], &count);
+        CdReadFile("ALOLA.TIM", &assets[15], &count);
+        break;
     }
     CdClose();
     return count;
 }
 
-void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u_long* gameObjectAsset) {
+void initFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, char name[6], u_long *gameObjectAsset) {
     frame->cbs = MALLOC(CollisionBlocks);
-    
+
     // Init BG sprite if provided
-    if(bgSprite == NULL) {
+    if (bgSprite == NULL) {
         frame->bg = NULL;
         printf("BG sprite NULL so no BG for frame\n");
     } else {
@@ -68,7 +66,7 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u
     }
 
     // Init FG sprite if provided
-    if(fgSprite == NULL) {
+    if (fgSprite == NULL) {
         frame->fg = NULL;
         printf("FG sprite NULL so no FG for frame\n");
     } else {
@@ -76,84 +74,91 @@ void initFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, char name[6], u
     }
 
     // Init Game object if provided
-    if(gameObjectAsset != NULL) {
-        frame->gameObject = gameobject_init(assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8), 16, 16, 4, 4, 100);
+    if (gameObjectAsset != NULL) {
+
+        frame->gameObject = gameobject_init(assetmanager_loadSprite("Game object", gameObjectAsset, 90, 120, 128, COLOR_BITS_8), 16, 16, 2, 3, 100, TYPE_NPC);
     }
 }
 
-void initSmallerFrame(Frame* frame, u_long* bgSprite, u_long* fgSprite, u_char x, u_char y, char name[]) {
+void initSmallerFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, u_char x, u_char y, char name[]) {
     initFrame(frame, bgSprite, fgSprite, name, NULL);
-    frame->bg->x = x; 
+    frame->bg->x = x;
     frame->fg->x = x;
     frame->bg->y = y;
     frame->fg->y = y;
 }
 
 void gridmap_draw() {
-    Frame* frame = &frames[currentFrame];
-    CollisionBlocks* blocks = frame->cbs;
-    Teleport* teleports = frame->teleports;
-    
-    if(frame->fg != NULL) {
+    Frame *frame = &frames[currentFrame];
+    CollisionBlocks *blocks = frame->cbs;
+    Teleport *teleports = frame->teleports;
+
+    if (frame->fg != NULL) {
         GsSortFastSprite(frame->fg, currentOT(), 0);
     }
-    if(frame->bg != NULL) {
+    if (frame->bg != NULL) {
         GsSortFastSprite(frame->bg, currentOT(), 2);
     }
-    if(frame->gameObject != NULL) {
+    if (frame->gameObject != NULL) {
         gameobject_draw(frame->gameObject);
     }
 
-    if(PRINT_COORDS) {
+    if (PRINT_COORDS) {
         FntPrint("Current framee=%d\n", currentFrame);
         FntPrint("Blocks in frame=%d\n", blocks->amount);
         FntPrint("Teleports in frame=%d\n", frame->t_amount);
     }
 
-    if(DRAW_BOUNDS) {
+    if (DRAW_BOUNDS) {
         int blockIdx = 0, t_idx = 0;
-        while(blockIdx < blocks->amount) {
+        while (blockIdx < blocks->amount) {
             DrawPrim(&blocks->boundLines[blockIdx]);
             blockIdx++;
         }
-        while(t_idx < frame->t_amount) {
+        while (t_idx < frame->t_amount) {
             DrawPrim(&teleports[t_idx].boundLines);
             t_idx++;
         }
     }
 }
 
-void gridmap_tick(Player* player) {
+void gridmap_tick(Player *player) {
+    Frame *frame = &frames[currentFrame];
     // TEMP
     u_long btn = PadRead(1);
-    if(btn & PADselect) {
-        if(currentFrame >= 3) {
+    if (btn & PADselect) {
+        if (currentFrame >= 3) {
             currentFrame = 0;
         } else {
             currentFrame++;
         }
     }
 
-    handleTeleportCollision(player->gobj->sprite);
-    handleBlockCollision(player->gobj->sprite);
+    handleTeleportCollision(player->gobj, frame);
+    handleBlockCollision(player->gobj, frame);
+    if (frame->gameObject != NULL) {
+        gameobject_tick(frame->gameObject, player);
+        handleBlockCollision(frame->gameObject, frame);
+        handleTeleportCollision(frame->gameObject, frame);
+    }
 }
 
-void handleBlockCollision(GsSPRITE* sprite) {
+void handleBlockCollision(GameObject *gobj, Frame *frame) {
     u_char rightCol, leftCol, topCol, bottomCol;
-    CollisionBlocks* blocks = frames[currentFrame].cbs;
+    CollisionBlocks *blocks = frame->cbs;
     int i = 0;
-    
-    // Player bounds
-    short px = sprite->x;
-    short py = sprite->y;
-    u_short pw = sprite->w;
-    u_short ph = sprite->h;
+
+    // Sprite  bounds
+    short px = gobj->sprite->x;
+    short py = gobj->sprite->y;
+    u_short pw = gobj->sprite->w;
+    u_short ph = gobj->sprite->h;
     u_short pxw = px + pw;
     u_short pyh = py + ph;
 
     while (i < blocks->amount) {
         // Collision block bounds
-        RECT* bounds = &blocks->bounds[i];
+        RECT *bounds = &blocks->bounds[i];
         short bx = bounds->x;
         short by = bounds->y;
         u_short bw = bounds->w;
@@ -166,41 +171,49 @@ void handleBlockCollision(GsSPRITE* sprite) {
         topCol = pyh >= by && py < by && pxw > bx && px < bxw;
         bottomCol = py <= byh && pyh > byh && pxw > bx && px < bxw;
 
-        if(rightCol || leftCol || topCol || bottomCol) {
-            if(rightCol) {
-                sprite->x = bx - pw;
-            } 
-            if(leftCol) {
-                sprite->x = bxw;
+        switch (gobj->type) {
+        case TYPE_PLAYER:
+            if (rightCol) {
+                gobj->sprite->x = bx - pw;
             }
-            if(topCol) {
-                sprite->y = by - ph;
+            if (leftCol) {
+                gobj->sprite->x = bxw;
             }
-            if(bottomCol) {
-                sprite->y = byh;
+            if (topCol) {
+                gobj->sprite->y = by - ph;
             }
-            
-            // Check if we are going to switch dir or not
-
+            if (bottomCol) {
+                gobj->sprite->y = byh;
+            }
+            break;
+        case TYPE_NPC:
+            if (rightCol || leftCol) {
+                switchXDir(gobj);
+            }
+            if (topCol || bottomCol) {
+                switchYDir(gobj);
+            }
+            break;
         }
         i++;
-    }   
+    }
 }
 
-void handleTeleportCollision(GsSPRITE* sprite) {
+void handleTeleportCollision(GameObject *gobj, Frame *frame) {
     u_char rightCol, leftCol, topCol, bottomCol;
-    Teleport* teleports = frames[currentFrame].teleports;
+    Teleport *teleports = frame->teleports;
     int i = 0;
 
-     // Player bounds
-    short px = sprite->x;
-    short py = sprite->y;
-    u_short pw = sprite->w;
-    u_short ph = sprite->h;
+    // Player bounds
+    short px = gobj->sprite->x;
+    short py = gobj->sprite->y;
+    u_short pw = gobj->sprite->w;
+    u_short ph = gobj->sprite->h;
     u_short pxw = px + pw;
     u_short pyh = py + ph;
-    while(i < frames[currentFrame].t_amount) {
-        RECT bounds = teleports[i].origin;
+    while (i < frame->t_amount) {
+        Teleport t = teleports[i];
+        RECT bounds = t.origin;
         short bx = bounds.x;
         short by = bounds.y;
         u_short bw = bounds.w;
@@ -212,20 +225,32 @@ void handleTeleportCollision(GsSPRITE* sprite) {
         leftCol = px <= bxw && pxw > bxw && pyh > by && py < byh;
         topCol = pyh >= by && py < by && pxw > bx && px < bxw;
         bottomCol = py <= byh && pyh > byh && pxw > bx && px < bxw;
-        
-        if(rightCol || leftCol || topCol || bottomCol) {
-            Teleport t = teleports[i];
-            currentFrame = t.destFrame;
-            if(t.destX > -1) {
-                sprite->x = t.destX;
-            }
-            if(t.destY > -1) {
-                sprite->y = t.destY;
+
+        if (rightCol || leftCol || topCol || bottomCol) {
+            switch (gobj->type) {
+            case TYPE_PLAYER:
+                if (t.destX > -1) {
+                    gobj->sprite->x = t.destX;
+                }
+                if (t.destY > -1) {
+                    gobj->sprite->y = t.destY;
+                }
+                if (frame->gameObject != NULL && frame->gameObject->type == TYPE_NPC) {
+                    resetPosition(frame->gameObject);
+                }
+                currentFrame = t.destFrame;
+                break;
+            case TYPE_NPC:
+                if (rightCol || leftCol) {
+                    switchXDir(gobj);
+                }
+                if (topCol || bottomCol) {
+                    switchYDir(gobj);
+                }
+                break;
             }
         }
-        
+
         i++;
     }
 }
-
-

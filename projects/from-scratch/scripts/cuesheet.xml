@@ -19,7 +19,7 @@
 			<file name="1_TUNNEL.TIM"	type="data"	source="../assets/TIM/1_tunnel.TIM"/>
 			<file name="1_H2.TIM"	type="data"	source="../assets/TIM/1_h2.TIM"/>
 			<file name="ALOLA.TIM"	type="data"	source="../assets/ALOLA.TIM"/>
-			<file name="PSY_8.TIM"	type="data"	source="../assets/PSY_8.TIM"/>
+			<file name="PSY_8.TIM"	type="data"	source="../assets/TIM/PSY_8.TIM"/>
 			<file name="RAICHU.TIM"	type="data"	source="../assets/RAICHU.TIM"/>
 			<file name="RAICHU_2.TIM"	type="data"	source="../assets/RAICHU_2.TIM"/>
 			<file name="MAIN.EXE"	type="data"	source="MAIN.EXE"/>

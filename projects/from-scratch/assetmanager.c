@@ -75,7 +75,7 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
 
 
     sprite->tpage = GetTPage(asset->colorMode, 1, asset->frameBuffer->x, asset->frameBuffer->y);
-    sprite->u = 0;//(frameBuffer->x * twidthMultiplier) % 256;
+    sprite->u = 0;//(asset->frameBuffer->x * asset->twidthMultiplier) % 256;
     sprite->v = (asset->frameBuffer->y) % 256;
     if(asset->isCLUTMode) {
         sprite->cx = asset->clut->x;
