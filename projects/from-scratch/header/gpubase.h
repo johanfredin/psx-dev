@@ -8,6 +8,7 @@
 #include <LIBETC.H>
 #include <STRINGS.H>
 #include "mem.h"
+#include "logger.h"
 
 // Constants
 #define NUM_BUFFERS 2

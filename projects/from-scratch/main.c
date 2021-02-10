@@ -1,8 +1,8 @@
+#include "header/assetmanager.h"
 #include "header/base.h"
 #include "header/cdrom.h"
-#include "header/assetmanager.h"
-#include "header/gpubase.h"
 #include "header/gameobject.h"
+#include "header/gpubase.h"
 #include "header/gridmap.h"
 
 // Constants
@@ -26,7 +26,7 @@ int main() {
     initializeScreen(&backgroundColor);
     initializeDebugFont(0);
     initPlayers(1);
-    gridmap_init(1);
+    // gridmap_init(1);
 
     while (1) {
         update();
@@ -40,6 +40,9 @@ int main() {
 void initPlayers(u_char numPlayers) {
     u_long **heroTexture[MAX_PLAYERS]; // Reserve space for max 4 players
     int i;
+    log_i("******************************************");
+    log_i("* FETCHING PLAYER ASSETS, NUM-PLAYERS=%d *", numPlayers);
+    log_i("******************************************");
 
     // Load hero sprites from disc
     CdOpen();

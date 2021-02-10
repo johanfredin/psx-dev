@@ -3,6 +3,7 @@
 
 #include "gpubase.h"
 #include "mem.h"
+#include "base.h"
 #include "logger.h"
 
 #define ROT_ONE 4096

@@ -17,9 +17,9 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     u_char isCLUTMode = numColorBits < COLOR_BITS_16;
     u_long spriteAttr = getAttributeByColorBitsMode(numColorBits);
 
-    printf("======================================================\n");
-    printf("Started fetching asset %s:\n-----------------------------\n", name);
-    printf("Color bits=%d, CLUT mode=%d\n", numColorBits, isCLUTMode);
+    log(LOG_LEVEL_DEBUG, "------------------------");
+    log(LOG_LEVEL_INFO, "Fetching asset=%s", name);
+    log(LOG_LEVEL_DEBUG, "Color bits=%d, CLUT mode=%d", numColorBits, isCLUTMode);
 
     // Load image data
     data = (u_char*) spriteData;
@@ -28,16 +28,16 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     GsGetTimInfo((u_long*)(data + 4), tim_data);
         
     // malloc resources
-    frameBuffer = (RECT*) malloc3(sizeof(RECT));
-    clut = (RECT*) malloc3(sizeof(RECT));
+    frameBuffer = MALLOC(RECT);
+    clut = MALLOC(RECT);
 
-    // Load image into gpu memory
-    frameBuffer->x = tim_data->px;
+      // Load image into gpu memory
+    frameBuffer->x = tim_data->px;  
     frameBuffer->y = tim_data->py;
     frameBuffer->w = tim_data->pw;
     frameBuffer->h = tim_data->ph;
     LoadImage(frameBuffer, tim_data->pixel);
-    LOG_NAMED_RECT(frameBuffer, "FrameBuffer");
+    log(LOG_LEVEL_DEBUG, "Framebuffer coords assigned at {x:%d, y:%d, w:%d, h:%d}", frameBuffer->x, frameBuffer->y, frameBuffer->w, frameBuffer->h);
    
    if(isCLUTMode) {
         // load clut into gpu memory
@@ -46,9 +46,9 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
         clut->w = tim_data->cw;
         clut->h = tim_data->ch;
         LoadImage(clut, tim_data->clut);
-        LOG_NAMED_RECT(clut, "CLUT");
+        log_d("CLUT coords assigned at {x:%d, y:%d, w:%d, h:%d}", clut->x, clut->y, clut->w, clut->h);
     } else {
-        printf("16 bit mode so no CLUT\n");
+        log_d("16 bit mode so no CLUT");
     }
 
     FREE(tim_data);
@@ -72,8 +72,6 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     sprite->y = y;
     sprite->w = asset->frameBuffer->w *  asset->twidthMultiplier;
     sprite->h = asset->frameBuffer->h;
-
-
     sprite->tpage = GetTPage(asset->colorMode, 1, asset->frameBuffer->x, asset->frameBuffer->y);
     sprite->u = 0;//(asset->frameBuffer->x * asset->twidthMultiplier) % 256;
     sprite->v = (asset->frameBuffer->y) % 256;
@@ -88,9 +86,9 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     sprite->scalex = ONE * 1;
     sprite->scaley = ONE * 1;
 
-    printf("w=%d, h=%d\n", sprite->w, sprite->h);
-    printf("cx=%d, cy=%d\n", sprite->cx, sprite->cy);
-    printf("u=%d, v=%d\n", sprite->u, sprite->v);
+    log(LOG_LEVEL_DEBUG, "w=%d, h=%d", sprite->w, sprite->h);
+    log(LOG_LEVEL_DEBUG, "cx=%d, cy=%d", sprite->cx, sprite->cy);
+    log(LOG_LEVEL_DEBUG, "u=%d, v=%d", sprite->u, sprite->v);
 
     FREE(asset->frameBuffer);
     FREE(asset->clut);

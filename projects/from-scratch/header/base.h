@@ -8,6 +8,8 @@
  * Constant values used throughout game
  */
 
+#define LOG_LEVEL 3
+
 #define SCREEN_WIDTH 256    // Width of screen
 #define SCREEN_HEIGHT 256   // Height of screen
 
@@ -18,5 +20,6 @@
 #define PRINT_COORDS 0          // Set to 1 to FntPrint player coordinates to screen
 #define PRINT_ANIMATION 0       // Set to 1 to FntPrint player animation to screen
 #define LOG_INDIVIDUAL_BOUNDS 0 // Set to 1 to Log all asigned mab boundarie coordinates
+#define LOG_CD_OP 0             // Set to 1 to log cd read operations more in depth
 
 #endif

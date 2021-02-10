@@ -9,8 +9,8 @@
 
 #include <SYS/TYPES.H>
 #include <LIBDS.H>
-#include "base.h"
 #include "mem.h"
+#include "logger.h"
 
 #define SECTOR 2048
 

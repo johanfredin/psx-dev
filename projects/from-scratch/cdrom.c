@@ -25,7 +25,7 @@ void CdReadFile(char *file_path, u_long **file, u_char *filesRead) {
 
     // Exit if libDs isn't initialized
     if (!didInitDs) {
-        printf("LIBDS not initialized, run cdOpen() first\n");
+        log_i("LIBDS not initialized, run cdOpen() first");
         return;
     }
 
@@ -34,26 +34,25 @@ void CdReadFile(char *file_path, u_long **file, u_char *filesRead) {
     strcpy(file_path_raw, "\\");
     strcat(file_path_raw, file_path);
     strcat(file_path_raw, ";1");
-    printf("Loading file from CD: %s\n", file_path_raw);
+    log_i("Loading file from CD: %s", file_path_raw);
 
     // Search for file on disc
     DsSearchFile(temp_file_info, file_path_raw);
 
     // Read the file if it was found
     if (temp_file_info->size > 0) {
-        printf("...file found\n");
-        printf("...file size: %lu\n", temp_file_info->size);
+        log_d("...file found");
+        log_d("...file size: %lu", temp_file_info->size);
         *sectors_size = temp_file_info->size + (SECTOR % temp_file_info->size);
-        printf("...file buffer size needed: %d\n", *sectors_size);
-        printf("...sectors needed: %d\n", (*sectors_size + SECTOR - 1) / SECTOR);
+        log_tr("...file buffer size needed: %d", *sectors_size);
+        log_tr("...sectors needed: %d", (*sectors_size + SECTOR - 1) / SECTOR);
         *file = (u_long *)malloc3(*sectors_size + SECTOR);
-
         DsRead(&temp_file_info->pos, (*sectors_size + SECTOR - 1) / SECTOR, *file, DslModeSpeed);
         while (DsReadSync(NULL))
             ;
-        printf("...file loaded!\n");
+        log_d("...file loaded!");
     } else {
-        printf("...file not found\n");
+        log_err("...file not found");
     }
 
     // Clean up
@@ -64,5 +63,4 @@ void CdReadFile(char *file_path, u_long **file, u_char *filesRead) {
     if (filesRead != NULL) {
         *filesRead++;
     }
-    printf("File %s loaded into memory addr=%p\n", file_path, *file);
 }
