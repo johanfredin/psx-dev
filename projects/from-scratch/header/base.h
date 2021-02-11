@@ -8,7 +8,7 @@
  * Constant values used throughout game
  */
 
-#define LOG_LEVEL 3
+#define LOG_LEVEL 1
 
 #define SCREEN_WIDTH 256    // Width of screen
 #define SCREEN_HEIGHT 256   // Height of screen

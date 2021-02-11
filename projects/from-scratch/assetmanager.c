@@ -46,9 +46,9 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
         clut->w = tim_data->cw;
         clut->h = tim_data->ch;
         LoadImage(clut, tim_data->clut);
-        log_d("CLUT coords assigned at {x:%d, y:%d, w:%d, h:%d}", clut->x, clut->y, clut->w, clut->h);
+        log(LOG_LEVEL_DEBUG, "CLUT coords assigned at {x:%d, y:%d, w:%d, h:%d}", clut->x, clut->y, clut->w, clut->h);
     } else {
-        log_d("16 bit mode so no CLUT");
+        log(LOG_LEVEL_DEBUG, "16 bit mode so no CLUT");
     }
 
     FREE(tim_data);

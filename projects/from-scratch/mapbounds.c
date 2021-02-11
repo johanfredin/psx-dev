@@ -45,9 +45,9 @@ void initArr(u_char size, u_char arr[]) {
 }
 
 void addBoundriesToLevel(u_char level, Frame *frames) {
-    log_i("*******************************************************");
-    log_i("*         ADDING BOUNDRIES TO LEVEL NR %d             *", level);
-    log_i("*******************************************************");
+    log(LOG_LEVEL_INFO, "*******************************************************");
+    log(LOG_LEVEL_INFO, "*         ADDING BOUNDRIES TO LEVEL NR %d             *", level);
+    log(LOG_LEVEL_INFO, "*******************************************************");
     switch (level) {
     case 1:
         frameCoords[0] = CALLOC(8, RECT);
@@ -122,9 +122,9 @@ void addBoundriesToLevel(u_char level, Frame *frames) {
 }
 
 void addTeleportsToLevel(u_char level, Frame *frames) {
-    log_i("*******************************************************");
-    log_i("*         ADDING TELEPORTS TO LEVEL NR %d             *", level);
-    log_i("*******************************************************");
+    log(LOG_LEVEL_INFO, "*******************************************************");
+    log(LOG_LEVEL_INFO, "*         ADDING TELEPORTS TO LEVEL NR %d             *", level);
+    log(LOG_LEVEL_INFO, "*******************************************************");
     switch (level) {
     case 1:
         levelTeleports[0] = CALLOC(3, Teleport);
@@ -168,12 +168,11 @@ void addTeleportsToLevel(u_char level, Frame *frames) {
 void addTeleportsToFrame(Frame *frame, Teleport *frameTeleports, u_char frameIndex, u_char amount) {
     u_char i;
     if (amount > 0) {
-        log_d("-----------------------------------------------");
-        log_d("Adding bound lines for teleports at frame nr %d", frameIndex);
-        log_d("-----------------------------------------------");
+        log(LOG_LEVEL_DEBUG, "-----------------------------------------------");
+        log(LOG_LEVEL_DEBUG, "Adding bound lines for teleports at frame nr %d", frameIndex);
+        log(LOG_LEVEL_DEBUG, "-----------------------------------------------");
         frame->teleports = frameTeleports;
         frame->t_amount = amount;
-        LOG_TELEPORTS(frameTeleports, frame->t_amount, i);
         if (DRAW_BOUNDS) {
             while (i < amount) {
                 TILE bounds;
@@ -184,24 +183,23 @@ void addTeleportsToFrame(Frame *frame, Teleport *frameTeleports, u_char frameInd
                 bounds.h = frameTeleports[i].origin.h;
                 setRGB0(&bounds, 0, 0, 255);
                 frameTeleports[i].boundLines = bounds;
-                LOG_TELEPORT(&frameTeleports[i]);
-                LOG_TILE(&bounds);
+                log(LOG_LEVEL_TRACE, "Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", frameTeleports[i].origin.x, frameTeleports[i].origin.y, frameTeleports[i].origin.w, frameTeleports[i].origin.h, frameTeleports[i].destX, frameTeleports[i].destY);
+                log(LOG_LEVEL_TRACE, "TILE bounds={x:%d, y:%d, w:%d, h:%d}", (&bounds)->x0, (&bounds)->y0, (&bounds)->w, (&bounds)->h);
                 i++;
             }
         }
     }
-    log_i("Added %d frameTeleports to frame nr %d", amount, frameIndex);
+    log(LOG_LEVEL_INFO, "Added %d frameTeleports to frame nr %d", amount, frameIndex);
 }
 
 void addBoundriesToFrame(CollisionBlocks *cbs, RECT *bounds, u_char amount, u_char frameIndex) {
     u_char i;
-    log_d("--------------------------------------");
-    log_d("Setting collision bounds for frame nr %d", frameIndex);
-    log_d("--------------------------------------");
+    log(LOG_LEVEL_DEBUG, "--------------------------------------");
+    log(LOG_LEVEL_DEBUG, "Setting collision bounds for frame nr %d", frameIndex);
+    log(LOG_LEVEL_DEBUG, "--------------------------------------");
     cbs->bounds = bounds;
     cbs->amount = amount;
-    log_tr("Bounds amount=%d", cbs->amount);
-    LOG_RECTS(cbs->bounds, cbs->amount, i);
+    log(LOG_LEVEL_TRACE, "Bounds amount=%d", cbs->amount);
     if (DRAW_BOUNDS) {
         TILE *boundLines = CALLOC(cbs->amount, TILE);
         while (i < cbs->amount) {
@@ -212,30 +210,30 @@ void addBoundriesToFrame(CollisionBlocks *cbs, RECT *bounds, u_char amount, u_ch
             bounds.w = cbs->bounds[i].w;
             bounds.h = cbs->bounds[i].h;
             setRGB0(&bounds, 255, 0, 0);
-            LOG_TILE(&bounds);
+            log(LOG_LEVEL_TRACE, "TILE bounds={x:%d, y:%d, w:%d, h:%d}", (&bounds)->x0, (&bounds)->y0, (&bounds)->w, (&bounds)->h);
             boundLines[i] = bounds;
             i++;
         }
         cbs->boundLines = boundLines;
     }
-    log_i("Added %d bounds to frame nr %d", amount, frameIndex);
+    log(LOG_LEVEL_INFO, "Added %d bounds to frame nr %d", amount, frameIndex);
 }
 
 RECT getRect(u_short x, u_short y, u_short w, u_short h) {
     RECT r = {x, y, w, h};
-    LOG_RECT(&r);
+    log(LOG_LEVEL_TRACE, "Coords assigned at {x:%d, y%d, w:%d, h:%d}", r.x, r.y, r.w, r.h);
     return r;
 }
 
 RECT getRectWO(u_short x, u_short y, u_short w, u_short h, short xOffset, short yOffset) {
     RECT r = {x + xOffset, y + yOffset, w, h};
-    LOG_RECT(&r);
+    log(LOG_LEVEL_TRACE, "Coords assigned at {x:%d, y%d, w:%d, h:%d}", r.x, r.y, r.w, r.h);
     return r;
 }
 
 Teleport getTeleport(RECT origin, short destX, short destY, u_char destFrame) {
     Teleport t = {origin, destX, destY};
     t.destFrame = destFrame;
-    LOG_TELEPORT(&t);
+    log(LOG_LEVEL_TRACE, "Frame teleport: origin={x:%d, y:%d, w:%d, h:%d}, destX=%d, destY=%d\n", t.origin.x, t.origin.y, t.origin.w, t.origin.h, t.destX, t.destY);
     return t;
 }
