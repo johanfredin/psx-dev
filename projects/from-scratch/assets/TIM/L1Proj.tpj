@@ -197,5 +197,6 @@
                 <alpha_stp_threshold>255</alpha_stp_threshold>
             </import_parameters>
         </tim>
+        <tim file="font.tim"/>
     </tim_group>
 </tim_project>

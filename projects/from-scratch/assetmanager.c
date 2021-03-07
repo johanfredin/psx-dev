@@ -17,9 +17,9 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     u_char isCLUTMode = numColorBits < COLOR_BITS_16;
     u_long spriteAttr = getAttributeByColorBitsMode(numColorBits);
 
-    log(LOG_LEVEL_DEBUG, "------------------------");
-    log(LOG_LEVEL_INFO, "Fetching asset=%s", name);
-    log(LOG_LEVEL_DEBUG, "Color bits=%d, CLUT mode=%d", numColorBits, isCLUTMode);
+    log(DEBUG, "------------------------");
+    log(INFO, "Fetching asset=%s", name);
+    log(DEBUG, "Color bits=%d, CLUT mode=%d", numColorBits, isCLUTMode);
 
     // Load image data
     data = (u_char*) spriteData;
@@ -37,7 +37,7 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
     frameBuffer->w = tim_data->pw;
     frameBuffer->h = tim_data->ph;
     LoadImage(frameBuffer, tim_data->pixel);
-    log(LOG_LEVEL_DEBUG, "Framebuffer coords assigned at {x:%d, y:%d, w:%d, h:%d}", frameBuffer->x, frameBuffer->y, frameBuffer->w, frameBuffer->h);
+    log(DEBUG, "Framebuffer coords assigned at {x:%d, y:%d, w:%d, h:%d}", frameBuffer->x, frameBuffer->y, frameBuffer->w, frameBuffer->h);
    
    if(isCLUTMode) {
         // load clut into gpu memory
@@ -46,9 +46,9 @@ void assetmanager_loadAsset(Asset* asset, char* name, u_long* spriteData, u_shor
         clut->w = tim_data->cw;
         clut->h = tim_data->ch;
         LoadImage(clut, tim_data->clut);
-        log(LOG_LEVEL_DEBUG, "CLUT coords assigned at {x:%d, y:%d, w:%d, h:%d}", clut->x, clut->y, clut->w, clut->h);
+        log(DEBUG, "CLUT coords assigned at {x:%d, y:%d, w:%d, h:%d}", clut->x, clut->y, clut->w, clut->h);
     } else {
-        log(LOG_LEVEL_DEBUG, "16 bit mode so no CLUT");
+        log(DEBUG, "16 bit mode so no CLUT");
     }
 
     FREE(tim_data);
@@ -86,9 +86,9 @@ GsSPRITE* assetmanager_loadSprite(char* name, u_long* spriteData, u_short x, u_s
     sprite->scalex = ONE * 1;
     sprite->scaley = ONE * 1;
 
-    log(LOG_LEVEL_DEBUG, "w=%d, h=%d", sprite->w, sprite->h);
-    log(LOG_LEVEL_DEBUG, "cx=%d, cy=%d", sprite->cx, sprite->cy);
-    log(LOG_LEVEL_DEBUG, "u=%d, v=%d", sprite->u, sprite->v);
+    log(DEBUG, "w=%d, h=%d", sprite->w, sprite->h);
+    log(DEBUG, "cx=%d, cy=%d", sprite->cx, sprite->cy);
+    log(DEBUG, "u=%d, v=%d", sprite->u, sprite->v);
 
     FREE(asset->frameBuffer);
     FREE(asset->clut);

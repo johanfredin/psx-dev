@@ -25,9 +25,9 @@ void gridmap_init(u_char level) {
 
 u_char setLevelAssets(u_char level) {
     u_char count = 0;
-    log(LOG_LEVEL_INFO, "*********************************");
-    log(LOG_LEVEL_INFO, "* ADDING ASSETS FOR LEVEL NR %d *", level);
-    log(LOG_LEVEL_INFO, "*********************************");
+    log(INFO, "*********************************");
+    log(INFO, "* ADDING ASSETS FOR LEVEL NR %d *", level);
+    log(INFO, "*********************************");
     CdOpen();
     switch (level) {
     case 1:
@@ -60,7 +60,7 @@ void initFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, char name[6], u
     // Init BG sprite if provided
     if (bgSprite == NULL) {
         frame->bg = NULL;
-        log(LOG_LEVEL_DEBUG, "BG sprite NULL so no BG for frame");
+        log(DEBUG, "BG sprite NULL so no BG for frame");
     } else {
         frame->bg = assetmanager_loadSprite(name, bgSprite, 0, 0, 128, COLOR_BITS_8);
     }
@@ -68,7 +68,7 @@ void initFrame(Frame *frame, u_long *bgSprite, u_long *fgSprite, char name[6], u
     // Init FG sprite if provided
     if (fgSprite == NULL) {
         frame->fg = NULL;
-        log(LOG_LEVEL_DEBUG, "FG sprite NULL so no FG for frame\n");
+        log(DEBUG, "FG sprite NULL so no FG for frame\n");
     } else {
         frame->fg = assetmanager_loadSprite(name, fgSprite, 0, 0, 128, COLOR_BITS_8);
     }

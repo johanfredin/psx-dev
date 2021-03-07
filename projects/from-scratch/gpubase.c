@@ -69,7 +69,7 @@ void clearDisplay() {
 }
 
 void initializeHeap() {
-	log(LOG_LEVEL_DEBUG, "\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
+	log(DEBUG, "\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
     INIT_HEAP(HEAP_DEFALT_START_ADDR, HEAP_DEFALT_SIZE);
 }
 

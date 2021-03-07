@@ -6,6 +6,7 @@
 		<directory_tree>
 			<file name="SYSTEM.CNF"		type="data"	source="../../../TOOLS/SYSTEM.CNF"/>
 			<file name="PLAYER.TIM"		type="data"	source="../assets/TIM/PLAYER.TIM"/>
+			<file name="FONT.TIM"		type="data"	source="../assets/TIM/FONT.TIM"/>
 			<file name="00BG.TIM"		type="data"	source="../assets/TIM/00bg.TIM"/>
 			<file name="01BG.TIM"		type="data"	source="../assets/TIM/01bg.TIM"/>
 			<file name="10BG.TIM"		type="data"	source="../assets/TIM/10bg.TIM"/>

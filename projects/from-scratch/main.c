@@ -3,6 +3,7 @@
 #include "header/cdrom.h"
 #include "header/gameobject.h"
 #include "header/gpubase.h"
+#include "header/font.h"
 #include "header/gridmap.h"
 
 // Constants
@@ -18,6 +19,7 @@ void update();
 void draw();
 
 int main() {
+    
     setBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     backgroundColor.r = 0;
     backgroundColor.g = 0;
@@ -27,6 +29,7 @@ int main() {
     initializeDebugFont(0);
     initPlayers(1);
     gridmap_init(1);
+    font_load();
 
     while (1) {
         update();
@@ -40,9 +43,9 @@ int main() {
 void initPlayers(u_char numPlayers) {
     u_long **heroTexture[MAX_PLAYERS]; // Reserve space for max 4 players
     int i;
-    log(LOG_LEVEL_INFO, "******************************************");
-    log(LOG_LEVEL_INFO, "* FETCHING PLAYER ASSETS, NUM-PLAYERS=%d *", numPlayers);
-    log(LOG_LEVEL_INFO, "******************************************");
+    log(INFO, "******************************************");
+    log(INFO, "* FETCHING PLAYER ASSETS, NUM-PLAYERS=%d *", numPlayers);
+    log(INFO, "******************************************");
 
     // Load hero sprites from disc
     CdOpen();
@@ -69,4 +72,5 @@ void update() {
 void draw() {
     gridmap_draw();
     player_draw(player);
+    font_draw();
 }
